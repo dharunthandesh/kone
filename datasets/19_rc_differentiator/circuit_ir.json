@@ -23,10 +23,10 @@
       "confidence": 1.0,
       "orientation": 0,
       "bounding_box": {
-        "x": 120,
-        "y": 260,
-        "w": 60,
-        "h": 80
+        "x": 125,
+        "y": 275,
+        "w": 70,
+        "h": 70
       },
       "uncertainties": [],
       "verified_by_user": false
@@ -52,10 +52,10 @@
       "confidence": 1.0,
       "orientation": 0,
       "bounding_box": {
-        "x": 340,
+        "x": 350,
         "y": 170,
-        "w": 80,
-        "h": 40
+        "w": 60,
+        "h": 60
       },
       "uncertainties": [],
       "verified_by_user": false
@@ -81,10 +81,10 @@
       "confidence": 1.0,
       "orientation": 0,
       "bounding_box": {
-        "x": 550,
+        "x": 580,
         "y": 260,
         "w": 40,
-        "h": 80
+        "h": 100
       },
       "uncertainties": [],
       "verified_by_user": false
@@ -100,9 +100,9 @@
       "confidence": 1.0,
       "orientation": 0,
       "bounding_box": {
-        "x": 340,
-        "y": 410,
-        "w": 60,
+        "x": 355,
+        "y": 420,
+        "w": 50,
         "h": 40
       },
       "uncertainties": [],

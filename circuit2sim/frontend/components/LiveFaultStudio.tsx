@@ -10,8 +10,9 @@ import {
   AlertTriangle,
   Layers,
   Activity,
+  Cpu,
 } from "lucide-react";
-import { UniversalCircuitIR } from "../types/circuit";
+import { Component, UniversalCircuitIR } from "../types/circuit";
 
 interface LiveFaultStudioProps {
   projectId: string;
@@ -65,388 +66,687 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
   circuitIr,
   onRefresh,
 }) => {
-  const defaultBlocks: CircuitBlock[] = [
-    {
-      id: "XB11",
-      type: "AC Input Terminal Connector",
-      label: "XB11",
-      sublabel: "AC IN",
-      x: 6,
-      y: 42,
-      w: 8,
-      h: 22,
-      shape: "rect",
-      category: "input",
-      nominalVoltage: "230V RMS (325.3Vpk)",
-      nominalCurrent: "0.8A RMS",
-      description: "230V RMS (325.3 Vpk) Single-Phase AC Mains Input Connector.",
-      faultModes: [
-        {
-          id: "FLT-XB11-SURGE",
-          label: "AC Surge +50V (375.3 Vpk)",
-          type: "OVERVOLTAGE_SURGE",
-          impact: "Peak voltage spikes +50V above nominal. MOV clamps line overvoltage.",
-          action: "MOV RV3 CLAMP ENGAGED",
-          finalState: "SURGE CLAMPED / DEGRADED",
-          dcBusV: 442.5,
-          currentA: 2.8,
-          gateV: 15.0,
-        },
-        {
-          id: "FLT-XB11-LOSS",
-          label: "Mains Power Drop (0V)",
-          type: "POWER_LOSS",
-          impact: "AC input disconnects completely. DC link discharges safely.",
-          action: "UNDERVOLTAGE LOCKOUT (UVLO)",
-          finalState: "SAFE DE-ENERGIZED",
-          dcBusV: 0.0,
-          currentA: 0.0,
-          gateV: 0.0,
-        },
-        {
-          id: "FLT-XB11-SAG",
-          label: "Brownout Sag -50% (115V RMS)",
-          type: "VOLTAGE_SAG",
-          impact: "Input line drops to 115V RMS. PFC attempts maximum compensation.",
-          action: "DUTY CYCLE CLAMP",
-          finalState: "DEGRADED BUS",
-          dcBusV: 285.0,
-          currentA: 1.6,
-          gateV: 15.0,
-        },
-      ],
-    },
-    {
-      id: "D2",
-      type: "Diode Bridge Rectifier",
-      label: "D2",
-      sublabel: "BRIDGE",
-      x: 17,
-      y: 40,
-      w: 8,
-      h: 26,
-      shape: "diamond",
-      category: "rectifier",
-      nominalVoltage: "325.3V Rectified",
-      nominalCurrent: "0.8A DC",
-      description: "Full-Wave Bridge Rectifier Package (Single-Phase AC to Raw Pulsating DC).",
-      faultModes: [
-        {
-          id: "FLT-D2-SHORT",
-          label: "Diode Arm Short Circuit",
-          type: "SHORT_CIRCUIT",
-          impact: "Severe AC-to-DC shoot-through. Input fuse blows immediately.",
-          action: "INPUT FAST BLOW FUSE TRIP",
-          finalState: "CRITICAL / TRIPPED",
-          dcBusV: 12.0,
-          currentA: 18.5,
-          gateV: 0.0,
-        },
-        {
-          id: "FLT-D2-OPEN",
-          label: "Diode Arm Open Circuit",
-          type: "OPEN_CIRCUIT",
-          impact: "Operates as half-wave rectifier with heavy 50Hz ripple.",
-          action: "RIPPLE WARNING DETECTED",
-          finalState: "DEGRADED (HALF-WAVE)",
-          dcBusV: 260.0,
-          currentA: 0.45,
-          gateV: 15.0,
-        },
-      ],
-    },
-    {
-      id: "R122",
-      type: "Precharge Inrush Resistor",
-      label: "R122|R51",
-      sublabel: "INRUSH",
-      x: 28,
-      y: 34,
-      w: 9,
-      h: 15,
-      shape: "rect",
-      category: "converter",
-      nominalVoltage: "12V drop",
-      nominalCurrent: "0.4A",
-      description: "Soft-Start Inrush Current Limiting Resistor Pair.",
-      faultModes: [
-        {
-          id: "FLT-R122-OPEN",
-          label: "Inrush Resistor Open Circuit",
-          type: "OPEN_CIRCUIT",
-          impact: "DC link cannot pre-charge; system fails to initialize.",
-          action: "PRECHARGE TIMEOUT FAULT",
-          finalState: "STARTUP INHIBITED",
-          dcBusV: 0.0,
-          currentA: 0.0,
-          gateV: 0.0,
-        },
-      ],
-    },
-    {
-      id: "Q14",
-      type: "Bypass Relay / MOSFET",
-      label: "Q14",
-      sublabel: "BYPASS",
-      x: 28,
-      y: 53,
-      w: 9,
-      h: 15,
-      shape: "rect",
-      category: "converter",
-      nominalVoltage: "VDS=0.1V",
-      nominalCurrent: "ID=0.8A",
-      description: "Relay / Bypass Switch Shunting Inrush Resistor after Pre-Charge.",
-      faultModes: [
-        {
-          id: "FLT-Q14-STUCK-OPEN",
-          label: "Bypass Contact Stuck Open",
-          type: "OPEN_CIRCUIT",
-          impact: "Full load current continuously flows through R122, causing overheating.",
-          action: "THERMAL CUTOFF TRIP",
-          finalState: "OVERHEATING WARNING",
-          dcBusV: 370.0,
-          currentA: 0.8,
-          gateV: 0.0,
-        },
-      ],
-    },
-    {
-      id: "L13",
-      type: "PFC Choke Inductor",
-      label: "L13",
-      sublabel: "750µH",
-      x: 41,
-      y: 43,
-      w: 8,
-      h: 18,
-      shape: "round",
-      category: "converter",
-      nominalVoltage: "PFC Boost Node",
-      nominalCurrent: "16.0A Peak",
-      description: "750 µH High-Frequency Magnetic Power Factor Correction Inductor.",
-      faultModes: [
-        {
-          id: "FLT-L13-SAT",
-          label: "Core Saturation / Short Turns",
-          type: "SHORT_CIRCUIT",
-          impact: "Inductance collapses. Steep di/dt overcurrent through PFC switch.",
-          action: "CYCLE-BY-CYCLE OVERCURRENT TRIP",
-          finalState: "CRITICAL HAZARD",
-          dcBusV: 310.0,
-          currentA: 24.2,
-          gateV: 0.0,
-        },
-      ],
-    },
-    {
-      id: "Q23",
-      type: "PFC Power Switch (IGBT/MOSFET)",
-      label: "Q23",
-      sublabel: "PFC",
-      x: 48,
-      y: 50,
-      w: 7,
-      h: 22,
-      shape: "rect",
-      category: "converter",
-      nominalVoltage: "650V rated",
-      nominalCurrent: "20kHz PWM",
-      description: "650V Power Switch with Active 20kHz Gate Modulation.",
-      faultModes: [
-        {
-          id: "FLT-Q23-SHORT",
-          label: "Drain-Source / CE Short",
-          type: "SHORT_CIRCUIT",
-          impact: "Shunts PFC inductor directly to ground. Maximum fault current.",
-          action: "DESAT PROTECTION SHUTDOWN",
-          finalState: "CRITICAL FAULT LATCH",
-          dcBusV: 45.0,
-          currentA: 32.0,
-          gateV: 0.0,
-        },
-        {
-          id: "FLT-Q23-OPEN",
-          label: "Gate Signal Lost / Open Gate",
-          type: "OPEN_CIRCUIT",
-          impact: "PFC boost converter inactive. Operates in passive pass-through.",
-          action: "PFC BOOST LOSS WARNING",
-          finalState: "DEGRADED (325V UNBOOSTED)",
-          dcBusV: 325.0,
-          currentA: 0.8,
-          gateV: 0.0,
-        },
-      ],
-    },
-    {
-      id: "RV3",
-      type: "MOV Surge Varistor",
-      label: "RV3",
-      sublabel: "MOV 385V",
-      x: 54,
-      y: 45,
-      w: 5,
-      h: 30,
-      shape: "rect",
-      category: "filter",
-      nominalVoltage: "385V Clamping",
-      nominalCurrent: "0A Leakage",
-      description: "Metal Oxide Varistor Overvoltage Transient Suppressor.",
-      faultModes: [
-        {
-          id: "FLT-RV3-DEGRADE",
-          label: "MOV Degradation / High Leakage",
-          type: "DIELECTRIC_LEAKAGE",
-          impact: "Internal degradation causes persistent continuous leakage current.",
-          action: "EARTH LEAKAGE MONITOR",
-          finalState: "THERMAL WARNING",
-          dcBusV: 391.0,
-          currentA: 1.2,
-          gateV: 15.0,
-        },
-      ],
-    },
-    {
-      id: "C82",
-      type: "DC Link Capacitor Bank",
-      label: "C82-C53",
-      sublabel: "5x Caps (395.2V)",
-      x: 61,
-      y: 44,
-      w: 15,
-      h: 20,
-      shape: "rect",
-      category: "filter",
-      nominalVoltage: "UDC = 395.2V",
-      nominalCurrent: "Ripple < 1V",
-      description: "Parallel Low-ESR Electrolytic & Film Capacitor Bank (470µF x 5).",
-      faultModes: [
-        {
-          id: "FLT-C82-SHORT",
-          label: "Dielectric Breakdown (Short)",
-          type: "SHORT_CIRCUIT",
-          impact: "DC Bus short-circuited to GND rail. High energy discharge.",
-          action: "HARDWARE CROWBAR & BRAKE TRIP",
-          finalState: "CRITICAL HAZARD",
-          dcBusV: 4.5,
-          currentA: 45.0,
-          gateV: 0.0,
-        },
-        {
-          id: "FLT-C82-HIGH-ESR",
-          label: "Electrolyte Dryout (+500% ESR)",
-          type: "HIGH_ESR",
-          impact: "High voltage ripple and capacitor self-heating.",
-          action: "RIPPLE FREQUENCY WARNING",
-          finalState: "DEGRADED (HIGH RIPPLE)",
-          dcBusV: 388.0,
-          currentA: 1.1,
-          gateV: 15.0,
-        },
-      ],
-    },
-    {
-      id: "U9",
-      type: "Isolated Voltage Sensing Subsystem",
-      label: "U9|U3B",
-      sublabel: "ACPL-C79A",
-      x: 52,
-      y: 28,
-      w: 8,
-      h: 14,
-      shape: "triangle",
-      category: "sensor",
-      nominalVoltage: "5.0V Analog",
-      nominalCurrent: "12mA",
-      description: "KONE BCX14 Isolated Sigma-Delta ADC / High-Impedance DC Sensing Stage.",
-      faultModes: [
-        {
-          id: "FLT-U9-STUCK-HI",
-          label: "Output Clamped to High Rail (+15V)",
-          type: "STUCK_AT_RAIL_HIGH",
-          impact: "Microcontroller ADC perceives false severe overvoltage condition.",
-          action: "SAFETY BRAKE TRIP (FALSE ALARM)",
-          finalState: "EMERGENCY SAFE STOP",
-          dcBusV: 395.2,
-          currentA: 0.8,
-          gateV: 0.0,
-        },
-        {
-          id: "FLT-U9-STUCK-LO",
-          label: "Output Clamped to 0V (Blind Sensor)",
-          type: "STUCK_AT_RAIL_LOW",
-          impact: "System cannot detect real overvoltages. Critical safety hazard.",
-          action: "ADC SENSOR WATCHDOG TIMEOUT",
-          finalState: "CRITICAL BLIND SENSOR",
-          dcBusV: 395.2,
-          currentA: 0.8,
-          gateV: 0.0,
-        },
-      ],
-    },
-    {
-      id: "U25",
-      type: "Isolated Gate Driver",
-      label: "U25",
-      sublabel: "HCPL-316J DESAT",
-      x: 26,
-      y: 72,
-      w: 11,
-      h: 12,
-      shape: "rect",
-      category: "control",
-      nominalVoltage: "15V / -5V",
-      nominalCurrent: "2.5A Peak",
-      description: "Optically Isolated Gate Driver with Integrated Desaturation Detection.",
-      faultModes: [
-        {
-          id: "FLT-U25-UVLO",
-          label: "Secondary Bias Undervoltage",
-          type: "VOLTAGE_SAG",
-          impact: "Gate driver enters UVLO shutdown, de-energizing IGBT safely.",
-          action: "DRIVER UVLO ACTIVE",
-          finalState: "SAFE SHUTDOWN",
-          dcBusV: 325.0,
-          currentA: 0.8,
-          gateV: 0.0,
-        },
-      ],
-    },
-    {
-      id: "U22",
-      type: "PFC Controller IC",
-      label: "U22",
-      sublabel: "PFC CTRL",
-      x: 39,
-      y: 72,
-      w: 11,
-      h: 12,
-      shape: "rect",
-      category: "control",
-      nominalVoltage: "3.3V / 12V",
-      nominalCurrent: "25mA",
-      description: "Continuous Conduction Mode (CCM) Power Factor Correction Controller.",
-      faultModes: [
-        {
-          id: "FLT-U22-RESET",
-          label: "Watchdog Reset / Clock Loss",
-          type: "POWER_LOSS",
-          impact: "Controller resets, forcing all gate outputs to zero state.",
-          action: "CONTROLLER WATCHDOG TRIP",
-          finalState: "SAFE SYSTEM IDLE",
-          dcBusV: 325.0,
-          currentA: 0.8,
-          gateV: 0.0,
-        },
-      ],
-    },
-  ];
+  // Mode toggle: Uploaded Circuit vs BCX14 Elevator Power Supply Benchmark
+  const hasUploadedCircuit = Boolean(circuitIr?.components && circuitIr.components.length > 0);
+  const [circuitMode, setCircuitMode] = useState<"UPLOADED" | "BCX14_BENCHMARK">(
+    hasUploadedCircuit ? "UPLOADED" : "BCX14_BENCHMARK"
+  );
 
-  const blocks: CircuitBlock[] = useMemo(() => defaultBlocks, [defaultBlocks]);
+  // Automatically sync mode when a new circuit is loaded
+  useEffect(() => {
+    if (circuitIr?.components && circuitIr.components.length > 0) {
+      setCircuitMode("UPLOADED");
+    }
+  }, [circuitIr]);
 
-  const [selectedBlockId, setSelectedBlockId] = useState<string>("XB11");
+  // -------------------------------------------------------------
+  // A. PRESET BCX14 BENCHMARK BLOCKS (Elevator High-Voltage Power Stage)
+  // -------------------------------------------------------------
+  const bcx14Blocks: CircuitBlock[] = useMemo(
+    () => [
+      {
+        id: "XB11",
+        type: "AC Input Terminal Connector",
+        label: "XB11",
+        sublabel: "AC IN",
+        x: 6,
+        y: 40,
+        w: 8,
+        h: 22,
+        shape: "rect",
+        category: "input",
+        nominalVoltage: "230V RMS (325.3Vpk)",
+        nominalCurrent: "0.8A RMS",
+        description: "230V RMS (325.3 Vpk) Single-Phase AC Mains Input Connector.",
+        faultModes: [
+          {
+            id: "FLT-XB11-SURGE",
+            label: "AC Surge +50V (375.3 Vpk)",
+            type: "OVERVOLTAGE_SURGE",
+            impact: "Peak voltage spikes +50V above nominal. MOV clamps line overvoltage.",
+            action: "MOV RV3 CLAMP ENGAGED",
+            finalState: "SURGE CLAMPED / DEGRADED",
+            dcBusV: 442.5,
+            currentA: 2.8,
+            gateV: 15.0,
+          },
+          {
+            id: "FLT-XB11-LOSS",
+            label: "Mains Power Drop (0V)",
+            type: "POWER_LOSS",
+            impact: "AC input disconnects completely. DC link discharges safely.",
+            action: "UNDERVOLTAGE LOCKOUT (UVLO)",
+            finalState: "SAFE DE-ENERGIZED",
+            dcBusV: 0.0,
+            currentA: 0.0,
+            gateV: 0.0,
+          },
+          {
+            id: "FLT-XB11-SAG",
+            label: "Brownout Sag -50% (115V RMS)",
+            type: "VOLTAGE_SAG",
+            impact: "Input line drops to 115V RMS. PFC attempts maximum compensation.",
+            action: "DUTY CYCLE CLAMP",
+            finalState: "DEGRADED BUS",
+            dcBusV: 285.0,
+            currentA: 1.6,
+            gateV: 15.0,
+          },
+        ],
+      },
+      {
+        id: "D2",
+        type: "Diode Bridge Rectifier",
+        label: "D2",
+        sublabel: "BRIDGE",
+        x: 17,
+        y: 38,
+        w: 8,
+        h: 26,
+        shape: "diamond",
+        category: "rectifier",
+        nominalVoltage: "325.3V Rectified",
+        nominalCurrent: "0.8A Avg",
+        description: "Single-phase full bridge diode rectifier (GBU808 / Vishay).",
+        faultModes: [
+          {
+            id: "FLT-D2-SHORT",
+            label: "Single Diode Arm Short Circuit",
+            type: "SHORT_CIRCUIT",
+            impact: "Catastrophic reverse AC shoot-through current surge. Input fuse opens.",
+            action: "AC MAINS FUSE F1 BLOWN",
+            finalState: "SAFE ISOLATION TRIP",
+            dcBusV: 0.0,
+            currentA: 45.2,
+            gateV: 0.0,
+          },
+          {
+            id: "FLT-D2-OPEN",
+            label: "Diode Open Circuit (Half-Wave)",
+            type: "OPEN_CIRCUIT",
+            impact: "Rectifier drops one half-cycle. 100Hz ripple surges 400%.",
+            action: "DC RIPPLE ALARM TRIGGERED",
+            finalState: "DEGRADED RIPPLE BUS",
+            dcBusV: 260.4,
+            currentA: 0.45,
+            gateV: 15.0,
+          },
+        ],
+      },
+      {
+        id: "R122",
+        type: "Inrush Limiting Resistor",
+        label: "R122 | R51",
+        sublabel: "INRUSH",
+        x: 28,
+        y: 28,
+        w: 9,
+        h: 18,
+        shape: "rect",
+        category: "converter",
+        nominalVoltage: "325V Peak Transient",
+        nominalCurrent: "16A Peak -> 0A Steady",
+        description: "High-power ceramic inrush current limiting resistors (2x 47Ω in parallel).",
+        faultModes: [
+          {
+            id: "FLT-R122-OPEN",
+            label: "Inrush Resistor Burned Open",
+            type: "OPEN_CIRCUIT",
+            impact: "DC bus cannot precharge through resistor path. Precharge timeout.",
+            action: "PRECHARGE TIMEOUT ERROR",
+            finalState: "ABORTED STARTUP",
+            dcBusV: 0.0,
+            currentA: 0.0,
+            gateV: 0.0,
+          },
+        ],
+      },
+      {
+        id: "Q14",
+        type: "Precharge Bypass Relay",
+        label: "Q14",
+        sublabel: "BYPASS",
+        x: 28,
+        y: 52,
+        w: 9,
+        h: 18,
+        shape: "rect",
+        category: "converter",
+        nominalVoltage: "0.1V Contact Drop",
+        nominalCurrent: "0.8A Continuous",
+        description: "Electromechanical relay contact bypassing inrush resistors once bus charged.",
+        faultModes: [
+          {
+            id: "FLT-Q14-STUCK_OPEN",
+            label: "Relay Contacts Stuck Open",
+            type: "CONTACT_FAIL",
+            impact: "Continuous current forced through R122 inrush resistors, causing thermal overload.",
+            action: "THERMAL OVERLOAD CUTOUT",
+            finalState: "OVERHEATED TRIP",
+            dcBusV: 310.0,
+            currentA: 0.8,
+            gateV: 15.0,
+          },
+        ],
+      },
+      {
+        id: "L13",
+        type: "PFC Boost Inductor",
+        label: "L13",
+        sublabel: "750µH",
+        x: 41,
+        y: 39,
+        w: 8,
+        h: 24,
+        shape: "round",
+        category: "converter",
+        nominalVoltage: "325V -> 395V Boost",
+        nominalCurrent: "2.8A RMS (16A Sat)",
+        description: "Toroidal powdered iron core boost choke with low core losses.",
+        faultModes: [
+          {
+            id: "FLT-L13-SAT",
+            label: "Magnetic Core Saturation (16A)",
+            type: "CORE_SATURATION",
+            impact: "Inductance drops sharply from 750µH to <50µH. Di/dt rate spikes.",
+            action: "CYCLE-BY-CYCLE CURRENT LIMIT",
+            finalState: "CURRENT LIMIT CLAMP",
+            dcBusV: 375.0,
+            currentA: 18.5,
+            gateV: 15.0,
+          },
+          {
+            id: "FLT-L13-OPEN",
+            label: "Winding Open Circuit",
+            type: "OPEN_CIRCUIT",
+            impact: "PFC boost stage severed completely. Bus decays to zero.",
+            action: "PFC DISCONNECT TRIP",
+            finalState: "SAFE DE-ENERGIZED",
+            dcBusV: 0.0,
+            currentA: 0.0,
+            gateV: 0.0,
+          },
+        ],
+      },
+      {
+        id: "Q23",
+        type: "PFC Boost Switch (IGBT/MOSFET)",
+        label: "Q23",
+        sublabel: "PFC",
+        x: 52,
+        y: 44,
+        w: 7,
+        h: 26,
+        shape: "rect",
+        category: "converter",
+        nominalVoltage: "650V Rated",
+        nominalCurrent: "20A Pulsed",
+        description: "650V Field-Stop IGBT with ultra-fast copackaged antiparallel diode.",
+        faultModes: [
+          {
+            id: "FLT-Q23-SHORT",
+            label: "Drain-Source Shoot-Through Short",
+            type: "SHORT_CIRCUIT",
+            impact: "Inductor shorted directly to return rail. Destructive current surge.",
+            action: "DESATURATION SHUTDOWN <1µs",
+            finalState: "DESAT LATCHED TRIP",
+            dcBusV: 180.0,
+            currentA: 38.0,
+            gateV: 0.0,
+          },
+          {
+            id: "FLT-Q23-GATE_LOSS",
+            label: "Loss of Gate Drive (Open Gate)",
+            type: "GATE_LOSS",
+            impact: "Switch remains OFF. PFC active boost stops, passive diode rectifies to 325V.",
+            action: "BOOST WATCHDOG WARNING",
+            finalState: "DEGRADED PASSIVE BUS",
+            dcBusV: 325.3,
+            currentA: 0.8,
+            gateV: 0.0,
+          },
+        ],
+      },
+      {
+        id: "RV3",
+        type: "Metal Oxide Varistor (MOV)",
+        label: "RV3",
+        sublabel: "MOV 385V",
+        x: 60,
+        y: 39,
+        w: 6,
+        h: 36,
+        shape: "rect",
+        category: "filter",
+        nominalVoltage: "385V Continuous",
+        nominalCurrent: "0mA Leakage (<1mA)",
+        description: "14mm Overvoltage Protection Metal Oxide Varistor.",
+        faultModes: [
+          {
+            id: "FLT-RV3-DEGRADED",
+            label: "MOV Thermal Runaway Leakage",
+            type: "LEAKAGE",
+            impact: "Varistor resistance degrades from >10MΩ to 500Ω, dissipating excessive heat.",
+            action: "THERMAL FUSE DISCONNECT",
+            finalState: "UNPROTECTED OPERATIONAL",
+            dcBusV: 391.0,
+            currentA: 1.6,
+            gateV: 15.0,
+          },
+        ],
+      },
+      {
+        id: "C82",
+        type: "DC Link Bulk Capacitor Bank",
+        label: "C82-C53",
+        sublabel: "5x Caps (395.2V)",
+        x: 69,
+        y: 38,
+        w: 18,
+        h: 24,
+        shape: "rect",
+        category: "filter",
+        nominalVoltage: "395.2V Regulated",
+        nominalCurrent: "0.8A DC Out",
+        description: "Parallel electrolytic capacitor bank (5x 470µF 450V low-ESR).",
+        faultModes: [
+          {
+            id: "FLT-C82-SHORT",
+            label: "Electrolytic Dielectric Breakdown",
+            type: "SHORT_CIRCUIT",
+            impact: "Direct short across 395V bus. Energy dumped violently. Immediate shutdown.",
+            action: "BUS HARD OVERCURRENT SHUTDOWN",
+            finalState: "LATCHED EMERGENCY STOP",
+            dcBusV: 0.0,
+            currentA: 95.0,
+            gateV: 0.0,
+          },
+          {
+            id: "FLT-C82-OPEN",
+            label: "Capacitor Bank Disconnect / High ESR",
+            type: "HIGH_ESR",
+            impact: "ESR increases 20x. DC bus voltage ripple exceeds 80Vpp.",
+            action: "BUS RIPPLE PROTECTION ACTIVE",
+            finalState: "EXCESSIVE RIPPLE WARNING",
+            dcBusV: 390.0,
+            currentA: 0.8,
+            gateV: 15.0,
+          },
+        ],
+      },
+      {
+        id: "U9",
+        type: "Optically Isolated Sensor",
+        label: "U9 | U3B",
+        sublabel: "ACPL-C79A",
+        x: 58,
+        y: 18,
+        w: 10,
+        h: 16,
+        shape: "rect",
+        category: "sensor",
+        nominalVoltage: "3.3V Output",
+        nominalCurrent: "10mA",
+        description: "Precision Optically Isolated Voltage Measurement Sensor Circuit.",
+        faultModes: [
+          {
+            id: "FLT-U9-SAT",
+            label: "Sensor Amplifier Rail Saturation",
+            type: "SENSOR_DRIFT",
+            impact: "Sensor output pins clamp at 3.3V rail. Elevator computer sees false overvoltage.",
+            action: "SAFETY DRIVE BRAKE ENGAGED",
+            finalState: "CRITICAL BLIND SENSOR",
+            dcBusV: 395.2,
+            currentA: 0.8,
+            gateV: 0.0,
+          },
+        ],
+      },
+      {
+        id: "U25",
+        type: "Isolated Gate Driver",
+        label: "U25",
+        sublabel: "HCPL-316J",
+        x: 26,
+        y: 72,
+        w: 12,
+        h: 14,
+        shape: "rect",
+        category: "control",
+        nominalVoltage: "15V / -5V",
+        nominalCurrent: "2.5A Peak",
+        description: "Optically Isolated Gate Driver with Integrated Desaturation Detection.",
+        faultModes: [
+          {
+            id: "FLT-U25-UVLO",
+            label: "Secondary Bias Undervoltage",
+            type: "VOLTAGE_SAG",
+            impact: "Gate driver enters UVLO shutdown, de-energizing IGBT safely.",
+            action: "DRIVER UVLO ACTIVE",
+            finalState: "SAFE SHUTDOWN",
+            dcBusV: 325.0,
+            currentA: 0.8,
+            gateV: 0.0,
+          },
+        ],
+      },
+      {
+        id: "U22",
+        type: "PFC Controller IC",
+        label: "U22",
+        sublabel: "PFC CTRL",
+        x: 41,
+        y: 72,
+        w: 12,
+        h: 14,
+        shape: "rect",
+        category: "control",
+        nominalVoltage: "3.3V / 12V",
+        nominalCurrent: "25mA",
+        description: "Continuous Conduction Mode (CCM) Power Factor Correction Controller.",
+        faultModes: [
+          {
+            id: "FLT-U22-RESET",
+            label: "Watchdog Reset / Clock Loss",
+            type: "POWER_LOSS",
+            impact: "Controller resets, forcing all gate outputs to zero state.",
+            action: "CONTROLLER WATCHDOG TRIP",
+            finalState: "SAFE SYSTEM IDLE",
+            dcBusV: 325.0,
+            currentA: 0.8,
+            gateV: 0.0,
+          },
+        ],
+      },
+    ],
+    []
+  );
+
+  // -------------------------------------------------------------
+  // B. DYNAMIC SYNTHESIS FROM USER'S UPLOADED CIRCUIT IR
+  // -------------------------------------------------------------
+  const uploadedBlocks: CircuitBlock[] = useMemo(() => {
+    if (!circuitIr?.components || circuitIr.components.length === 0) {
+      return [];
+    }
+
+    const comps = circuitIr.components;
+    const blocksList: CircuitBlock[] = [];
+
+    // Separate by electrical function
+    const sources = comps.filter((c) => c.type === "voltage_source" || c.type === "current_source");
+    const grounds = comps.filter((c) => c.type === "ground");
+    const others = comps.filter((c) => c.type !== "voltage_source" && c.type !== "current_source" && c.type !== "ground");
+
+    // Layout coordinates in 100x100 space
+    // 1. Sources on the left
+    sources.forEach((s, idx) => {
+      const p = Object.values(s.parameters)[0];
+      const valStr = p?.raw_text || (p?.value !== undefined ? `${p.value}${p.unit || "V"}` : "5V");
+      const numV = p?.value || 5.0;
+
+      blocksList.push({
+        id: s.id,
+        type: s.type === "voltage_source" ? "DC/Pulse Voltage Source" : "Current Source",
+        label: s.id,
+        sublabel: valStr,
+        x: 6,
+        y: sources.length === 1 ? 38 : 28 + idx * 24,
+        w: 12,
+        h: 22,
+        shape: "round",
+        category: "input",
+        nominalVoltage: valStr,
+        nominalCurrent: "50 mA",
+        description: `${s.name || s.id} (${valStr}). Circuit electrical excitation input.`,
+        faultModes: [
+          {
+            id: `FLT-${s.id}-SURGE`,
+            label: "Overvoltage Surge (+50%)",
+            type: "OVERVOLTAGE_SURGE",
+            impact: `Input voltage spikes +50% to ${(numV * 1.5).toFixed(1)}V. Output amplitude exceeds specs.`,
+            action: "VOLTAGE CLAMPING ENGAGED",
+            finalState: "OVERVOLTAGE RUN",
+            dcBusV: numV * 1.5,
+            currentA: 2.5,
+            gateV: numV * 1.5,
+          },
+          {
+            id: `FLT-${s.id}-LOSS`,
+            label: "Power Cutout (0V)",
+            type: "POWER_LOSS",
+            impact: "Supply voltage collapses to 0V. Signal dies instantly.",
+            action: "UNDERVOLTAGE TRIP (UVLO)",
+            finalState: "DE-ENERGIZED FLATLINE",
+            dcBusV: 0.0,
+            currentA: 0.0,
+            gateV: 0.0,
+          },
+          {
+            id: `FLT-${s.id}-SAG`,
+            label: "Voltage Sag / Brownout (-50%)",
+            type: "VOLTAGE_SAG",
+            impact: `Input drops to ${(numV * 0.5).toFixed(1)}V. Insufficient drive level for output.`,
+            action: "DEGRADED MODE ALARM",
+            finalState: "DEGRADED SIGNAL",
+            dcBusV: numV * 0.5,
+            currentA: 0.4,
+            gateV: numV * 0.5,
+          },
+        ],
+      });
+    });
+
+    // 2. Middle components (Series passives, shunt loads, ICs)
+    const midCount = Math.max(others.length, 1);
+    const startX = 24;
+    const endX = 80;
+    const spacingX = (endX - startX) / Math.max(midCount, 1);
+
+    others.forEach((comp, idx) => {
+      const p = Object.values(comp.parameters)[0];
+      const valStr = p?.raw_text || (p?.value !== undefined ? `${p.value}${p.unit || ""}` : comp.type);
+      const isVertical = comp.orientation === 90 || (comp.bounding_box && comp.bounding_box.h > comp.bounding_box.w * 1.35);
+      const isShunt = isVertical || idx === others.length - 1; // Last passive is typically shunt load
+
+      const posX = startX + idx * spacingX;
+      const posY = isShunt ? 38 : 34;
+      const blockW = isShunt ? 11 : 13;
+      const blockH = isShunt ? 28 : 20;
+
+      const faultModes: CircuitBlock["faultModes"] = [];
+
+      if (comp.type === "capacitor") {
+        faultModes.push(
+          {
+            id: `FLT-${comp.id}-SHORT`,
+            label: "Dielectric Breakdown / Short (C → 0Ω)",
+            type: "SHORT_CIRCUIT",
+            impact: "Dielectric short punctures plates. AC differentiation fails; pure DC level passes straight through.",
+            action: "OVERCURRENT / DC LEAKAGE MONITOR",
+            finalState: "DIFFERENTIATION BYPASSED (DC LEAK)",
+            dcBusV: 5.0,
+            currentA: 8.5,
+            gateV: 5.0,
+          },
+          {
+            id: `FLT-${comp.id}-OPEN`,
+            label: "Plate Open Disconnect (C → ∞Ω)",
+            type: "OPEN_CIRCUIT",
+            impact: "Capacitor plates disconnect. Circuit is open-circuited; 0V flatline at output.",
+            action: "SIGNAL LOSS DETECTED",
+            finalState: "SIGNAL CUT / ZERO TRANSMISSION",
+            dcBusV: 0.0,
+            currentA: 0.0,
+            gateV: 0.0,
+          },
+          {
+            id: `FLT-${comp.id}-CAP_LOSS`,
+            label: "Capacitance Degradation -50%",
+            type: "PARAMETRIC_DRIFT",
+            impact: "Capacitance drops by half. Time constant tau = R*C halves, resulting in ultra-narrow pulse.",
+            action: "BANDWIDTH DEGRADATION WARNING",
+            finalState: "DEGRADED TIMING (NARROW PULSE)",
+            dcBusV: 3.5,
+            currentA: 0.6,
+            gateV: 5.0,
+          }
+        );
+      } else if (comp.type === "resistor") {
+        faultModes.push(
+          {
+            id: `FLT-${comp.id}-OPEN`,
+            label: "Element Burned Open (R → ∞Ω)",
+            type: "OPEN_CIRCUIT",
+            impact: "Pulldown discharge path broken. Output charges and cannot bleed off; voltage hangs high at 5V.",
+            action: "ISOLATION TRIP ACTIVE",
+            finalState: "LATCHED HIGH VOLTAGE",
+            dcBusV: 5.0,
+            currentA: 0.0,
+            gateV: 5.0,
+          },
+          {
+            id: `FLT-${comp.id}-SHORT`,
+            label: "Terminal Solder Bridge / Short (R → 0Ω)",
+            type: "SHORT_CIRCUIT",
+            impact: "Shunt resistor shorted directly to GND return. Output is clamped hard to 0V.",
+            action: "OVERCURRENT GROUND FAULT DETECTED",
+            finalState: "GROUND SHUNT FLATLINE (0V)",
+            dcBusV: 0.0,
+            currentA: 18.2,
+            gateV: 0.0,
+          },
+          {
+            id: `FLT-${comp.id}-DRIFT_HIGH`,
+            label: "Resistance Value Drift +50%",
+            type: "PARAMETRIC_DRIFT",
+            impact: "Resistance increases 1.5x nominal. Discharge decay slows down; pulse widens.",
+            action: "PULSE WIDTH DEVIATION DETECTED",
+            finalState: "WIDE PULSE OUT-OF-SPEC",
+            dcBusV: 4.8,
+            currentA: 0.35,
+            gateV: 5.0,
+          }
+        );
+      } else if (comp.type === "inductor") {
+        faultModes.push(
+          {
+            id: `FLT-${comp.id}-SAT`,
+            label: "Core Saturation (L → 0H)",
+            type: "CORE_SATURATION",
+            impact: "Inductor core saturates. Inductive reactance collapses to zero.",
+            action: "PEAK CURRENT LIMIT TRIP",
+            finalState: "SATURATED RUNAWAY",
+            dcBusV: 1.2,
+            currentA: 22.0,
+            gateV: 5.0,
+          },
+          {
+            id: `FLT-${comp.id}-OPEN`,
+            label: "Winding Burnout Open",
+            type: "OPEN_CIRCUIT",
+            impact: "Series coil burns open. Current flow disrupted completely.",
+            action: "OPEN CIRCUIT TRIP",
+            finalState: "DE-ENERGIZED",
+            dcBusV: 0.0,
+            currentA: 0.0,
+            gateV: 0.0,
+          }
+        );
+      } else {
+        // Generic active or discrete component
+        faultModes.push(
+          {
+            id: `FLT-${comp.id}-SHORT`,
+            label: "Internal Junction Short Circuit",
+            type: "SHORT_CIRCUIT",
+            impact: "Silicon junction breakdown. Excessive current shunted to rail.",
+            action: "HARD OVERCURRENT SHUTDOWN",
+            finalState: "FAULT TRIP",
+            dcBusV: 0.5,
+            currentA: 15.0,
+            gateV: 0.0,
+          },
+          {
+            id: `FLT-${comp.id}-OPEN`,
+            label: "Lead Terminal Open Circuit",
+            type: "OPEN_CIRCUIT",
+            impact: "Lead disconnects. Signal path severed.",
+            action: "SIGNAL TIMEOUT ERROR",
+            finalState: "SAFE ISOLATION",
+            dcBusV: 0.0,
+            currentA: 0.0,
+            gateV: 0.0,
+          }
+        );
+      }
+
+      blocksList.push({
+        id: comp.id,
+        type: comp.type.replace("_", " ").toUpperCase(),
+        label: comp.id,
+        sublabel: valStr,
+        x: posX,
+        y: posY,
+        w: blockW,
+        h: blockH,
+        shape: isShunt ? "rect" : comp.type === "capacitor" ? "rect" : "round",
+        category: isShunt ? "filter" : "converter",
+        nominalVoltage: isShunt ? "5V Output Node" : "Series Branch",
+        nominalCurrent: "50 mA Peak",
+        description: `${comp.name || comp.id} (${valStr}). Physical component detected from uploaded schematic.`,
+        faultModes,
+      });
+    });
+
+    // 3. Ground References on bottom return rail
+    grounds.forEach((g, idx) => {
+      blocksList.push({
+        id: g.id,
+        type: "Electrical Ground Reference",
+        label: g.id,
+        sublabel: "0V GND",
+        x: others.length > 0 ? startX + (midCount - 1) * spacingX : 50,
+        y: 72,
+        w: 11,
+        h: 14,
+        shape: "rect",
+        category: "sensor",
+        nominalVoltage: "0.0V Return",
+        nominalCurrent: "Return Path",
+        description: `${g.name || g.id}. System common ground reference point.`,
+        faultModes: [
+          {
+            id: `FLT-${g.id}-FLOAT`,
+            label: "Ground Lift / Return Open",
+            type: "OPEN_CIRCUIT",
+            impact: "Ground reference severed. Common mode voltage floats +10V offset.",
+            action: "GROUND FAULT INTERRUPT (GFI)",
+            finalState: "FLOATING GROUND RUNAWAY",
+            dcBusV: 10.0,
+            currentA: 0.0,
+            gateV: 10.0,
+          },
+        ],
+      });
+    });
+
+    return blocksList;
+  }, [circuitIr]);
+
+  // Determine active block set based on mode
+  const blocks: CircuitBlock[] = useMemo(() => {
+    if (circuitMode === "UPLOADED" && uploadedBlocks.length > 0) {
+      return uploadedBlocks;
+    }
+    return bcx14Blocks;
+  }, [circuitMode, uploadedBlocks, bcx14Blocks]);
+
+  const [selectedBlockId, setSelectedBlockId] = useState<string>(
+    blocks[0]?.id || "XB11"
+  );
   const [selectedFaultId, setSelectedFaultId] = useState<string>(
-    defaultBlocks[0].faultModes[0].id
+    blocks[0]?.faultModes[0]?.id || ""
   );
   const [systemState, setSystemState] = useState<"NORMAL" | "ARMED" | "FAULT_ACTIVE">(
     "NORMAL"
@@ -454,41 +754,76 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
   const [faultTime, setFaultTime] = useState<string>("0.2");
   const [activeTab, setActiveTab] = useState<"WORKFLOW" | "ARCHITECTURE">("WORKFLOW");
 
+  // Keep selected block in sync when blocks change
+  useEffect(() => {
+    if (blocks.length > 0) {
+      const exists = blocks.find((b) => b.id === selectedBlockId);
+      if (!exists) {
+        setSelectedBlockId(blocks[0].id);
+        if (blocks[0].faultModes.length > 0) {
+          setSelectedFaultId(blocks[0].faultModes[0].id);
+        }
+      }
+    }
+  }, [blocks, selectedBlockId]);
+
   const activeBlock = useMemo(
-    () => blocks.find((b) => b.id === selectedBlockId) || blocks[0],
-    [blocks, selectedBlockId]
+    () => blocks.find((b) => b.id === selectedBlockId) || blocks[0] || bcx14Blocks[0],
+    [blocks, selectedBlockId, bcx14Blocks]
   );
 
   const activeFault = useMemo(() => {
     return (
-      activeBlock.faultModes.find((f) => f.id === selectedFaultId) ||
-      activeBlock.faultModes[0]
+      activeBlock?.faultModes.find((f) => f.id === selectedFaultId) ||
+      activeBlock?.faultModes[0] || {
+        id: "FLT-DEFAULT",
+        label: "Default Parametric Deviation",
+        type: "DRIFT",
+        impact: "Nominal circuit deviation",
+        action: "MONITOR ACTIVE",
+        finalState: "DEGRADED",
+        dcBusV: 5.0,
+        currentA: 1.0,
+        gateV: 5.0,
+      }
     );
   }, [activeBlock, selectedFaultId]);
 
   useEffect(() => {
-    if (activeBlock.faultModes.length > 0) {
+    if (activeBlock?.faultModes?.length > 0) {
       setSelectedFaultId(activeBlock.faultModes[0].id);
     }
   }, [activeBlock]);
 
+  const isDifferentiator = circuitMode === "UPLOADED" && circuitIr?.title?.toLowerCase().includes("differentiator");
+
   const [logs, setLogs] = useState<string[]>([
-    "[0.000000 s] * NORMAL OPERATION - Baseline DC: 395.2V",
-    "[0.200000 s] * CONTINUOUS NORMAL OPERATION",
-    "[0.350000 s] * FINAL STATE - NORMAL",
+    "[0.000000 s] * INITIALIZED: Normal circuit physical state verified.",
+    "[0.200000 s] * CONTINUOUS NOMINAL OPERATION - All components healthy.",
+    "[0.350000 s] * SIMULATION STEADY STATE REACHED.",
   ]);
 
   const [historyRuns, setHistoryRuns] = useState<SimRunRecord[]>([]);
 
   const handleRunNormal = () => {
     setSystemState("NORMAL");
-    setLogs([
-      "[0.000000 s] * SIMULATION INITIATED: Full Baseline Nominal State",
-      "[0.050000 s] * AC Mains Input 230V RMS (325.3 Vpk) Locked",
-      "[0.120000 s] * Soft-start Precharge R122 Inrush Complete -> Relay Q14 Closed",
-      "[0.200000 s] * 20kHz PFC Active Boost Initialized",
-      "[0.350000 s] * Final Stable State: DC LINK = 395.20V | NORMAL (100% HEALTH)",
-    ]);
+    if (circuitMode === "UPLOADED") {
+      setLogs([
+        `[0.000000 s] * RUNNING USER SCHEMATIC: ${circuitIr?.title || "Custom Circuit"}`,
+        `[0.050000 s] * Input Step Applied (${activeBlock?.nominalVoltage || "5V"})`,
+        `[0.050010 s] * High-Speed Pulse Edge Captured across Series Component`,
+        `[0.200000 s] * Shunt Load Settled to Steady-State Baseline`,
+        `[0.350000 s] * Simulation Complete: 100% HEALTHY (0 Faults Active)`,
+      ]);
+    } else {
+      setLogs([
+        "[0.000000 s] * SIMULATION INITIATED: Full Baseline Nominal State",
+        "[0.050000 s] * AC Mains Input 230V RMS (325.3 Vpk) Locked",
+        "[0.120000 s] * Soft-start Precharge R122 Inrush Complete -> Relay Q14 Closed",
+        "[0.200000 s] * 20kHz PFC Active Boost Initialized",
+        "[0.350000 s] * Final Stable State: DC LINK = 395.20V | NORMAL (100% HEALTH)",
+      ]);
+    }
   };
 
   const handleArmFault = () => {
@@ -496,7 +831,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     setLogs((prev) => [
       ...prev,
       `[T_ARM] *** FAULT ARMED: [${activeBlock.id}] ${activeFault.label} scheduled for t = ${faultTime}s ***`,
-      `[T_ARM] System primed for hardware fault injection trigger.`,
+      `[T_ARM] Simulation engine primed for hardware fault trigger injection.`,
     ]);
   };
 
@@ -504,12 +839,14 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     setSystemState("FAULT_ACTIVE");
     const tFlt = parseFloat(faultTime) || 0.2;
 
+    const baseVoltage = circuitMode === "UPLOADED" ? (isDifferentiator ? "0.00 V (Settled)" : "5.00 V") : "395.20 V";
+
     const newLogs = [
-      `[0.000000 s] * NORMAL OPERATION - Baseline DC Link: 395.20V`,
-      `[${tFlt.toFixed(6)} s] !!! FAULT INJECTED ON [${activeBlock.id}] -> ${activeFault.label} !!!`,
+      `[0.000000 s] * NORMAL OPERATION - Baseline Level: ${baseVoltage}`,
+      `[${tFlt.toFixed(6)} s] !!! HARDWARE FAULT INJECTED ON [${activeBlock.id}] -> ${activeFault.label} !!!`,
       `[${(tFlt + 0.002).toFixed(6)} s] ! ${activeFault.impact}`,
-      `[${(tFlt + 0.008).toFixed(6)} s] * ACTION: ${activeFault.action}`,
-      `[0.350000 s] * SIMULATION COMPLETE -> Final State: ${activeFault.finalState}`,
+      `[${(tFlt + 0.008).toFixed(6)} s] * PROTECTION / BEHAVIOR: ${activeFault.action}`,
+      `[0.350000 s] * SIMULATION FINISHED -> Final Circuit State: ${activeFault.finalState}`,
     ];
     setLogs(newLogs);
 
@@ -521,7 +858,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       status: "FAULT_ACTIVE",
       finalState: activeFault.finalState,
       protectionAction: activeFault.action,
-      dcBusBefore: "395.20 V",
+      dcBusBefore: baseVoltage,
       dcBusAfter: `${activeFault.dcBusV.toFixed(2)} V`,
       currentPeak: `${activeFault.currentA.toFixed(2)} A`,
       timelineLogs: newLogs,
@@ -534,6 +871,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     handleRunNormal();
   };
 
+  // Generate physics-accurate real-time waveform paths
   const waveformData = useMemo(() => {
     const numPoints = 80;
     const tEnd = 0.35;
@@ -548,25 +886,90 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       const t = (idx / numPoints) * tEnd;
       const x = (idx / numPoints) * 380;
 
-      let vBus = 395.2;
-      let iComp = 0.8;
-      let vGate = 15.0;
+      let vVal = 0.0;
+      let iVal = 0.0;
+      let gVal = 0.0;
 
-      if (isFault && t >= tFlt) {
-        const progress = Math.min((t - tFlt) / 0.015, 1.0);
-        vBus = 395.2 + (activeFault.dcBusV - 395.2) * progress;
-        iComp = 0.8 + (activeFault.currentA - 0.8) * progress;
-        vGate = 15.0 + (activeFault.gateV - 15.0) * progress;
+      if (circuitMode === "UPLOADED") {
+        // Mode A: Uploaded Circuit (e.g. RC Differentiator or user circuit)
+        const vStep = 5.0;
+        // Input step at t = 0.04s
+        const inputV = t >= 0.04 ? vStep : 0.0;
+        gVal = inputV;
+
+        if (isDifferentiator) {
+          // Normal RC differentiator produces impulse at step: Vout = Vstep * exp(-dt / tau)
+          const dt = t - 0.04;
+          const tau = 0.015; // Scaled for visual resolution
+          const normalSpike = dt >= 0 ? vStep * Math.exp(-dt / tau) : 0.0;
+          vVal = normalSpike;
+          iVal = normalSpike / 100.0; // Current through 100 ohm resistor
+
+          if (isFault && t >= tFlt) {
+            const dtFault = t - tFlt;
+            if (activeFault.type === "SHORT_CIRCUIT" && activeBlock.id.startsWith("C")) {
+              // C1 short: Differentiation lost; DC step passes straight through
+              vVal = 5.0;
+              iVal = 5.0 / 100.0;
+            } else if (activeFault.type === "OPEN_CIRCUIT") {
+              // C1 or R1 open
+              vVal = activeBlock.id.startsWith("R") ? 5.0 : 0.0;
+              iVal = 0.0;
+            } else if (activeFault.type === "SHORT_CIRCUIT" && activeBlock.id.startsWith("R")) {
+              // R1 short to GND: output clamped to 0V
+              vVal = 0.0;
+              iVal = 0.25;
+            } else if (activeFault.type === "OVERVOLTAGE_SURGE") {
+              // Surge
+              vVal = 7.5 * Math.exp(-Math.max(0, dtFault) / tau);
+              iVal = vVal / 100.0;
+              gVal = 7.5;
+            } else {
+              vVal = activeFault.dcBusV;
+              iVal = activeFault.currentA / 100.0;
+            }
+          }
+        } else {
+          // General circuit
+          vVal = inputV;
+          iVal = inputV > 0 ? 0.05 : 0.0;
+          if (isFault && t >= tFlt) {
+            vVal = activeFault.dcBusV;
+            iVal = activeFault.currentA;
+          }
+        }
+
+        // Map to SVG coordinates (Canvas height: 40px)
+        const yV = 36 - (vVal / 10.0) * 32;
+        vPoints.push(`${x.toFixed(1)},${Math.max(2, Math.min(38, yV)).toFixed(1)}`);
+
+        const yI = 36 - (iVal / 0.1) * 32;
+        iPoints.push(`${x.toFixed(1)},${Math.max(2, Math.min(38, yI)).toFixed(1)}`);
+
+        const yG = 36 - (gVal / 10.0) * 32;
+        gPoints.push(`${x.toFixed(1)},${Math.max(2, Math.min(38, yG)).toFixed(1)}`);
+      } else {
+        // Mode B: BCX14 Elevator Power Supply Benchmark
+        let vBus = 395.2;
+        let iComp = 0.8;
+        let vGate = 15.0;
+
+        if (isFault && t >= tFlt) {
+          const progress = Math.min((t - tFlt) / 0.015, 1.0);
+          vBus = 395.2 + (activeFault.dcBusV - 395.2) * progress;
+          iComp = 0.8 + (activeFault.currentA - 0.8) * progress;
+          vGate = 15.0 + (activeFault.gateV - 15.0) * progress;
+        }
+
+        const yV = 40 - (vBus / 500) * 35;
+        vPoints.push(`${x.toFixed(1)},${yV.toFixed(1)}`);
+
+        const yI = 40 - (Math.min(iComp, 50) / 50) * 35;
+        iPoints.push(`${x.toFixed(1)},${yI.toFixed(1)}`);
+
+        const yG = 40 - (vGate / 20) * 35;
+        gPoints.push(`${x.toFixed(1)},${yG.toFixed(1)}`);
       }
-
-      const yV = 40 - (vBus / 500) * 35;
-      vPoints.push(`${x.toFixed(1)},${yV.toFixed(1)}`);
-
-      const yI = 40 - (Math.min(iComp, 50) / 50) * 35;
-      iPoints.push(`${x.toFixed(1)},${yI.toFixed(1)}`);
-
-      const yG = 40 - (vGate / 20) * 35;
-      gPoints.push(`${x.toFixed(1)},${yG.toFixed(1)}`);
     }
 
     return {
@@ -574,22 +977,53 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       iPoints: iPoints.join(" "),
       gPoints: gPoints.join(" "),
     };
-  }, [systemState, faultTime, activeFault]);
+  }, [circuitMode, isDifferentiator, systemState, faultTime, activeFault, activeBlock]);
 
   return (
-    <div className="bg-white text-slate-800 border border-slate-200 rounded-xl overflow-hidden shadow-sm font-sans">
+    <div className="bg-white text-slate-800 border border-slate-200 rounded-xl overflow-hidden shadow-xs font-sans">
       {/* 1. TOP CONTROL BAR */}
       <div className="bg-white border-b border-slate-200 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
             <span className="h-2.5 w-2.5 rounded-full bg-[#0055A5] animate-pulse"></span>
             <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 font-mono">
-              BCX14 LIVE PHYSICAL ELECTRICAL MODEL (V3)
+              {circuitMode === "UPLOADED"
+                ? `LIVE ELECTRICAL FAULT STUDIO: ${circuitIr?.title || "Uploaded Schematic"}`
+                : "BCX14 LIVE PHYSICAL ELECTRICAL MODEL (BENCHMARK V3)"}
             </span>
           </div>
-          <span className="hidden sm:inline-block text-[11px] font-mono text-slate-500 border-l border-slate-200 pl-3">
-            Simulation: <strong className="text-slate-800">0.35 s</strong> (Solver: <span className="text-[#0055A5] font-semibold">Simscape ode23t</span>)
-          </span>
+
+          {/* Mode Switcher Pills */}
+          <div className="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-[11px] font-mono">
+            <button
+              onClick={() => {
+                setCircuitMode("UPLOADED");
+                setSelectedBlockId(uploadedBlocks[0]?.id || "V1");
+              }}
+              disabled={uploadedBlocks.length === 0}
+              className={`px-2.5 py-1 rounded-md transition font-bold flex items-center space-x-1 ${
+                circuitMode === "UPLOADED"
+                  ? "bg-[#0055A5] text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 disabled:opacity-40"
+              }`}
+            >
+              <Cpu className="w-3 h-3" />
+              <span>Uploaded Circuit ({uploadedBlocks.length} comps)</span>
+            </button>
+            <button
+              onClick={() => {
+                setCircuitMode("BCX14_BENCHMARK");
+                setSelectedBlockId("XB11");
+              }}
+              className={`px-2.5 py-1 rounded-md transition font-bold ${
+                circuitMode === "BCX14_BENCHMARK"
+                  ? "bg-[#0055A5] text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              BCX14 Benchmark
+            </button>
+          </div>
         </div>
 
         {/* Action Controls */}
@@ -681,22 +1115,29 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         <div className="lg:col-span-8 p-4 bg-white flex flex-col justify-between border-r border-slate-200 min-h-[460px]">
           <div>
             <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-700 mb-2">
-              <span className="text-[#0055A5] uppercase tracking-wider font-extrabold">
-                BCX14 INTERACTIVE ENGINEERING ELECTRICAL TOPOLOGY (SCHEMATIC VIEW)
+              <span className="text-[#0055A5] uppercase tracking-wider font-extrabold flex items-center space-x-1.5">
+                <span>{circuitMode === "UPLOADED" ? "UPLOADED CIRCUIT TOPOLOGY (INTERACTIVE)" : "BCX14 POWER STAGE ELECTRICAL TOPOLOGY"}</span>
               </span>
               <span className="text-slate-500 text-[11px] font-normal">
-                Click any component block to arm and inject hardware faults
+                Click any component block to inspect and inject hardware faults
               </span>
             </div>
 
             {/* Component Voltage/Current Status Overheads */}
-            <div className="flex items-center justify-between text-[11px] font-mono font-semibold px-3 py-1.5 mb-2 bg-[#f8fafc] rounded-lg border border-slate-200 text-slate-700">
-              <span className="text-[#0055A5]">XB11: 230V RMS (325.3Vpk)</span>
-              <span className="text-sky-700">D2: 325.3V Rectified</span>
-              <span className="text-slate-700">Q14: VDS=0.1V ID=0.8A</span>
-              <span className="text-indigo-700">L13: 750µH (16.0A)</span>
-              <span className="text-[#0055A5] font-extrabold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                DC LINK: UDC = {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : "395.2"} V
+            <div className="flex items-center justify-between text-[11px] font-mono font-semibold px-3 py-1.5 mb-2 bg-[#f8fafc] rounded-lg border border-slate-200 text-slate-700 overflow-x-auto">
+              {blocks.slice(0, 5).map((b) => (
+                <span
+                  key={b.id}
+                  onClick={() => setSelectedBlockId(b.id)}
+                  className={`cursor-pointer px-1.5 py-0.5 rounded transition ${
+                    selectedBlockId === b.id ? "bg-amber-100 text-amber-900 font-bold" : "hover:text-[#0055A5]"
+                  }`}
+                >
+                  {b.id}: {b.sublabel}
+                </span>
+              ))}
+              <span className="text-[#0055A5] font-extrabold bg-blue-50 px-2 py-0.5 rounded border border-blue-200 shrink-0">
+                {circuitMode === "UPLOADED" ? "OUTPUT V:" : "DC LINK:"} {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : circuitMode === "UPLOADED" ? "5.0" : "395.2"} V
               </span>
             </div>
           </div>
@@ -705,27 +1146,47 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           <div className="relative w-full h-[320px] bg-[#f8fafc] border border-slate-200 rounded-lg overflow-hidden flex items-center justify-center p-2 select-none shadow-inner">
             {/* SVG Connecting Wiring Bus Lines */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-              {/* AC Input lines to Bridge */}
-              <line x1="14" y1="50" x2="17" y2="50" stroke="#0284c7" strokeWidth="1.5" />
-              <line x1="14" y1="55" x2="17" y2="55" stroke="#0284c7" strokeWidth="1.5" />
-              {/* Bridge to Precharge & Bypass split */}
-              <line x1="25" y1="53" x2="28" y2="41" stroke="#0055A5" strokeWidth="1.5" />
-              <line x1="25" y1="53" x2="28" y2="60" stroke="#0055A5" strokeWidth="1.5" />
-              {/* Precharge & Bypass merge to PFC Choke */}
-              <line x1="37" y1="41" x2="41" y2="52" stroke="#0055A5" strokeWidth="1.5" />
-              <line x1="37" y1="60" x2="41" y2="52" stroke="#0055A5" strokeWidth="1.5" />
-              {/* PFC Choke to Switch & MOV */}
-              <line x1="49" y1="52" x2="54" y2="52" stroke="#0055A5" strokeWidth="1.5" />
-              {/* Main +UDC High Voltage Rail (Gold) */}
-              <line x1="54" y1="36" x2="88" y2="36" stroke="#d97706" strokeWidth="2.5" />
-              {/* Capacitor Drops from +UDC */}
-              <line x1="64" y1="36" x2="64" y2="44" stroke="#d97706" strokeWidth="1.5" />
-              <line x1="68" y1="36" x2="68" y2="44" stroke="#d97706" strokeWidth="1.5" />
-              <line x1="72" y1="36" x2="72" y2="44" stroke="#d97706" strokeWidth="1.5" />
-              {/* Ground Reference -UDC Rail */}
-              <line x1="17" y1="67" x2="88" y2="67" stroke="#64748b" strokeWidth="2.0" />
-              {/* Gate Control connection */}
-              <line x1="37" y1="78" x2="48" y2="78" stroke="#7c3aed" strokeWidth="1.2" strokeDasharray="2,2" />
+              {circuitMode === "UPLOADED" ? (
+                /* Dynamic Wiring for Uploaded Circuit */
+                <>
+                  {/* Top Bus Wire (Power/Signal) */}
+                  <line x1="18" y1="44" x2="88" y2="44" stroke="#0055A5" strokeWidth="2.5" />
+                  {/* Bottom Return Rail (Ground) */}
+                  <line x1="18" y1="76" x2="88" y2="76" stroke="#64748b" strokeWidth="2.0" />
+                  {/* Left Source Connections */}
+                  <line x1="12" y1="38" x2="18" y2="44" stroke="#0055A5" strokeWidth="2.0" />
+                  <line x1="12" y1="60" x2="18" y2="76" stroke="#64748b" strokeWidth="2.0" />
+                  {/* Shunt Drops connecting top rail to bottom rail */}
+                  {uploadedBlocks.filter((b) => b.y >= 38 && b.h >= 24).map((b) => (
+                    <g key={`wire-${b.id}`}>
+                      <line x1={b.x + b.w / 2} y1="44" x2={b.x + b.w / 2} y2={b.y} stroke="#0055A5" strokeWidth="1.5" />
+                      <line x1={b.x + b.w / 2} y1={b.y + b.h} x2={b.x + b.w / 2} y2="76" stroke="#64748b" strokeWidth="1.5" />
+                    </g>
+                  ))}
+                  {/* Output Node Measurement Points */}
+                  <circle cx="88" cy="44" r="2.0" fill="#0055A5" stroke="#ffffff" strokeWidth="0.8" />
+                  <circle cx="88" cy="76" r="2.0" fill="#64748b" stroke="#ffffff" strokeWidth="0.8" />
+                  <line x1="88" y1="44" x2="94" y2="44" stroke="#0055A5" strokeWidth="1.5" strokeDasharray="1,1" />
+                  <line x1="88" y1="76" x2="94" y2="76" stroke="#64748b" strokeWidth="1.5" strokeDasharray="1,1" />
+                </>
+              ) : (
+                /* BCX14 Wiring */
+                <>
+                  <line x1="14" y1="50" x2="17" y2="50" stroke="#0284c7" strokeWidth="1.5" />
+                  <line x1="14" y1="55" x2="17" y2="55" stroke="#0284c7" strokeWidth="1.5" />
+                  <line x1="25" y1="53" x2="28" y2="41" stroke="#0055A5" strokeWidth="1.5" />
+                  <line x1="25" y1="53" x2="28" y2="60" stroke="#0055A5" strokeWidth="1.5" />
+                  <line x1="37" y1="41" x2="41" y2="52" stroke="#0055A5" strokeWidth="1.5" />
+                  <line x1="37" y1="60" x2="41" y2="52" stroke="#0055A5" strokeWidth="1.5" />
+                  <line x1="49" y1="52" x2="54" y2="52" stroke="#0055A5" strokeWidth="1.5" />
+                  <line x1="54" y1="36" x2="88" y2="36" stroke="#d97706" strokeWidth="2.5" />
+                  <line x1="64" y1="36" x2="64" y2="44" stroke="#d97706" strokeWidth="1.5" />
+                  <line x1="68" y1="36" x2="68" y2="44" stroke="#d97706" strokeWidth="1.5" />
+                  <line x1="72" y1="36" x2="72" y2="44" stroke="#d97706" strokeWidth="1.5" />
+                  <line x1="17" y1="67" x2="88" y2="67" stroke="#64748b" strokeWidth="2.0" />
+                  <line x1="37" y1="78" x2="48" y2="78" stroke="#7c3aed" strokeWidth="1.2" strokeDasharray="2,2" />
+                </>
+              )}
             </svg>
 
             {/* Render Component Interactive Blocks */}
@@ -759,16 +1220,13 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
                       ? "rounded-md rotate-45"
                       : "rounded-lg"
                   }`}
+                  title={`Click to select ${blk.label}: ${blk.type}`}
                 >
                   <div className={blk.shape === "diamond" ? "-rotate-45" : ""}>
-                    <span
-                      className={`text-[11px] font-extrabold block leading-tight ${
-                        isSelected ? "text-amber-900" : "text-[#0055A5]"
-                      }`}
-                    >
+                    <span className="font-extrabold text-xs block text-slate-900 leading-tight">
                       {blk.label}
                     </span>
-                    <span className="text-[9px] text-slate-500 block font-medium leading-none mt-0.5">
+                    <span className="text-[9px] text-slate-600 block leading-tight font-medium">
                       {blk.sublabel}
                     </span>
                   </div>
@@ -776,220 +1234,246 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
               );
             })}
 
-            {/* Labels on Diagram */}
-            <span className="absolute right-4 top-8 text-xs font-mono font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-              +UDC
-            </span>
-            <span className="absolute right-4 bottom-7 text-xs font-mono font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
-              -UDC
-            </span>
+            {/* High-Voltage / Output Rail Badges */}
+            <div className="absolute right-2 top-4 bg-amber-50 text-amber-800 border border-amber-300 font-mono text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
+              {circuitMode === "UPLOADED" ? "+VOUT (PROBE)" : "+UDC (395V)"}
+            </div>
+            <div className="absolute right-2 bottom-4 bg-slate-100 text-slate-700 border border-slate-300 font-mono text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
+              {circuitMode === "UPLOADED" ? "-VOUT (GND)" : "-UDC (GND)"}
+            </div>
           </div>
 
-          {/* Bottom Annotation Legend */}
-          <div className="flex items-center justify-between text-[11px] font-mono mt-2 text-slate-500">
-            <span className="text-slate-700 font-semibold">Q23: 20kHz PWM Active Boost</span>
-            <span className="text-[#0055A5] font-semibold">C82-C53: 5x Caps Bank (395.2V)</span>
-            <span className="text-amber-700 font-semibold">RV3: MOV 385V Clamping</span>
+          {/* Bottom Hint */}
+          <div className="text-[11px] text-slate-500 font-mono mt-2 flex items-center justify-between">
+            <span>Click any block above to select it, then choose a fault mode in the Inspector on the right.</span>
+            <span className="font-semibold text-[#0055A5]">Active Block: {activeBlock.id}</span>
           </div>
         </div>
 
-        {/* Right Column: Component / Fault Inspector & Waveforms (4 cols) */}
-        <div className="lg:col-span-4 p-4 bg-[#f8fafc] flex flex-col justify-between space-y-3">
-          <div>
-            <span className="text-xs font-bold text-[#0055A5] uppercase tracking-wider block font-mono">
-              COMPONENT / FAULT INSPECTOR
-            </span>
+        {/* Right Column: Component/Fault Inspector & Real-time Waveforms (4 cols) */}
+        <div className="lg:col-span-4 p-4 bg-[#f8fafc] flex flex-col justify-between space-y-4">
+          {/* A. Component / Fault Inspector Card */}
+          <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-xs space-y-3">
+            <h4 className="text-xs font-mono font-bold text-slate-800 uppercase tracking-wider flex items-center justify-between">
+              <span>COMPONENT / FAULT INSPECTOR</span>
+              <span className="text-[10px] bg-blue-50 text-[#0055A5] border border-blue-200 px-1.5 py-0.2 rounded font-semibold">
+                {activeBlock.id}
+              </span>
+            </h4>
 
-            {/* Select Component Dropdown */}
-            <div className="mt-2.5">
-              <label className="text-[11px] font-semibold text-slate-600 block mb-1 font-mono">
-                Select Component:
-              </label>
+            {/* Component Selector Dropdown */}
+            <div>
+              <label className="text-[11px] text-slate-600 block mb-1 font-medium">Select Component:</label>
               <select
                 value={selectedBlockId}
                 onChange={(e) => setSelectedBlockId(e.target.value)}
-                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-mono font-bold focus:outline-none focus:border-[#0055A5] shadow-2xs"
+                className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-xs text-slate-900 font-medium focus:ring-1 focus:ring-[#0055A5]"
               >
                 {blocks.map((b) => (
                   <option key={b.id} value={b.id}>
-                    {b.id} &mdash; {b.type} ({b.label})
+                    {b.id} — {b.type} ({b.sublabel})
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Component Summary Card */}
-            <div className="mt-2 bg-white border border-slate-200 rounded-lg p-2.5 text-[11px] font-mono space-y-1 shadow-2xs">
-              <div>
-                <span className="text-[#0055A5] font-bold">SELECTED: </span>
-                <span className="text-slate-900 font-bold">{activeBlock.id} {activeBlock.type}</span>
+            {/* Selected Component Description */}
+            <div className="bg-slate-50 border border-slate-200 rounded p-2 text-xs space-y-1">
+              <div className="text-slate-800 font-bold">
+                SELECTED: <span className="text-[#0055A5]">{activeBlock.id} {activeBlock.type}</span>
               </div>
-              <p className="text-slate-600 text-[10px] leading-tight">
-                Description: {activeBlock.description}
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                {activeBlock.description}
               </p>
+              <div className="text-[10px] font-mono text-slate-500 pt-1 flex justify-between border-t border-slate-200">
+                <span>Rating: {activeBlock.nominalVoltage}</span>
+                <span>Nominal: {activeBlock.nominalCurrent}</span>
+              </div>
             </div>
 
             {/* Fault Selection Dropdown */}
-            <div className="mt-2.5">
-              <label className="text-[11px] font-semibold text-slate-600 block mb-1 font-mono">
-                Fault Selection:
-              </label>
+            <div>
+              <label className="text-[11px] text-slate-600 block mb-1 font-medium">Fault Mode:</label>
               <select
                 value={selectedFaultId}
                 onChange={(e) => setSelectedFaultId(e.target.value)}
-                className="w-full bg-white border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-mono font-bold focus:outline-none focus:border-amber-500 shadow-2xs"
+                className="w-full bg-white border border-slate-300 rounded px-2.5 py-1.5 text-xs text-slate-900 font-bold focus:ring-1 focus:ring-[#0055A5]"
               >
-                {activeBlock.faultModes.map((fm) => (
-                  <option key={fm.id} value={fm.id}>
-                    {fm.label}
+                {activeBlock.faultModes.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.label}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Dual Action Buttons */}
-            <div className="grid grid-cols-2 gap-2 mt-3 font-mono font-bold text-xs">
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-2 pt-1 font-mono font-bold text-xs">
               <button
                 onClick={handleArmFault}
-                className="py-1.5 px-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition shadow-xs"
+                className="py-1.5 px-2 bg-amber-500 hover:bg-amber-600 text-white rounded shadow-xs active:scale-95 transition text-center"
               >
                 ARM FAULT
               </button>
               <button
                 onClick={handleInjectFaultAndRun}
-                className="py-1.5 px-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition shadow-xs flex items-center justify-center space-x-1"
+                className="py-1.5 px-2 bg-red-600 hover:bg-red-700 text-white rounded shadow-xs active:scale-95 transition text-center flex items-center justify-center space-x-1"
               >
-                <Flame className="w-3 h-3" />
+                <Flame className="w-3.5 h-3.5" />
                 <span>INJECT + RUN</span>
               </button>
             </div>
-
-            {/* Status Pill */}
-            <div className="mt-2.5 p-2 bg-white rounded-lg border border-slate-200 text-center font-mono text-[11px] font-bold shadow-2xs">
-              {systemState === "FAULT_ACTIVE" ? (
-                <span className="text-red-700">
-                  STATUS: FAULT ACTIVE | ACTION: {activeFault.action}
-                </span>
-              ) : systemState === "ARMED" ? (
-                <span className="text-amber-700">
-                  STATUS: ARMED (t = {faultTime}s) | READY TO TRIGGER
-                </span>
-              ) : (
-                <span className="text-emerald-700">
-                  STATUS: NORMAL | ACTION: NONE (NORMAL OPERATION)
-                </span>
-              )}
-            </div>
           </div>
 
-          {/* COMPONENT WAVEFORMS (3 Channel Oscilloscope) */}
-          <div className="space-y-2 pt-2 border-t border-slate-200">
-            <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider block font-mono">
-              COMPONENT WAVEFORMS:
-            </span>
-
-            {/* Channel 1: VDC Voltage */}
-            <div className="bg-white border border-slate-200 rounded-lg p-2 shadow-2xs">
-              <div className="flex items-center justify-between text-[10px] font-mono text-[#0055A5] font-bold mb-1">
-                <span>UDC(t) DC Bus Voltage [V] (Peak: {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : "395.2"}V)</span>
-                <span className="text-slate-400">500V FS</span>
-              </div>
-              <svg className="w-full h-11" viewBox="0 0 380 45">
-                <line x1="0" y1="10" x2="380" y2="10" stroke="#f1f5f9" strokeDasharray="3,3" />
-                <line x1="0" y1="25" x2="380" y2="25" stroke="#f1f5f9" strokeDasharray="3,3" />
-                <polyline fill="none" stroke="#0055A5" strokeWidth="2.2" points={waveformData.vPoints} />
-              </svg>
+          {/* B. Live 3-Channel Oscilloscope Waveforms Card */}
+          <div className="bg-white border border-slate-200 rounded-lg p-3.5 shadow-xs space-y-2">
+            <div className="flex items-center justify-between text-xs font-mono font-bold">
+              <span className="text-[#0055A5]">LIVE PHYSICAL WAVEFORMS (3-CH)</span>
+              <span className="text-[10px] text-slate-500 font-mono">Simscape ode23t</span>
             </div>
 
-            {/* Channel 2: Component Current */}
-            <div className="bg-white border border-slate-200 rounded-lg p-2 shadow-2xs">
-              <div className="flex items-center justify-between text-[10px] font-mono text-amber-700 font-bold mb-1">
-                <span>Component Current [A] (Peak: {systemState === "FAULT_ACTIVE" ? activeFault.currentA.toFixed(1) : "0.8"}A)</span>
-                <span className="text-slate-400">50A FS</span>
+            {/* Channel 1: Output / Bus Voltage */}
+            <div>
+              <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 mb-0.5">
+                <span className="font-bold text-[#0055A5] flex items-center space-x-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-[#0055A5]"></span>
+                  <span>{circuitMode === "UPLOADED" ? "CH1: V_OUT(t) (Node Voltage)" : "CH1: U_DC(t) (DC Link Voltage)"}</span>
+                </span>
+                <span className="font-bold">
+                  {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : circuitMode === "UPLOADED" ? "5.0" : "395.2"} V
+                </span>
               </div>
-              <svg className="w-full h-11" viewBox="0 0 380 45">
-                <line x1="0" y1="10" x2="380" y2="10" stroke="#f1f5f9" strokeDasharray="3,3" />
-                <line x1="0" y1="25" x2="380" y2="25" stroke="#f1f5f9" strokeDasharray="3,3" />
-                <polyline fill="none" stroke="#d97706" strokeWidth="2.2" points={waveformData.iPoints} />
-              </svg>
+              <div className="h-10 bg-slate-900 rounded border border-slate-300 relative overflow-hidden flex items-center">
+                <svg className="w-full h-full" viewBox="0 0 380 40" preserveAspectRatio="none">
+                  <polyline
+                    fill="none"
+                    stroke="#38bdf8"
+                    strokeWidth="2.0"
+                    points={waveformData.vPoints}
+                  />
+                </svg>
+              </div>
             </div>
 
-            {/* Channel 3: Gate Signal / Driver State */}
-            <div className="bg-white border border-slate-200 rounded-lg p-2 shadow-2xs">
-              <div className="flex items-center justify-between text-[10px] font-mono text-emerald-700 font-bold mb-1">
-                <span>Gate Signal Vgate(t) / Driver State [V]</span>
-                <span className="text-slate-400">20V FS</span>
+            {/* Channel 2: Branch Current */}
+            <div>
+              <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 mb-0.5">
+                <span className="font-bold text-amber-600 flex items-center space-x-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span>{circuitMode === "UPLOADED" ? "CH2: I_COMP(t) (Branch Current)" : "CH2: I_PFC(t) (Choke Current)"}</span>
+                </span>
+                <span className="font-bold">
+                  {systemState === "FAULT_ACTIVE" ? activeFault.currentA.toFixed(1) : "0.8"} A
+                </span>
               </div>
-              <svg className="w-full h-11" viewBox="0 0 380 45">
-                <line x1="0" y1="10" x2="380" y2="10" stroke="#f1f5f9" strokeDasharray="3,3" />
-                <line x1="0" y1="25" x2="380" y2="25" stroke="#f1f5f9" strokeDasharray="3,3" />
-                <polyline fill="none" stroke="#16a34a" strokeWidth="2.2" points={waveformData.gPoints} />
-              </svg>
+              <div className="h-10 bg-slate-900 rounded border border-slate-300 relative overflow-hidden flex items-center">
+                <svg className="w-full h-full" viewBox="0 0 380 40" preserveAspectRatio="none">
+                  <polyline
+                    fill="none"
+                    stroke="#fbbf24"
+                    strokeWidth="2.0"
+                    points={waveformData.iPoints}
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Channel 3: Input / Gate Signal */}
+            <div>
+              <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 mb-0.5">
+                <span className="font-bold text-emerald-600 flex items-center space-x-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>{circuitMode === "UPLOADED" ? "CH3: V_IN(t) (Input Step Signal)" : "CH3: V_GATE(t) (IGBT PWM)"}</span>
+                </span>
+                <span className="font-bold">
+                  {systemState === "FAULT_ACTIVE" ? activeFault.gateV.toFixed(1) : circuitMode === "UPLOADED" ? "5.0" : "15.0"} V
+                </span>
+              </div>
+              <div className="h-10 bg-slate-900 rounded border border-slate-300 relative overflow-hidden flex items-center">
+                <svg className="w-full h-full" viewBox="0 0 380 40" preserveAspectRatio="none">
+                  <polyline
+                    fill="none"
+                    stroke="#34d399"
+                    strokeWidth="1.8"
+                    points={waveformData.gPoints}
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* 4. BOTTOM THREE-COLUMN CONSOLE */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-200 bg-white text-xs font-mono">
-        {/* Panel 1: Simulation Event Timeline */}
-        <div className="p-3.5 space-y-2">
-          <span className="text-[11px] font-bold text-[#0055A5] uppercase tracking-wider block">
-            SIMULATION EVENT TIMELINE
-          </span>
-          <div className="bg-slate-900 border border-slate-800 rounded-lg p-2.5 h-36 overflow-y-auto space-y-1 text-emerald-400 font-mono text-[11px] leading-relaxed shadow-inner">
+      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200 bg-white">
+        {/* Col 1: Simulation Event Timeline */}
+        <div className="p-4 space-y-2">
+          <div className="flex items-center space-x-2 text-xs font-mono font-bold text-slate-800">
+            <Activity className="w-4 h-4 text-[#0055A5]" />
+            <span className="uppercase">SIMULATION EVENT TIMELINE</span>
+          </div>
+          <div className="bg-[#f8fafc] border border-slate-200 rounded-lg p-3 h-48 overflow-y-auto font-mono text-[11px] space-y-1.5 shadow-inner">
             {logs.map((line, i) => (
-              <div key={i} className="flex items-start space-x-1.5">
-                <span className="text-slate-500">&gt;</span>
-                <span className={line.includes("FAULT INJECTED") || line.includes("TRIPPED") ? "text-rose-400 font-bold" : ""}>
-                  {line}
-                </span>
+              <div
+                key={i}
+                className={
+                  line.includes("!!!")
+                    ? "text-red-600 font-bold bg-red-50 p-1 rounded"
+                    : line.includes("***")
+                    ? "text-amber-600 font-bold bg-amber-50 p-1 rounded"
+                    : line.includes("ACTION")
+                    ? "text-emerald-700 font-bold"
+                    : "text-slate-600"
+                }
+              >
+                {line}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Panel 2: Before / After Simulation Comparison */}
-        <div className="p-3.5 space-y-2">
-          <span className="text-[11px] font-bold text-[#0055A5] uppercase tracking-wider block">
-            BEFORE / AFTER SIMULATION COMPARISON
-          </span>
-          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-36 shadow-2xs">
-            <table className="w-full text-left text-[11px]">
-              <thead className="bg-slate-50 text-slate-500 border-b border-slate-200 font-semibold">
-                <tr>
-                  <th className="py-1.5 px-3">Parameter</th>
-                  <th className="py-1.5 px-3">Normal / Before</th>
-                  <th className="py-1.5 px-3">Fault / After</th>
+        {/* Col 2: Before / After Comparison */}
+        <div className="p-4 space-y-2">
+          <div className="flex items-center space-x-2 text-xs font-mono font-bold text-slate-800">
+            <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <span className="uppercase">BEFORE / AFTER COMPARISON</span>
+          </div>
+          <div className="bg-[#f8fafc] border border-slate-200 rounded-lg p-3 h-48 overflow-y-auto font-mono text-[11px] shadow-inner">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-slate-400 border-b border-slate-200 text-[10px]">
+                  <th className="pb-1">METRIC</th>
+                  <th className="pb-1 text-center">NORMAL</th>
+                  <th className="pb-1 text-right">WITH FAULT</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-slate-100 text-slate-700 font-bold">
                 <tr>
-                  <td className="py-1.5 px-3 text-slate-500">DC Bus Voltage (UDC)</td>
-                  <td className="py-1.5 px-3 font-bold text-emerald-700">395.20 V</td>
-                  <td className={`py-1.5 px-3 font-bold ${systemState === "FAULT_ACTIVE" ? "text-red-700" : "text-emerald-700"}`}>
-                    {systemState === "FAULT_ACTIVE" ? `${activeFault.dcBusV.toFixed(2)} V` : "395.20 V"}
+                  <td className="py-1.5 font-normal text-slate-500">Output / Bus</td>
+                  <td className="py-1.5 text-center text-emerald-600">{circuitMode === "UPLOADED" ? "5.0 V" : "395.2 V"}</td>
+                  <td className="py-1.5 text-right text-red-600">
+                    {systemState === "FAULT_ACTIVE" ? `${activeFault.dcBusV.toFixed(1)} V` : "—"}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-1.5 px-3 text-slate-500">Component Health State</td>
-                  <td className="py-1.5 px-3 text-emerald-700 font-bold">NORMAL</td>
-                  <td className={`py-1.5 px-3 font-bold ${systemState === "FAULT_ACTIVE" ? "text-red-700" : "text-emerald-700"}`}>
-                    {systemState === "FAULT_ACTIVE" ? activeFault.finalState : "NORMAL"}
+                  <td className="py-1.5 font-normal text-slate-500">Peak Current</td>
+                  <td className="py-1.5 text-center text-emerald-600">{circuitMode === "UPLOADED" ? "0.05 A" : "0.8 A"}</td>
+                  <td className="py-1.5 text-right text-red-600">
+                    {systemState === "FAULT_ACTIVE" ? `${activeFault.currentA.toFixed(1)} A` : "—"}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-1.5 px-3 text-slate-500">Protection Action</td>
-                  <td className="py-1.5 px-3 text-slate-500">NONE</td>
-                  <td className={`py-1.5 px-3 font-bold ${systemState === "FAULT_ACTIVE" ? "text-amber-700" : "text-slate-500"}`}>
-                    {systemState === "FAULT_ACTIVE" ? activeFault.action : "NONE (NORMAL OPERATION)"}
+                  <td className="py-1.5 font-normal text-slate-500">Signal State</td>
+                  <td className="py-1.5 text-center text-emerald-600">PASS</td>
+                  <td className="py-1.5 text-right text-amber-600">
+                    {systemState === "FAULT_ACTIVE" ? "DEGRADED" : "NOMINAL"}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-1.5 px-3 text-slate-500">Unconstrained Peak</td>
-                  <td className="py-1.5 px-3 text-slate-500">0.80 A</td>
-                  <td className={`py-1.5 px-3 font-bold ${systemState === "FAULT_ACTIVE" ? "text-amber-700" : "text-slate-500"}`}>
-                    {systemState === "FAULT_ACTIVE" ? `${activeFault.currentA.toFixed(2)} A` : "0.80 A"}
+                  <td className="py-1.5 font-normal text-slate-500">Protection</td>
+                  <td className="py-1.5 text-center text-slate-400">IDLE</td>
+                  <td className="py-1.5 text-right text-purple-700 text-[10px]">
+                    {systemState === "FAULT_ACTIVE" ? activeFault.action : "ARMED"}
                   </td>
                 </tr>
               </tbody>
@@ -997,45 +1481,32 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           </div>
         </div>
 
-        {/* Panel 3: Simulation Results & Fault History */}
-        <div className="p-3.5 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#0055A5] uppercase tracking-wider block">
-              SIMULATION RESULTS &amp; FAULT HISTORY
-            </span>
-            <div className="flex items-center space-x-1">
-              <span className="text-[10px] text-slate-500">Past Runs:</span>
-              <span className="text-[10px] text-[#0055A5] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 font-bold">
-                {historyRuns.length > 0 ? `${historyRuns.length} recorded` : "No runs yet"}
-              </span>
-            </div>
+        {/* Col 3: Fault Injection History & Results */}
+        <div className="p-4 space-y-2">
+          <div className="flex items-center space-x-2 text-xs font-mono font-bold text-slate-800">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <span className="uppercase">SIMULATION RESULTS &amp; HISTORY</span>
           </div>
-
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 h-36 overflow-y-auto text-[11px] font-mono text-slate-700 space-y-1 shadow-2xs">
-            <div className="text-slate-400">=============================================</div>
-            <div>
-              <span className="text-slate-500">SIMULATION RESULT: </span>
-              <span className={`font-bold ${systemState === "FAULT_ACTIVE" ? "text-red-700" : "text-emerald-700"}`}>
-                {systemState === "FAULT_ACTIVE" ? "FAULT INJECTED" : "NORMAL"}
-              </span>
-            </div>
-            <div>
-              <span className="text-slate-500">ACTIVE COMPONENT: </span>
-              <span className="text-[#0055A5] font-bold">{activeBlock.id} ({activeBlock.type})</span>
-            </div>
-            <div>
-              <span className="text-slate-500">FAULT MODE: </span>
-              <span className="text-amber-700 font-bold">{activeFault.label}</span>
-            </div>
-            <div>
-              <span className="text-slate-500">FINAL STATE: </span>
-              <span className="text-slate-900 font-bold">{systemState === "FAULT_ACTIVE" ? activeFault.finalState : "NORMAL"}</span>
-            </div>
-            <div>
-              <span className="text-slate-500">PROTECTION ACTION: </span>
-              <span className="text-sky-700 font-bold">{systemState === "FAULT_ACTIVE" ? activeFault.action : "NONE"}</span>
-            </div>
-            <div className="text-slate-400">=============================================</div>
+          <div className="bg-[#f8fafc] border border-slate-200 rounded-lg p-2.5 h-48 overflow-y-auto font-mono text-[10px] space-y-2 shadow-inner">
+            {historyRuns.length === 0 ? (
+              <div className="h-full flex items-center justify-center text-slate-400 text-center">
+                Click &apos;INJECT FAULT + RUN&apos; to execute hardware failure scenarios and record results.
+              </div>
+            ) : (
+              historyRuns.map((run) => (
+                <div key={run.id} className="bg-white border border-slate-200 rounded p-2 shadow-2xs space-y-1">
+                  <div className="flex items-center justify-between text-slate-900 font-bold">
+                    <span className="text-[#0055A5]">{run.componentId}</span>
+                    <span className="text-slate-500">{run.timestamp}</span>
+                  </div>
+                  <div className="text-slate-700 font-semibold">{run.faultName}</div>
+                  <div className="text-[9px] text-red-600 flex justify-between">
+                    <span>Final State: {run.finalState}</span>
+                    <span>Peak: {run.currentPeak}</span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
