@@ -15,12 +15,15 @@ import {
   FileCheck2,
   Loader2,
   FolderOpen,
+  Flame,
+  Zap,
 } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { SchematicViewer } from "../components/SchematicViewer";
 import { ComponentReviewTable } from "../components/ComponentReviewTable";
 import { ValidationReportCard } from "../components/ValidationReportCard";
 import { ModelCompilerPanel } from "../components/ModelCompilerPanel";
+import { FaultInjectionPanel } from "../components/FaultInjectionPanel";
 import { NewProjectModal } from "../components/NewProjectModal";
 import { api } from "../lib/api";
 import { ComponentType, ParameterValue, Project, UniversalCircuitIR, ValidationReport } from "../types/circuit";
@@ -332,6 +335,21 @@ export default function Home() {
               <span>5. GENERATE .SLX</span>
               {compilationResult && <span className="text-emerald-400">✓</span>}
             </button>
+
+            <span className="text-slate-600">→</span>
+
+            {/* Step 6: Autonomous Fault Injection (FMEA) */}
+            <button
+              onClick={() => setActiveStep(6)}
+              className={`flex items-center space-x-1.5 px-3 py-1 rounded transition ${
+                activeStep === 6
+                  ? "bg-gradient-to-r from-amber-500/30 to-rose-500/30 text-amber-300 font-bold border border-amber-500/60 shadow-lg shadow-amber-500/10"
+                  : "text-amber-400/80 hover:text-amber-300 hover:bg-amber-500/10"
+              }`}
+            >
+              <Flame className="w-3.5 h-3.5 text-amber-400" />
+              <span>6. FAULT INJECTION (FMEA)</span>
+            </button>
           </div>
 
           {/* Quick Actions */}
@@ -353,16 +371,11 @@ export default function Home() {
 
             {circuitIr && (
               <button
-                onClick={() => handleGenerateModel("matlab_simscape")}
-                disabled={isCompiling}
-                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold transition shadow shadow-emerald-600/20 active:scale-95 cursor-pointer disabled:opacity-50"
+                onClick={() => setActiveStep(6)}
+                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-bold transition shadow shadow-amber-500/20 active:scale-95 cursor-pointer"
               >
-                {isCompiling ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                )}
-                <span>Compile .SLX</span>
+                <Zap className="w-3.5 h-3.5 fill-white" />
+                <span>Autonomous FMEA Engine</span>
               </button>
             )}
           </div>
@@ -388,56 +401,90 @@ export default function Home() {
           </div>
         )}
 
-        {/* Two-Column Engineering Workspace */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
-          {/* Left Column: Schematic Viewport & Bounding Box Overlays (7 cols) */}
-          <div className="lg:col-span-7 flex flex-col min-h-[520px]">
-            <SchematicViewer
-              schematicUrl={currentProject?.schematic_url}
-              circuitIr={circuitIr}
-              selectedComponentId={selectedCompId}
-              onSelectComponent={(id) => {
-                setSelectedCompId(id);
-                setActiveStep(3); // Bring user focus to review
-              }}
-              onUploadSchematic={handleUploadSchematic}
-              isUploading={isAnalyzing}
-            />
+        {/* Dynamic Workspace View based on Step */}
+        {activeStep === 6 ? (
+          <div className="space-y-6 flex-1">
+            {currentProject && (
+              <FaultInjectionPanel
+                projectId={currentProject.id}
+                circuitIr={circuitIr}
+                onRefresh={() => loadProjectDetails(currentProject.id)}
+              />
+            )}
           </div>
-
-          {/* Right Column: Dynamic Panel based on current focus (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col space-y-4">
-            {/* Step 1 & 2: Review Table */}
-            <div className="flex-1 min-h-[380px]">
-              <ComponentReviewTable
-                components={circuitIr?.components || []}
+        ) : (
+          /* Two-Column Engineering Workspace */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+            {/* Left Column: Schematic Viewport & Bounding Box Overlays (7 cols) */}
+            <div className="lg:col-span-7 flex flex-col min-h-[520px]">
+              <SchematicViewer
+                schematicUrl={currentProject?.schematic_url}
+                circuitIr={circuitIr}
                 selectedComponentId={selectedCompId}
-                onSelectComponent={(id) => setSelectedCompId(id)}
-                onUpdateComponent={handleUpdateComponent}
-                onDeleteComponent={handleDeleteComponent}
-                onAddComponent={handleAddComponent}
+                onSelectComponent={(id) => {
+                  setSelectedCompId(id);
+                  setActiveStep(3); // Bring user focus to review
+                }}
+                onUploadSchematic={handleUploadSchematic}
+                isUploading={isAnalyzing}
               />
             </div>
 
-            {/* Validation Report Card */}
-            <div>
-              <ValidationReportCard validation={validation} />
-            </div>
-
-            {/* Model Compiler & SLX Download Panel */}
-            {currentProject && (
-              <div>
-                <ModelCompilerPanel
-                  projectId={currentProject.id}
-                  circuitIr={circuitIr}
-                  onGenerateModel={handleGenerateModel}
-                  isGenerating={isCompiling}
-                  compilationResult={compilationResult}
+            {/* Right Column: Dynamic Panel based on current focus (5 cols) */}
+            <div className="lg:col-span-5 flex flex-col space-y-4">
+              {/* Step 1 & 2: Review Table */}
+              <div className="flex-1 min-h-[380px]">
+                <ComponentReviewTable
+                  components={circuitIr?.components || []}
+                  selectedComponentId={selectedCompId}
+                  onSelectComponent={(id) => setSelectedCompId(id)}
+                  onUpdateComponent={handleUpdateComponent}
+                  onDeleteComponent={handleDeleteComponent}
+                  onAddComponent={handleAddComponent}
                 />
               </div>
-            )}
+
+              {/* Validation Report Card */}
+              <div>
+                <ValidationReportCard validation={validation} />
+              </div>
+
+              {/* Model Compiler & SLX Download Panel */}
+              {currentProject && (
+                <div>
+                  <ModelCompilerPanel
+                    projectId={currentProject.id}
+                    circuitIr={circuitIr}
+                    onGenerateModel={handleGenerateModel}
+                    isGenerating={isCompiling}
+                    compilationResult={compilationResult}
+                  />
+                </div>
+              )}
+
+              {/* Quick FMEA Fault Injection Card */}
+              {currentProject && (
+                <div className="bg-slate-900 border border-amber-500/30 rounded-xl p-4 shadow-lg flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2.5 bg-amber-500/20 text-amber-400 rounded-lg">
+                      <Flame className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-white">Autonomous Fault Injection Ready</h4>
+                      <p className="text-[11px] text-slate-400">Run ISO 26262 FMEA matrix &amp; Simscape waveforms</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setActiveStep(6)}
+                    className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs rounded-lg transition"
+                  >
+                    Open FMEA Studio &rarr;
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </main>
 
       {/* New Project Modal */}

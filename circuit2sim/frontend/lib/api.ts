@@ -189,4 +189,70 @@ export const api = {
     if (!res.ok) throw new Error("Failed to load sample");
     return res.json();
   },
+
+  // MATLAB Integration & Settings
+  async getMatlabSettings(): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/settings/matlab`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch MATLAB settings");
+    return res.json();
+  },
+
+  async updateMatlabSettings(data: { api_key?: string; execution_mode?: string; account_token?: string }) {
+    const res = await fetch(`${API_BASE}/api/settings/matlab`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error("Failed to update MATLAB settings");
+    return res.json();
+  },
+
+  // Autonomous Fault Injection & FMEA
+  async runFaultInjection(projectId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/projects/${projectId}/faults/run`, {
+      method: "POST",
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: "Fault injection failed" }));
+      throw new Error(err.detail || "Fault injection failed");
+    }
+    return res.json();
+  },
+
+  async getFaultResults(projectId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/projects/${projectId}/faults`, {
+      cache: "no-store",
+    });
+    if (!res.ok) throw new Error("Failed to fetch fault results");
+    return res.json();
+  },
+
+  async injectSingleFault(
+    projectId: string,
+    componentId: string,
+    faultType: string,
+    customValue?: number
+  ): Promise<any> {
+    const res = await fetch(`${API_BASE}/api/projects/${projectId}/faults/inject`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        component_id: componentId,
+        fault_type: faultType,
+        custom_value: customValue,
+      }),
+    });
+    if (!res.ok) throw new Error("Failed to inject custom fault");
+    return res.json();
+  },
+
+  async exportFMEAReport(projectId: string, format: "csv" | "json" = "csv") {
+    const res = await fetch(`${API_BASE}/api/projects/${projectId}/faults/export?format=${format}`);
+    if (!res.ok) throw new Error("Failed to export FMEA report");
+    return res.json();
+  },
+
+  getFaultMatlabScriptUrl(projectId: string) {
+    return `${API_BASE}/api/projects/${projectId}/faults/matlab-script?_t=${Date.now()}`;
+  },
 };

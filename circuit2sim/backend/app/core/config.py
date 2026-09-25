@@ -1,7 +1,7 @@
 """Application configuration and settings."""
 
 from pathlib import Path
-from typing import List, Set
+from typing import List, Optional, Set
 from pydantic import BaseModel, Field
 
 
@@ -29,6 +29,12 @@ class Settings(BaseModel):
     # File limits
     MAX_UPLOAD_SIZE_MB: int = 25
     ALLOWED_EXTENSIONS: Set[str] = {".png", ".jpg", ".jpeg", ".pdf", ".svg", ".bmp"}
+
+    # MATLAB & MathWorks Cloud / Local Integration
+    MATLAB_API_KEY: Optional[str] = "mw-live-sim-88f921a4c"
+    MATHWORKS_TOKEN: Optional[str] = None
+    MATLAB_EXECUTION_MODE: str = "auto"  # 'auto', 'mcp', 'local', 'cloud'
+    MATLAB_PATH: Optional[str] = None
 
 
 settings = Settings()

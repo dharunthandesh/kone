@@ -93,6 +93,18 @@ class Database:
             )
             """)
 
+            # FMEA Fault Reports table
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS fmea_reports (
+                id TEXT PRIMARY KEY,
+                project_id TEXT NOT NULL,
+                campaign_id TEXT NOT NULL,
+                report_json TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+            )
+            """)
+
             conn.commit()
             conn.close()
 
@@ -351,6 +363,33 @@ class Database:
         res = dict(row)
         res["compilation_report"] = json.loads(res.get("compilation_report") or "{}")
         return res
+
+    # --- FMEA Fault Injection Operations ---
+
+    def save_fmea_report(self, report_id: str, project_id: str, campaign_id: str, report_data: Dict[str, Any]):
+        now = datetime.utcnow().isoformat()
+        with self._lock:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO fmea_reports (id, project_id, campaign_id, report_json, created_at)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (report_id, project_id, campaign_id, json.dumps(report_data), now)
+            )
+            conn.commit()
+            conn.close()
+
+    def get_latest_fmea_report(self, project_id: str) -> Optional[Dict[str, Any]]:
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM fmea_reports WHERE project_id = ? ORDER BY created_at DESC LIMIT 1", (project_id,))
+        row = cursor.fetchone()
+        conn.close()
+        if not row:
+            return None
+        return json.loads(row["report_json"])
 
 
 db = Database()

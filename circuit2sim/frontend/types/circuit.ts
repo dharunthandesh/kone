@@ -117,3 +117,68 @@ export interface CompilationReport {
   errors: string[];
   warnings: string[];
 }
+
+export type FaultCriticality = "SAFE" | "WARNING" | "CRITICAL";
+
+export interface FaultWaveform {
+  time: number[];
+  baseline: number[];
+  fault: number[];
+}
+
+export interface FaultMetrics {
+  peak_deviation_v?: number;
+  rms_error_v?: number;
+  max_voltage_v?: number;
+  settling_time_ms?: number;
+  deviation_percentage?: number;
+}
+
+export interface ComponentFault {
+  fault_id: string;
+  component_id: string;
+  component_type: string;
+  fault_type: string;
+  description: string;
+  nominal_value: number;
+  fault_value: number;
+  unit: string;
+  severity: number;
+  occurrence: number;
+  detection: number;
+  rpn: number;
+  criticality: FaultCriticality;
+  effects: string;
+  mitigation: string;
+  waveform?: FaultWaveform;
+  metrics?: FaultMetrics;
+}
+
+export interface FMEAReport {
+  campaign_id: string;
+  project_id: string;
+  timestamp: string;
+  circuit_name?: string;
+  total_components_tested: number;
+  total_faults_simulated: number;
+  safe_count: number;
+  warning_count: number;
+  critical_count: number;
+  safety_score: number;
+  executive_summary: string;
+  matlab_script_filename: string;
+  matlab_script_url: string;
+  faults: ComponentFault[];
+}
+
+export interface MatlabSettings {
+  connected: boolean;
+  version: string;
+  platform: string;
+  api_key_configured: boolean;
+  masked_api_key?: string;
+  execution_mode: string;
+  toolboxes: Array<{ name: string; version: string; status: string }>;
+  supports_direct_execution: boolean;
+  supports_batch_fault_injection: boolean;
+}
