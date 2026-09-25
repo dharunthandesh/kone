@@ -24,6 +24,7 @@ import { ComponentReviewTable } from "../components/ComponentReviewTable";
 import { ValidationReportCard } from "../components/ValidationReportCard";
 import { ModelCompilerPanel } from "../components/ModelCompilerPanel";
 import { FaultInjectionPanel } from "../components/FaultInjectionPanel";
+import { LiveFaultStudio } from "../components/LiveFaultStudio";
 import { NewProjectModal } from "../components/NewProjectModal";
 import { api } from "../lib/api";
 import { ComponentType, ParameterValue, Project, UniversalCircuitIR, ValidationReport } from "../types/circuit";
@@ -405,11 +406,18 @@ export default function Home() {
         {activeStep === 6 ? (
           <div className="space-y-6 flex-1">
             {currentProject && (
-              <FaultInjectionPanel
-                projectId={currentProject.id}
-                circuitIr={circuitIr}
-                onRefresh={() => loadProjectDetails(currentProject.id)}
-              />
+              <>
+                <LiveFaultStudio
+                  projectId={currentProject.id}
+                  circuitIr={circuitIr}
+                  onRefresh={() => loadProjectDetails(currentProject.id)}
+                />
+                <FaultInjectionPanel
+                  projectId={currentProject.id}
+                  circuitIr={circuitIr}
+                  onRefresh={() => loadProjectDetails(currentProject.id)}
+                />
+              </>
             )}
           </div>
         ) : (
