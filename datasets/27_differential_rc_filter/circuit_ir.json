@@ -1,0 +1,265 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "Differential Sensor Signal",
+      "parameters": {
+        "voltage": {
+          "value": 5.0,
+          "unit": "V",
+          "raw_text": "5V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "Positive Leg Series Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 1000.0,
+          "unit": "ohm",
+          "raw_text": "1k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 280,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R2",
+      "type": "resistor",
+      "name": "Negative Leg Series Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 1000.0,
+          "unit": "ohm",
+          "raw_text": "1k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 280,
+        "y": 350,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C_DIFF",
+      "type": "capacitor",
+      "name": "Differential Filter Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 1e-07,
+          "unit": "F",
+          "raw_text": "100nF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 460,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C_CM1",
+      "type": "capacitor",
+      "name": "Common-Mode Positive Bypass",
+      "parameters": {
+        "capacitance": {
+          "value": 1e-08,
+          "unit": "F",
+          "raw_text": "10nF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 600,
+        "y": 210,
+        "w": 40,
+        "h": 60
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C_CM2",
+      "type": "capacitor",
+      "name": "Common-Mode Negative Bypass",
+      "parameters": {
+        "capacitance": {
+          "value": 1e-08,
+          "unit": "F",
+          "raw_text": "10nF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 600,
+        "y": 310,
+        "w": 40,
+        "h": 60
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "Shield Reference Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 600,
+        "y": 420,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_SIG_P",
+      "connections": [
+        "V1.+",
+        "R1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_SIG_N",
+      "connections": [
+        "V1.-",
+        "R2.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_ADC_P",
+      "connections": [
+        "R1.2",
+        "C_DIFF.1",
+        "C_CM1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_ADC_N",
+      "connections": [
+        "R2.2",
+        "C_DIFF.2",
+        "C_CM2.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "C_CM1.2",
+        "C_CM2.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-27",
+    "domain": "SAR / Sigma-Delta ADC Instrumentation",
+    "category": "Precision Analog Front-End",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "5e-6"
+    }
+  },
+  "validation": null
+}

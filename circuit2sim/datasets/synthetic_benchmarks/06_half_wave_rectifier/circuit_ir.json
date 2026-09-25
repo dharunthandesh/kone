@@ -1,0 +1,197 @@
+{
+  "version": "0.1",
+  "title": "Diode Half-Wave Rectifier with Smoothing Reservoir",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "AC Secondary Transformer",
+      "parameters": {
+        "voltage": {
+          "value": 12.0,
+          "unit": "V",
+          "raw_text": "12V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 120,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D1",
+      "type": "diode",
+      "name": "Power Silicon Rectifier Diode",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 320,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C1",
+      "type": "capacitor",
+      "name": "Reservoir Smoothing Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 0.0001,
+          "unit": "F",
+          "raw_text": "100uF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 490,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_LOAD",
+      "type": "resistor",
+      "name": "DC Circuit Load",
+      "parameters": {
+        "resistance": {
+          "value": 500.0,
+          "unit": "ohm",
+          "raw_text": "500R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 640,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "DC Return Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 380,
+        "y": 420,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_AC",
+      "connections": [
+        "V1.+",
+        "D1.A"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_DC",
+      "connections": [
+        "D1.K",
+        "C1.1",
+        "R_LOAD.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "C1.2",
+        "R_LOAD.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "project_id": "bench_06",
+    "dataset_name": "06_half_wave_rectifier",
+    "category": "Power Supplies & AC/DC Converters",
+    "domain": "Auxiliary Power Supplies & Bias Rails"
+  },
+  "validation": {
+    "status": "PASS",
+    "components_total": 5,
+    "components_verified": 5,
+    "parameters_total": 4,
+    "parameters_verified": 4,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

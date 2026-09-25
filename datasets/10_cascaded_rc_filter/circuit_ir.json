@@ -1,0 +1,267 @@
+{
+  "version": "0.1",
+  "title": "Cascaded Second-Order Passive RC Low-Pass Filter",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "Step Signal Source",
+      "parameters": {
+        "voltage": {
+          "value": 10.0,
+          "unit": "V",
+          "raw_text": "10V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "Stage 1 Filter Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 4700.0,
+          "unit": "ohm",
+          "raw_text": "4.7k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 260,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C1",
+      "type": "capacitor",
+      "name": "Stage 1 Shunt Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 2.2e-07,
+          "unit": "F",
+          "raw_text": "220nF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 380,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R2",
+      "type": "resistor",
+      "name": "Stage 2 Isolation Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 10000.0,
+          "unit": "ohm",
+          "raw_text": "10k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 500,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C2",
+      "type": "capacitor",
+      "name": "Stage 2 Shunt Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 4.7e-08,
+          "unit": "F",
+          "raw_text": "47nF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 620,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_LOAD",
+      "type": "resistor",
+      "name": "Instrumentation Output Load",
+      "parameters": {
+        "resistance": {
+          "value": 100000.0,
+          "unit": "ohm",
+          "raw_text": "100k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 740,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "Ground Plane",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 440,
+        "y": 420,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N1",
+      "connections": [
+        "V1.+",
+        "R1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N2",
+      "connections": [
+        "R1.2",
+        "C1.1",
+        "R2.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N3",
+      "connections": [
+        "R2.2",
+        "C2.1",
+        "R_LOAD.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "C1.2",
+        "C2.2",
+        "R_LOAD.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "project_id": "bench_10",
+    "dataset_name": "10_cascaded_rc_filter",
+    "category": "High-Order Analog Pre-Filtering",
+    "domain": "Precision Industrial Telemetry & Biomedical DAQ"
+  },
+  "validation": {
+    "status": "PASS",
+    "components_total": 7,
+    "components_verified": 7,
+    "parameters_total": 6,
+    "parameters_verified": 6,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "RF Source 50 Ohm",
+      "parameters": {
+        "voltage": {
+          "value": 5.0,
+          "unit": "V",
+          "raw_text": "5V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "T-Pad Input Arm",
+      "parameters": {
+        "resistance": {
+          "value": 16.6,
+          "unit": "ohm",
+          "raw_text": "16.6R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 260,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R2",
+      "type": "resistor",
+      "name": "T-Pad Shunt Leg",
+      "parameters": {
+        "resistance": {
+          "value": 66.9,
+          "unit": "ohm",
+          "raw_text": "66.9R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R3",
+      "type": "resistor",
+      "name": "T-Pad Output Arm",
+      "parameters": {
+        "resistance": {
+          "value": 16.6,
+          "unit": "ohm",
+          "raw_text": "16.6R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 560,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_LOAD",
+      "type": "resistor",
+      "name": "Matched Characteristic Load",
+      "parameters": {
+        "resistance": {
+          "value": 50.0,
+          "unit": "ohm",
+          "raw_text": "50R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 720,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "RF System Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 410,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_IN",
+      "connections": [
+        "V1.+",
+        "R1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_CENTER",
+      "connections": [
+        "R1.2",
+        "R2.1",
+        "R3.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_OUT",
+      "connections": [
+        "R3.2",
+        "R_LOAD.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "R2.2",
+        "R_LOAD.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-21",
+    "domain": "Impedance Matching & Power Leveling",
+    "category": "RF & Transmission Lines",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "1e-5"
+    }
+  },
+  "validation": null
+}

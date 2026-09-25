@@ -1,0 +1,15 @@
+* Circuit2Sim - Universal SPICE Netlist
+* Model: Untitled Circuit
+* Compatible with: LTspice, ngspice, PSpice, Multisim, PLECS
+* -------------------------------------------------------------
+
+V_BUS N_BUS 0 DC 24.0
+R_SHUNT N_BUS N_LOAD 0.05
+R_LOAD N_LOAD 0 12.0
+R_FILT N_LOAD N_SENSE 100.0
+C_FILT N_SENSE 0 1e-07
+* GND1 Reference Ground Node 0
+
+* Transient analysis: start 0, stop 10ms, step 1us
+.tran 1u 10m
+.end

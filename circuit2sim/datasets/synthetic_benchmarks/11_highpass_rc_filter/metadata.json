@@ -1,0 +1,45 @@
+{
+  "dataset_id": "DS-11",
+  "directory": "11_highpass_rc_filter",
+  "name": "11_highpass_rc_filter",
+  "title": "First-Order RC High-Pass Filter",
+  "category": "Audio & Signal Conditioning",
+  "domain": "Analog Processing / AC Coupling",
+  "description": "Fundamental passive high-pass RC filter removing low-frequency drift and DC bias while passing high-frequency spectral content.",
+  "theory": {
+    "transfer_function": "H(s) = (s*R*C) / (1 + s*R*C)",
+    "cutoff_frequency_hz": 159.15,
+    "time_constant_seconds": 0.001,
+    "high_frequency_gain_db": 0.0,
+    "phase_at_fc_deg": 45.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.05,
+    "max_step_size": "1e-5"
+  },
+  "components_count": 4,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_11_highpass_rc_filter.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 4,
+    "components_verified": 4,
+    "parameters_total": 3,
+    "parameters_verified": 3,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-19",
+  "directory": "19_rc_differentiator",
+  "name": "19_rc_differentiator",
+  "title": "Fast Transient RC Differentiator",
+  "category": "Waveform Shaping & Timing",
+  "domain": "Digital Edge Detection & Radar Pulse Triggering",
+  "description": "Short time-constant RC differentiator outputting sharp voltage spikes corresponding to input rate-of-change dv/dt.",
+  "theory": {
+    "time_constant_seconds": 1e-08,
+    "differentiation_bandwidth_mhz": 15.91,
+    "output_relation": "Vout(t) = R*C * (dVin / dt)"
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.0001,
+    "max_step_size": "1e-8"
+  },
+  "components_count": 4,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_19_rc_differentiator.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 4,
+    "components_verified": 4,
+    "parameters_total": 3,
+    "parameters_verified": 3,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

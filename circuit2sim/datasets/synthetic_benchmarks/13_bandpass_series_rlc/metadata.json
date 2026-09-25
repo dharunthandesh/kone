@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-13",
+  "directory": "13_bandpass_series_rlc",
+  "name": "13_bandpass_series_rlc",
+  "title": "Second-Order Series RLC Bandpass Filter",
+  "category": "Resonant & Bandpass Filters",
+  "domain": "RF Tuning & Audio Frequency Selectivity",
+  "description": "Series LC resonant tank with load resistor across output achieving maximum transmission at 1 kHz resonance with 314 Hz bandwidth.",
+  "theory": {
+    "resonance_frequency_hz": 1000.0,
+    "quality_factor_Q": 3.18,
+    "bandwidth_hz": 314.16,
+    "center_gain_db": 0.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.02,
+    "max_step_size": "2e-6"
+  },
+  "components_count": 5,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_13_bandpass_series_rlc.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 5,
+    "components_verified": 5,
+    "parameters_total": 4,
+    "parameters_verified": 4,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

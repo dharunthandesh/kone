@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-16",
+  "directory": "16_voltage_doubler_greinacher",
+  "name": "16_voltage_doubler_greinacher",
+  "title": "Half-Wave Greinacher Voltage Doubler",
+  "category": "Power Multiplication & High Voltage",
+  "domain": "HV Bias Generation & Ionizer Power",
+  "description": "Diode-capacitor charge pump cascade clamping and peak-rectifying to deliver twice the peak AC supply voltage.",
+  "theory": {
+    "theoretical_max_output_v": 22.6,
+    "multiplication_factor": 2.0,
+    "dc_drop_per_diode_v": 0.7
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.05,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 7,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_16_voltage_doubler_greinacher.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 7,
+    "components_verified": 7,
+    "parameters_total": 6,
+    "parameters_verified": 6,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

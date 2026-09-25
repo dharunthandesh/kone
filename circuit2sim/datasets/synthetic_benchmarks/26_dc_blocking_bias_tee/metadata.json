@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-26",
+  "directory": "26_dc_blocking_bias_tee",
+  "name": "26_dc_blocking_bias_tee",
+  "title": "Wideband RF Bias Tee Injector Network",
+  "category": "RF Components & Telemetry",
+  "domain": "Active LNA Feeds & Remote Antennas",
+  "description": "Combines DC power with RF signals on a single coaxial path without mutual interference or signal degradation.",
+  "theory": {
+    "rf_lower_cutoff_hz": 31830.0,
+    "dc_isolation_from_rf_port_db": "> 60 dB",
+    "dc_voltage_injected_v": 12.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.01,
+    "max_step_size": "2e-6"
+  },
+  "components_count": 6,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_26_dc_blocking_bias_tee.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

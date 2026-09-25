@@ -1,0 +1,195 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "AC Source",
+      "parameters": {
+        "voltage": {
+          "value": 15.0,
+          "unit": "V",
+          "raw_text": "15V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 120,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "Input Limiting Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 1000.0,
+          "unit": "ohm",
+          "raw_text": "1k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 320,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "L1",
+      "type": "inductor",
+      "name": "Notch Inductor",
+      "parameters": {
+        "inductance": {
+          "value": 0.01,
+          "unit": "H",
+          "raw_text": "10mH",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 540,
+        "y": 220,
+        "w": 40,
+        "h": 60
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C1",
+      "type": "capacitor",
+      "name": "Notch Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 1e-06,
+          "unit": "F",
+          "raw_text": "1uF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 540,
+        "y": 320,
+        "w": 40,
+        "h": 60
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "System Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 380,
+        "y": 420,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_IN",
+      "connections": [
+        "V1.+",
+        "R1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_OUT",
+      "connections": [
+        "R1.2",
+        "L1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_LC",
+      "connections": [
+        "L1.2",
+        "C1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "C1.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-14",
+    "domain": "Harmonic Suppression & Noise Traps",
+    "category": "Interference Rejection",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "2e-6"
+    }
+  },
+  "validation": null
+}

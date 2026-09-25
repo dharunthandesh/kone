@@ -1,0 +1,36 @@
+* Circuit2Sim - Universal SPICE Netlist
+* Model: Project f33cebc6 Schematic Model
+* Compatible with: LTspice, ngspice, PSpice, Multisim, PLECS
+* -------------------------------------------------------------
+
+R1 N1_VIN N2 10000.0
+R2 N2 N3 1000.0
+R3 N3 N4 1000.0
+R4 N4 N5 10000.0
+R5 N5 N6 1000.0
+R6 N6 N7 1000.0
+R7 N7 N8 10000.0
+R8 N8 N9 10000.0
+R9 N9 N10 1000.0
+R10 N10 N11 10000.0
+R11 N11 N12 1000.0
+C12 N12 N13 1e-06
+* GND13 Reference Ground Node 0
+V14 N1_VIN 0 DC 12.0
+C15 N13 N14 1e-06
+R16 N14 N15 10000.0
+* GND17 Reference Ground Node 0
+* GND18 Reference Ground Node 0
+* GND19 Reference Ground Node 0
+* GND20 Reference Ground Node 0
+L21 N15 N16 0.001
+R22 N16 N17 10000.0
+R23 N17 N18 10000.0
+* GND24 Reference Ground Node 0
+* GND25 Reference Ground Node 0
+R26 N18 N19 10000.0
+L27 N19 0 0.001
+
+* Transient analysis: start 0, stop 10ms, step 1us
+.tran 1u 10m
+.end

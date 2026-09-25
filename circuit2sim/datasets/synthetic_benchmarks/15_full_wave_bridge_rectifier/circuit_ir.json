@@ -1,0 +1,288 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "AC Transformer Secondary",
+      "parameters": {
+        "voltage": {
+          "value": 24.0,
+          "unit": "V",
+          "raw_text": "24V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D1",
+      "type": "diode",
+      "name": "Bridge Diode Top-Left",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 240,
+        "y": 180,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D2",
+      "type": "diode",
+      "name": "Bridge Diode Top-Right",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 380,
+        "y": 180,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D3",
+      "type": "diode",
+      "name": "Bridge Diode Bottom-Left",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 240,
+        "y": 340,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D4",
+      "type": "diode",
+      "name": "Bridge Diode Bottom-Right",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 380,
+        "y": 340,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C1",
+      "type": "capacitor",
+      "name": "Bulk Smoothing Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 0.00022,
+          "unit": "F",
+          "raw_text": "220uF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 520,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "DC Circuit Load",
+      "parameters": {
+        "resistance": {
+          "value": 200.0,
+          "unit": "ohm",
+          "raw_text": "200R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 640,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "DC Return Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 520,
+        "y": 420,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_AC_P",
+      "connections": [
+        "V1.+",
+        "D1.A",
+        "D3.K"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_AC_N",
+      "connections": [
+        "V1.-",
+        "D2.A",
+        "D4.K"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_DC_POS",
+      "connections": [
+        "D1.K",
+        "D2.K",
+        "C1.1",
+        "R1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "D3.A",
+        "D4.A",
+        "C1.2",
+        "R1.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-15",
+    "domain": "Industrial Power Supply Conversion",
+    "category": "Power Electronics & AC/DC Supplies",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    }
+  },
+  "validation": null
+}

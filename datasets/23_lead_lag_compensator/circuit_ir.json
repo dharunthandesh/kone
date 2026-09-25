@@ -1,0 +1,226 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "Control Reference Input",
+      "parameters": {
+        "voltage": {
+          "value": 10.0,
+          "unit": "V",
+          "raw_text": "10V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "Lead Arm Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 10000.0,
+          "unit": "ohm",
+          "raw_text": "10k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 280,
+        "y": 140,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C1",
+      "type": "capacitor",
+      "name": "Lead Speedup Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 1e-07,
+          "unit": "F",
+          "raw_text": "100nF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 280,
+        "y": 220,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R2",
+      "type": "resistor",
+      "name": "Lag Arm Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 2200.0,
+          "unit": "ohm",
+          "raw_text": "2.2k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 500,
+        "y": 240,
+        "w": 40,
+        "h": 60
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C2",
+      "type": "capacitor",
+      "name": "Lag Shunt Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 4.7e-07,
+          "unit": "F",
+          "raw_text": "470nF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 500,
+        "y": 340,
+        "w": 40,
+        "h": 60
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "System Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 380,
+        "y": 430,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_IN",
+      "connections": [
+        "V1.+",
+        "R1.1",
+        "C1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_MID",
+      "connections": [
+        "R1.2",
+        "C1.2",
+        "R2.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_LAG",
+      "connections": [
+        "R2.2",
+        "C2.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "C2.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-23",
+    "domain": "Servomechanisms & Power Converter Feedback",
+    "category": "Feedback & Control Systems",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    }
+  },
+  "validation": null
+}

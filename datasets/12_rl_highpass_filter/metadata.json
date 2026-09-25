@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-12",
+  "directory": "12_rl_highpass_filter",
+  "name": "12_rl_highpass_filter",
+  "title": "First-Order RL High-Pass Filter",
+  "category": "Passive RF & Power Filters",
+  "domain": "Telecommunications / Transient Shunting",
+  "description": "Series resistor and parallel inductor network providing high-frequency transmission while shunting low frequencies to ground.",
+  "theory": {
+    "transfer_function": "H(s) = (s*L) / (R + s*L)",
+    "cutoff_frequency_hz": 1591.55,
+    "time_constant_seconds": 0.0001,
+    "dc_attenuation": "Infinite (Short to GND)"
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.02,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 4,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_12_rl_highpass_filter.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 4,
+    "components_verified": 4,
+    "parameters_total": 3,
+    "parameters_verified": 3,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

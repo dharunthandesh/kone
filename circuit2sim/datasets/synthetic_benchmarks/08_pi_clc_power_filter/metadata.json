@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-08",
+  "directory": "08_pi_clc_power_filter",
+  "name": "08_pi_clc_power_filter",
+  "title": "Third-Order CLC Pi-Topology Ripple Suppressor Filter",
+  "category": "Power Supply Quality & EMI Mitigation",
+  "domain": "Switched-Mode Power Supplies (SMPS) & RF Front-Ends",
+  "description": "Classic CLC (Capacitor-Inductor-Capacitor) Pi network delivering steep 3rd-order high-frequency rejection and negligible DC insertion loss.",
+  "theory": {
+    "cutoff_frequency_hz": 503.29,
+    "attenuation_slope_db_per_dec": -60.0,
+    "dc_drop_volts": 0.0,
+    "ripple_rejection_at_100khz_db": -92.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.05,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 6,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_08_pi_clc_power_filter.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

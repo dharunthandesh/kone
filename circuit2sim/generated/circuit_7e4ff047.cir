@@ -1,0 +1,13 @@
+* Circuit2Sim - Universal SPICE Netlist
+* Model: Current-Driven Parallel RLC Tank Resonator
+* Compatible with: LTspice, ngspice, PSpice, Multisim, PLECS
+* -------------------------------------------------------------
+
+L1 N_TANK 0 0.001
+C1 N_TANK 0 1e-07
+R1 N_TANK 0 5000.0
+* GND1 Reference Ground Node 0
+
+* Transient analysis: start 0, stop 10ms, step 1us
+.tran 1u 10m
+.end

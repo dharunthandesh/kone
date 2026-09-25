@@ -1,0 +1,21 @@
+* Circuit2Sim - Universal SPICE Netlist
+* Model: Project 160e94d5 Schematic Model
+* Compatible with: LTspice, ngspice, PSpice, Multisim, PLECS
+* -------------------------------------------------------------
+
+V1 N1_VIN 0 DC 12.0
+R2 N1_VIN N2 10000.0
+L3 N2 N3 0.001
+R4 N3 N4 10000.0
+C5 N4 N5 1e-06
+L6 N5 N6 0.001
+R7 N6 N7 10000.0
+C8 N7 N8 1e-06
+C9 N8 N9 1e-07
+C10 N9 N10 1e-07
+R11 N10 0 10000.0
+* GND12 Reference Ground Node 0
+
+* Transient analysis: start 0, stop 10ms, step 1us
+.tran 1u 10m
+.end

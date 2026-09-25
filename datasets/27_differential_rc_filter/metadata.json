@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-27",
+  "directory": "27_differential_rc_filter",
+  "name": "27_differential_rc_filter",
+  "title": "Balanced Differential Anti-Aliasing ADC Filter",
+  "category": "Precision Analog Front-End",
+  "domain": "SAR / Sigma-Delta ADC Instrumentation",
+  "description": "Symmetric balanced RC architecture filtering both differential mode and common mode noise prior to digitization.",
+  "theory": {
+    "differential_cutoff_frequency_hz": 795.77,
+    "common_mode_cutoff_frequency_hz": 15915.5,
+    "common_mode_attenuation_ratio": 10.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.02,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 7,
+  "nets_count": 5,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_27_differential_rc_filter.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 7,
+    "components_verified": 7,
+    "parameters_total": 6,
+    "parameters_verified": 6,
+    "parameters_uncertain": 0,
+    "connections_total": 5,
+    "connections_verified": 5,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

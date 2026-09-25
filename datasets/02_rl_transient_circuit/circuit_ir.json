@@ -1,0 +1,166 @@
+{
+  "version": "0.1",
+  "title": "First-Order Series RL Transient Network",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "DC Bus Supply",
+      "parameters": {
+        "voltage": {
+          "value": 24.0,
+          "unit": "V",
+          "raw_text": "24V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 120,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "L1",
+      "type": "inductor",
+      "name": "Series Filter Choke",
+      "parameters": {
+        "inductance": {
+          "value": 0.05,
+          "unit": "H",
+          "raw_text": "50mH",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 340,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "Load Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 100.0,
+          "unit": "ohm",
+          "raw_text": "100R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 550,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "Ground Reference",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 340,
+        "y": 410,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_IN",
+      "connections": [
+        "V1.+",
+        "L1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_MID",
+      "connections": [
+        "L1.2",
+        "R1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "R1.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "project_id": "bench_02",
+    "dataset_name": "02_rl_transient_circuit",
+    "category": "Electromechanical / Motor Drives",
+    "domain": "Actuator Modeling & Inrush Limiting"
+  },
+  "validation": {
+    "status": "PASS",
+    "components_total": 4,
+    "components_verified": 4,
+    "parameters_total": 3,
+    "parameters_verified": 3,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

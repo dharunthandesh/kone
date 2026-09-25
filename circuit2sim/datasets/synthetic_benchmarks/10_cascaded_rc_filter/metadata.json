@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-10",
+  "directory": "10_cascaded_rc_filter",
+  "name": "10_cascaded_rc_filter",
+  "title": "Cascaded Second-Order Passive RC Low-Pass Filter",
+  "category": "High-Order Analog Pre-Filtering",
+  "domain": "Precision Industrial Telemetry & Biomedical DAQ",
+  "description": "Two-stage passive low-pass filter providing steeper -40 dB/decade out-of-band attenuation while maintaining physical stability.",
+  "theory": {
+    "stage_1_cutoff_hz": 153.9,
+    "stage_2_cutoff_hz": 338.6,
+    "combined_asymptotic_rolloff_db_per_dec": -40.0,
+    "dc_attenuation_db": -0.09
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.05,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 7,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_10_cascaded_rc_filter.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 7,
+    "components_verified": 7,
+    "parameters_total": 6,
+    "parameters_verified": 6,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

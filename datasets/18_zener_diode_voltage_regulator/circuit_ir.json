@@ -1,0 +1,187 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "Unregulated DC Supply",
+      "parameters": {
+        "voltage": {
+          "value": 15.0,
+          "unit": "V",
+          "raw_text": "15V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 120,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "Current Limiting Ballast",
+      "parameters": {
+        "resistance": {
+          "value": 330.0,
+          "unit": "ohm",
+          "raw_text": "330R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 340,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D1",
+      "type": "diode",
+      "name": "Shunt Reference Clamp",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 520,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_LOAD",
+      "type": "resistor",
+      "name": "Regulated Output Load",
+      "parameters": {
+        "resistance": {
+          "value": 1000.0,
+          "unit": "ohm",
+          "raw_text": "1k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 660,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "System Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 400,
+        "y": 410,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_IN",
+      "connections": [
+        "V1.+",
+        "R1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_REG",
+      "connections": [
+        "R1.2",
+        "D1.A",
+        "R_LOAD.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "D1.K",
+        "R_LOAD.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-18",
+    "domain": "Bias Voltage Generation & Precision Clamping",
+    "category": "Voltage References & Regulators",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "5e-6"
+    }
+  },
+  "validation": null
+}

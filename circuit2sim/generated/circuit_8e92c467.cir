@@ -1,0 +1,24 @@
+* Circuit2Sim - Universal SPICE Netlist
+* Model: KONE BCX14 Isolated DC Voltage Measurement Subcircuit
+* Compatible with: LTspice, ngspice, PSpice, Multisim, PLECS
+* -------------------------------------------------------------
+
+V_UDC N_UDC_POS 0 DC 600.0
+R96 N_DIV1 N_UDC_POS 221000.0
+R87 N_DIV2 N_DIV1 221000.0
+R169 N_VINP N_DIV2 221000.0
+C40 N_VINP 0 1e-07
+R91 N_VINP 0 332.0
+C59 N_NC1 0 1e-07
+C60 N_VOUTP N_OPA_IN_N 1e-07
+R89 N_OPA_IN_P N_VOUTP 10000.0
+R94 N_OPA_IN_N 0 10000.0
+R86 0 N_OPA_IN_P 10000.0
+R95 N_OPA_OUT N_OPA_IN_N 10000.0
+R7 N_UDC_MEAS N_OPA_OUT 1000.0
+C41 N_UDC_MEAS 0 1e-08
+* GND1 Reference Ground Node 0
+
+* Transient analysis: start 0, stop 10ms, step 1us
+.tran 1u 10m
+.end

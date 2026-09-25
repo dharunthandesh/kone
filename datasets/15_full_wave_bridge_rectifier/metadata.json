@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-15",
+  "directory": "15_full_wave_bridge_rectifier",
+  "name": "15_full_wave_bridge_rectifier",
+  "title": "Full-Wave Diode Bridge Rectifier with Filter",
+  "category": "Power Electronics & AC/DC Supplies",
+  "domain": "Industrial Power Supply Conversion",
+  "description": "Standard Graetz four-diode bridge converting bipolar AC excitation to unipolar DC with capacitor smoothing.",
+  "theory": {
+    "dc_peak_output_v": 22.6,
+    "diode_voltage_drop_total_v": 1.4,
+    "ripple_frequency_multiplier": "2x Input Frequency"
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.05,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 8,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_15_full_wave_bridge_rectifier.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 8,
+    "components_verified": 8,
+    "parameters_total": 7,
+    "parameters_verified": 7,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

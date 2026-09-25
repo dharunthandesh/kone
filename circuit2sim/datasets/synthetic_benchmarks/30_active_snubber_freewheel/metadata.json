@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-30",
+  "directory": "30_active_snubber_freewheel",
+  "name": "30_active_snubber_freewheel",
+  "title": "Dual-Diode Inductive Energy Return Snubber",
+  "category": "Motor Drives & Inverter Protection",
+  "domain": "BLDC/PMSM Phase Inverter Switching",
+  "description": "Rail-clamped dual diode and RC network recovering stored reactive inductive energy while quenching dv/dt overshoot.",
+  "theory": {
+    "rail_voltage_v": 50.0,
+    "snubber_time_constant_us": 55.0,
+    "inductive_energy_joules": 0.025
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.02,
+    "max_step_size": "2e-6"
+  },
+  "components_count": 7,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_30_active_snubber_freewheel.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 7,
+    "components_verified": 7,
+    "parameters_total": 6,
+    "parameters_verified": 6,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

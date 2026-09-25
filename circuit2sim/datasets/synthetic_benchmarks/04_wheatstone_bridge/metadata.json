@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-04",
+  "directory": "04_wheatstone_bridge",
+  "name": "04_wheatstone_bridge",
+  "title": "Wheatstone Bridge Precision Sensor Conditioning Network",
+  "category": "Sensor Instrumentation & Transducers",
+  "domain": "Strain Gauges, Load Cells & RTD Sensors",
+  "description": "Four-resistor bridge topology featuring an intentional 20% sensor imbalance to generate precise differential output across the detection resistor.",
+  "theory": {
+    "v_node_a_volts": 2.5,
+    "v_node_b_volts": 2.727,
+    "v_differential_volts": 0.227,
+    "thevenin_resistance_ohm": 1045.45
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.05,
+    "max_step_size": "1e-5"
+  },
+  "components_count": 7,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_04_wheatstone_bridge.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 7,
+    "components_verified": 7,
+    "parameters_total": 6,
+    "parameters_verified": 6,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

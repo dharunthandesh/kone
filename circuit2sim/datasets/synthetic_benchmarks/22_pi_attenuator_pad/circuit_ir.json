@@ -1,0 +1,218 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "RF Signal Source",
+      "parameters": {
+        "voltage": {
+          "value": 5.0,
+          "unit": "V",
+          "raw_text": "5V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "Input Shunt Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 96.2,
+          "unit": "ohm",
+          "raw_text": "96.2R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 260,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R2",
+      "type": "resistor",
+      "name": "Series Bridge Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 71.2,
+          "unit": "ohm",
+          "raw_text": "71.2R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R3",
+      "type": "resistor",
+      "name": "Output Shunt Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 96.2,
+          "unit": "ohm",
+          "raw_text": "96.2R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 580,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_LOAD",
+      "type": "resistor",
+      "name": "RF 50-Ohm Term",
+      "parameters": {
+        "resistance": {
+          "value": 50.0,
+          "unit": "ohm",
+          "raw_text": "50R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 720,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "System Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 410,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_IN",
+      "connections": [
+        "V1.+",
+        "R1.1",
+        "R2.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_OUT",
+      "connections": [
+        "R2.2",
+        "R3.1",
+        "R_LOAD.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "R1.2",
+        "R3.2",
+        "R_LOAD.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-22",
+    "domain": "Transceiver Protection & Signal Level Matching",
+    "category": "RF & Microwave Circuits",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "1e-5"
+    }
+  },
+  "validation": null
+}

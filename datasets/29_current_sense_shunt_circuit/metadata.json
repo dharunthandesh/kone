@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-29",
+  "directory": "29_current_sense_shunt_circuit",
+  "name": "29_current_sense_shunt_circuit",
+  "title": "Precision Current Sense Shunt with Noise Filter",
+  "category": "Current Sensing & Monitoring",
+  "domain": "Battery Management & Motor Phase Current Telemetry",
+  "description": "Low-resistance metal alloy shunt with integrated RC low-pass filter to reject inverter switching PWM noise.",
+  "theory": {
+    "nominal_current_a": 1.99,
+    "sense_voltage_mv": 99.58,
+    "filter_cutoff_frequency_khz": 15.91
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.01,
+    "max_step_size": "2e-6"
+  },
+  "components_count": 6,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_29_current_sense_shunt_circuit.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

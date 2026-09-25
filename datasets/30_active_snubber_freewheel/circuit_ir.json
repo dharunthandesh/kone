@@ -1,0 +1,257 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V_DC",
+      "type": "voltage_source",
+      "name": "Inverter DC Rail Supply",
+      "parameters": {
+        "voltage": {
+          "value": 50.0,
+          "unit": "V",
+          "raw_text": "50V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "L_MOTOR",
+      "type": "inductor",
+      "name": "Motor Winding Inductance",
+      "parameters": {
+        "inductance": {
+          "value": 0.02,
+          "unit": "H",
+          "raw_text": "20mH",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 260,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D_UPPER",
+      "type": "diode",
+      "name": "Upper Rail Clamping Diode",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 170,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D_LOWER",
+      "type": "diode",
+      "name": "Lower Rail Clamping Diode",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 340,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_SNUB",
+      "type": "resistor",
+      "name": "Damping Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 25.0,
+          "unit": "ohm",
+          "raw_text": "25R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 560,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C_SNUB",
+      "type": "capacitor",
+      "name": "Snubber Reservoir Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 2.2e-06,
+          "unit": "F",
+          "raw_text": "2.2uF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 680,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "DC Negative Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 420,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_DC_POS",
+      "connections": [
+        "V_DC.+",
+        "L_MOTOR.1",
+        "D_UPPER.K"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_PHASE",
+      "connections": [
+        "L_MOTOR.2",
+        "D_UPPER.A",
+        "D_LOWER.K",
+        "R_SNUB.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_RC",
+      "connections": [
+        "R_SNUB.2",
+        "C_SNUB.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V_DC.-",
+        "D_LOWER.A",
+        "C_SNUB.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-30",
+    "domain": "BLDC/PMSM Phase Inverter Switching",
+    "category": "Motor Drives & Inverter Protection",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "2e-6"
+    }
+  },
+  "validation": null
+}

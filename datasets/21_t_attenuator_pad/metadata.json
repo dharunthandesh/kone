@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-21",
+  "directory": "21_t_attenuator_pad",
+  "name": "21_t_attenuator_pad",
+  "title": "Symmetrical 50-Ohm 6dB T-Pad Attenuator",
+  "category": "RF & Transmission Lines",
+  "domain": "Impedance Matching & Power Leveling",
+  "description": "Standard T-configuration resistive network maintaining precise 50-ohm characteristic impedance with 6dB signal reduction.",
+  "theory": {
+    "attenuation_db": 6.0,
+    "characteristic_impedance_ohms": 50.0,
+    "voltage_transfer_ratio": 0.501
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.01,
+    "max_step_size": "1e-5"
+  },
+  "components_count": 6,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_21_t_attenuator_pad.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

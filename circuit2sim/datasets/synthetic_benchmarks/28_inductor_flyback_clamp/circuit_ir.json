@@ -1,0 +1,187 @@
+{
+  "version": "0.1",
+  "title": "Untitled Circuit",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "Relay Driver Supply",
+      "parameters": {
+        "voltage": {
+          "value": 24.0,
+          "unit": "V",
+          "raw_text": "24V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "L_COIL",
+      "type": "inductor",
+      "name": "Actuator Coil Inductance",
+      "parameters": {
+        "inductance": {
+          "value": 0.25,
+          "unit": "H",
+          "raw_text": "250mH",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 340,
+        "y": 200,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_COIL",
+      "type": "resistor",
+      "name": "Coil Internal Resistance",
+      "parameters": {
+        "resistance": {
+          "value": 48.0,
+          "unit": "ohm",
+          "raw_text": "48R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 340,
+        "y": 280,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "D_FLY",
+      "type": "diode",
+      "name": "Freewheel Clamping Diode",
+      "parameters": {
+        "forward_voltage": {
+          "value": 0.7,
+          "unit": "V",
+          "raw_text": "0.7V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "A",
+        "K"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 520,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "System Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 340,
+        "y": 410,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_BUS",
+      "connections": [
+        "V1.+",
+        "L_COIL.1",
+        "D_FLY.K"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_INTERNAL",
+      "connections": [
+        "L_COIL.2",
+        "R_COIL.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "R_COIL.2",
+        "D_FLY.A",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "dataset_id": "DS-28",
+    "domain": "Automotive Relays & Valve Actuators",
+    "category": "Electromechanical Drivers",
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    }
+  },
+  "validation": null
+}

@@ -1,0 +1,228 @@
+{
+  "version": "0.1",
+  "title": "Third-Order CLC Pi-Topology Ripple Suppressor Filter",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "Switching Rail DC Supply",
+      "parameters": {
+        "voltage": {
+          "value": 12.0,
+          "unit": "V",
+          "raw_text": "12V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C1",
+      "type": "capacitor",
+      "name": "Input Decoupling Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 1e-05,
+          "unit": "F",
+          "raw_text": "10uF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 280,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "L1",
+      "type": "inductor",
+      "name": "Pi-Filter Series Choke",
+      "parameters": {
+        "inductance": {
+          "value": 0.01,
+          "unit": "H",
+          "raw_text": "10mH",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 170,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "C2",
+      "type": "capacitor",
+      "name": "Output Decoupling Capacitor",
+      "parameters": {
+        "capacitance": {
+          "value": 1e-05,
+          "unit": "F",
+          "raw_text": "10uF",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 560,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_LOAD",
+      "type": "resistor",
+      "name": "RF / Power Rail Load",
+      "parameters": {
+        "resistance": {
+          "value": 50.0,
+          "unit": "ohm",
+          "raw_text": "50R",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 690,
+        "y": 260,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "Ground Plane",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 420,
+        "y": 420,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "N_IN",
+      "connections": [
+        "V1.+",
+        "C1.1",
+        "L1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "N_OUT",
+      "connections": [
+        "L1.2",
+        "C2.1",
+        "R_LOAD.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "C1.2",
+        "C2.2",
+        "R_LOAD.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "project_id": "bench_08",
+    "dataset_name": "08_pi_clc_power_filter",
+    "category": "Power Supply Quality & EMI Mitigation",
+    "domain": "Switched-Mode Power Supplies (SMPS) & RF Front-Ends"
+  },
+  "validation": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

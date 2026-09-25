@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-20",
+  "directory": "20_rc_integrator",
+  "name": "20_rc_integrator",
+  "title": "Passive Long Time-Constant RC Integrator",
+  "category": "Waveform Shaping & Analog Computation",
+  "domain": "True RMS Sensing & Signal Smoothing",
+  "description": "High-resistance large-capacitance network producing linear ramp approximations from square wave inputs.",
+  "theory": {
+    "time_constant_seconds": 1.0,
+    "integration_linear_slope_v_per_s": 10.0,
+    "output_relation": "Vout(t) = (1/RC) * integral(Vin dt)"
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.5,
+    "max_step_size": "1e-4"
+  },
+  "components_count": 4,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_20_rc_integrator.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 4,
+    "components_verified": 4,
+    "parameters_total": 3,
+    "parameters_verified": 3,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

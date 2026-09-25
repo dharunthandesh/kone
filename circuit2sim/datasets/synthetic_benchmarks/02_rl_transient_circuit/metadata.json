@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-02",
+  "directory": "02_rl_transient_circuit",
+  "name": "02_rl_transient_circuit",
+  "title": "First-Order Series RL Transient Network",
+  "category": "Electromechanical / Motor Drives",
+  "domain": "Actuator Modeling & Inrush Limiting",
+  "description": "Standard series RL model representing coil inductance, wire resistance, and current rise dynamics under step excitation.",
+  "theory": {
+    "current_response": "i(t) = (V/R) * (1 - exp(-t/tau))",
+    "steady_state_current_a": 0.24,
+    "time_constant_seconds": 0.0005,
+    "stored_energy_joules": 0.00144
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.02,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 4,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_02_rl_transient_circuit.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 4,
+    "components_verified": 4,
+    "parameters_total": 3,
+    "parameters_verified": 3,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

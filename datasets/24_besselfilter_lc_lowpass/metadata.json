@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-24",
+  "directory": "24_besselfilter_lc_lowpass",
+  "name": "24_besselfilter_lc_lowpass",
+  "title": "3rd-Order LC Ladder Low-Pass Filter",
+  "category": "High-Order Passive Filters",
+  "domain": "EMI Suppression & Telecommunication Channels",
+  "description": "Three-pole L-C-L ladder filter achieving steep -60 dB/decade attenuation above the cutoff frequency.",
+  "theory": {
+    "order": 3,
+    "cutoff_frequency_hz": 4954.0,
+    "rolloff_rate_db_per_decade": -60.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.01,
+    "max_step_size": "2e-6"
+  },
+  "components_count": 6,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_24_besselfilter_lc_lowpass.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

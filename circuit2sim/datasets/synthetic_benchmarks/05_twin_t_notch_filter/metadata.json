@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-05",
+  "directory": "05_twin_t_notch_filter",
+  "name": "05_twin_t_notch_filter",
+  "title": "Passive Twin-T Band-Reject Notch Filter Network",
+  "category": "Analog Filtering & Bio-Signal Processing",
+  "domain": "Medical ECG/EMG & Precision DAQ Front-Ends",
+  "description": "Symmetrical twin-T topology providing infinite theoretical attenuation at notch frequency f0 = 1/(2*pi*R*C).",
+  "theory": {
+    "notch_frequency_hz": 159.15,
+    "r_branch_val_ohm": 10000.0,
+    "c_branch_val_f": 1e-07,
+    "notch_depth_db": -60.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.05,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 9,
+  "nets_count": 5,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_05_twin_t_notch_filter.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 9,
+    "components_verified": 9,
+    "parameters_total": 8,
+    "parameters_verified": 8,
+    "parameters_uncertain": 0,
+    "connections_total": 5,
+    "connections_verified": 5,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

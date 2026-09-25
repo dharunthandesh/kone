@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-17",
+  "directory": "17_voltage_divider_attenuator",
+  "name": "17_voltage_divider_attenuator",
+  "title": "Calibrated Precision Voltage Divider",
+  "category": "Instrumentation & Scaling",
+  "domain": "ADC Range Matching & Sensor Scaling",
+  "description": "Standard 10:1 voltage divider network for level-shifting high voltage sensor inputs into micro-controller ADC ranges.",
+  "theory": {
+    "unloaded_ratio": 0.1,
+    "nominal_attenuation_db": -20.0,
+    "output_voltage_v": 0.9901,
+    "output_impedance_ohms": 900.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.01,
+    "max_step_size": "1e-5"
+  },
+  "components_count": 5,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_17_voltage_divider_attenuator.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 5,
+    "components_verified": 5,
+    "parameters_total": 4,
+    "parameters_verified": 4,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

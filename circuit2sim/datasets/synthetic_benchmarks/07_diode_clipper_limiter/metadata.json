@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-07",
+  "directory": "07_diode_clipper_limiter",
+  "name": "07_diode_clipper_limiter",
+  "title": "Dual Symmetrical Diode Overvoltage Clipper Network",
+  "category": "Input Protection & Signal Conditioning",
+  "domain": "Microcontroller ADC Port Protection / ESD Clamping",
+  "description": "Antiparallel diode pair limiting signal excursions to +/- 0.7V to prevent overdrive damage to sensitive semiconductor inputs.",
+  "theory": {
+    "max_positive_output_v": 0.7,
+    "max_negative_output_v": -0.7,
+    "limiting_series_resistance_ohm": 1000.0,
+    "dissipated_peak_power_mw": 18.49
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.05,
+    "max_step_size": "5e-6"
+  },
+  "components_count": 6,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_07_diode_clipper_limiter.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

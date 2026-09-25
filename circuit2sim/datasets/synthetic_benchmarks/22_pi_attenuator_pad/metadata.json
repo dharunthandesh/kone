@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-22",
+  "directory": "22_pi_attenuator_pad",
+  "name": "22_pi_attenuator_pad",
+  "title": "Symmetrical 50-Ohm 10dB Pi-Pad Attenuator",
+  "category": "RF & Microwave Circuits",
+  "domain": "Transceiver Protection & Signal Level Matching",
+  "description": "Pi-topology attenuator with two shunt legs and one series bridging resistor providing 10dB power reduction.",
+  "theory": {
+    "attenuation_db": 10.0,
+    "characteristic_impedance_ohms": 50.0,
+    "voltage_transfer_ratio": 0.3162
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.01,
+    "max_step_size": "1e-5"
+  },
+  "components_count": 6,
+  "nets_count": 3,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_22_pi_attenuator_pad.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 3,
+    "connections_verified": 3,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

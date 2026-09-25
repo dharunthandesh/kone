@@ -1,0 +1,267 @@
+{
+  "version": "0.1",
+  "title": "Wheatstone Bridge Precision Sensor Conditioning Network",
+  "components": [
+    {
+      "id": "V1",
+      "type": "voltage_source",
+      "name": "Bridge Excitation Source",
+      "parameters": {
+        "voltage": {
+          "value": 5.0,
+          "unit": "V",
+          "raw_text": "5V",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "+",
+        "-"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 100,
+        "y": 260,
+        "w": 60,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R1",
+      "type": "resistor",
+      "name": "Upper Left Arm Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 1000.0,
+          "unit": "ohm",
+          "raw_text": "1k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 320,
+        "y": 140,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R2",
+      "type": "resistor",
+      "name": "Lower Left Arm Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 1000.0,
+          "unit": "ohm",
+          "raw_text": "1k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 320,
+        "y": 320,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R3",
+      "type": "resistor",
+      "name": "Upper Right Arm Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 1000.0,
+          "unit": "ohm",
+          "raw_text": "1k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 540,
+        "y": 140,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R4",
+      "type": "resistor",
+      "name": "Active Strain Sensor Resistor",
+      "parameters": {
+        "resistance": {
+          "value": 1200.0,
+          "unit": "ohm",
+          "raw_text": "1.2k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 540,
+        "y": 320,
+        "w": 40,
+        "h": 80
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "R_DET",
+      "type": "resistor",
+      "name": "Detector Galvo/ADC Input Load",
+      "parameters": {
+        "resistance": {
+          "value": 10000.0,
+          "unit": "ohm",
+          "raw_text": "10k",
+          "confidence": 1.0,
+          "uncertain": false,
+          "notes": null
+        }
+      },
+      "pins": [
+        "1",
+        "2"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 430,
+        "y": 240,
+        "w": 80,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    },
+    {
+      "id": "GND1",
+      "type": "ground",
+      "name": "Reference Ground",
+      "parameters": {},
+      "pins": [
+        "1"
+      ],
+      "confidence": 1.0,
+      "orientation": 0,
+      "bounding_box": {
+        "x": 430,
+        "y": 470,
+        "w": 60,
+        "h": 40
+      },
+      "uncertainties": [],
+      "verified_by_user": false
+    }
+  ],
+  "nets": [
+    {
+      "id": "VCC",
+      "connections": [
+        "V1.+",
+        "R1.1",
+        "R3.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "NODE_A",
+      "connections": [
+        "R1.2",
+        "R2.1",
+        "R_DET.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "NODE_B",
+      "connections": [
+        "R3.2",
+        "R4.1",
+        "R_DET.2"
+      ],
+      "confidence": 1.0,
+      "is_ground": false,
+      "notes": null
+    },
+    {
+      "id": "GND",
+      "connections": [
+        "V1.-",
+        "R2.2",
+        "R4.2",
+        "GND1.1"
+      ],
+      "confidence": 1.0,
+      "is_ground": true,
+      "notes": null
+    }
+  ],
+  "metadata": {
+    "project_id": "bench_04",
+    "dataset_name": "04_wheatstone_bridge",
+    "category": "Sensor Instrumentation & Transducers",
+    "domain": "Strain Gauges, Load Cells & RTD Sensors"
+  },
+  "validation": {
+    "status": "PASS",
+    "components_total": 7,
+    "components_verified": 7,
+    "parameters_total": 6,
+    "parameters_verified": 6,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

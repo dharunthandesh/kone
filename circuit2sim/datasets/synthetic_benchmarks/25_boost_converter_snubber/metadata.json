@@ -1,0 +1,43 @@
+{
+  "dataset_id": "DS-25",
+  "directory": "25_boost_converter_snubber",
+  "name": "25_boost_converter_snubber",
+  "title": "Switching Converter RCD Voltage Clamp Snubber",
+  "category": "Power Electronics Protection",
+  "domain": "Flyback/Forward Switched-Mode Power Supplies",
+  "description": "RCD snubber absorbs transformer leakage inductance energy during primary switch turn-off, bounding drain-source voltage.",
+  "theory": {
+    "leakage_energy_absorbed_uj": 11.5,
+    "snubber_discharge_tau_us": 47.0,
+    "clamping_voltage_target_v": 55.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.005,
+    "max_step_size": "1e-6"
+  },
+  "components_count": 6,
+  "nets_count": 4,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_25_boost_converter_snubber.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 6,
+    "components_verified": 6,
+    "parameters_total": 5,
+    "parameters_verified": 5,
+    "parameters_uncertain": 0,
+    "connections_total": 4,
+    "connections_verified": 4,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "dataset_id": "DS-09",
+  "directory": "09_parallel_resonant_tank",
+  "name": "09_parallel_resonant_tank",
+  "title": "Current-Driven Parallel RLC Tank Resonator",
+  "category": "RF Communications & Wireless Power",
+  "domain": "Oscillator Tank Circuit / RFID Antenna Front-End",
+  "description": "Parallel resonant tank excited by an ideal current source exhibiting high impedance at resonance with quality factor Q = 50.",
+  "theory": {
+    "resonance_frequency_hz": 15915.49,
+    "tank_impedance_at_resonance_ohm": 5000.0,
+    "quality_factor_q": 50.0,
+    "peak_tank_voltage_v": 100.0
+  },
+  "simulation_settings": {
+    "solver": "ode23t",
+    "stop_time": 0.01,
+    "max_step_size": "2e-6"
+  },
+  "components_count": 5,
+  "nets_count": 2,
+  "files": {
+    "schematic": "schematic.png",
+    "circuit_ir": "circuit_ir.json",
+    "matlab_script": "generate_model.m",
+    "simulink_model": "model_09_parallel_resonant_tank.slx",
+    "metadata": "metadata.json"
+  },
+  "validation_report": {
+    "status": "PASS",
+    "components_total": 5,
+    "components_verified": 5,
+    "parameters_total": 4,
+    "parameters_verified": 4,
+    "parameters_uncertain": 0,
+    "connections_total": 2,
+    "connections_verified": 2,
+    "has_ground_reference": true,
+    "floating_pins": [],
+    "warnings": [],
+    "errors": [],
+    "ready_for_compilation": true
+  }
+}

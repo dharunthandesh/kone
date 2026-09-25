@@ -1,0 +1,1308 @@
+[
+  {
+    "dataset_id": "DS-01",
+    "directory": "01_rc_lowpass_filter",
+    "name": "01_rc_lowpass_filter",
+    "title": "First-Order RC Low-Pass Filter Stage",
+    "category": "Signal Conditioning & Audio Filters",
+    "domain": "Analog Instrumentation / Industrial Telemetry",
+    "description": "Fundamental first-order passive low-pass RC network designed for high-frequency noise attenuation and anti-aliasing.",
+    "theory": {
+      "transfer_function": "H(s) = 1 / (1 + s*R*C)",
+      "cutoff_frequency_hz": 33.86,
+      "time_constant_seconds": 0.0047,
+      "dc_gain_db": 0.0,
+      "phase_at_fc_deg": -45.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "1e-5"
+    },
+    "components_count": 4,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_01_rc_lowpass_filter.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 4,
+      "components_verified": 4,
+      "parameters_total": 3,
+      "parameters_verified": 3,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-02",
+    "directory": "02_rl_transient_circuit",
+    "name": "02_rl_transient_circuit",
+    "title": "First-Order Series RL Transient Network",
+    "category": "Electromechanical / Motor Drives",
+    "domain": "Actuator Modeling & Inrush Limiting",
+    "description": "Standard series RL model representing coil inductance, wire resistance, and current rise dynamics under step excitation.",
+    "theory": {
+      "current_response": "i(t) = (V/R) * (1 - exp(-t/tau))",
+      "steady_state_current_a": 0.24,
+      "time_constant_seconds": 0.0005,
+      "stored_energy_joules": 0.00144
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 4,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_02_rl_transient_circuit.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 4,
+      "components_verified": 4,
+      "parameters_total": 3,
+      "parameters_verified": 3,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-03",
+    "directory": "03_series_rlc_snubber",
+    "name": "03_series_rlc_snubber",
+    "title": "Series RLC Resonant Snubber Network",
+    "category": "Power Electronics & Inverter Protection",
+    "domain": "IGBT/MOSFET Turn-Off Spike Mitigation",
+    "description": "Underdamped series RLC snubber used in power conversion to limit high dv/dt transients and absorb switching energy.",
+    "theory": {
+      "resonance_frequency_hz": 7234.3,
+      "characteristic_impedance_ohm": 100.0,
+      "damping_ratio_zeta": 0.075,
+      "quality_factor_q": 6.67
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "2e-6"
+    },
+    "components_count": 5,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_03_series_rlc_snubber.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 5,
+      "components_verified": 5,
+      "parameters_total": 4,
+      "parameters_verified": 4,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-04",
+    "directory": "04_wheatstone_bridge",
+    "name": "04_wheatstone_bridge",
+    "title": "Wheatstone Bridge Precision Sensor Conditioning Network",
+    "category": "Sensor Instrumentation & Transducers",
+    "domain": "Strain Gauges, Load Cells & RTD Sensors",
+    "description": "Four-resistor bridge topology featuring an intentional 20% sensor imbalance to generate precise differential output across the detection resistor.",
+    "theory": {
+      "v_node_a_volts": 2.5,
+      "v_node_b_volts": 2.727,
+      "v_differential_volts": 0.227,
+      "thevenin_resistance_ohm": 1045.45
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "1e-5"
+    },
+    "components_count": 7,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_04_wheatstone_bridge.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 7,
+      "components_verified": 7,
+      "parameters_total": 6,
+      "parameters_verified": 6,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-05",
+    "directory": "05_twin_t_notch_filter",
+    "name": "05_twin_t_notch_filter",
+    "title": "Passive Twin-T Band-Reject Notch Filter Network",
+    "category": "Analog Filtering & Bio-Signal Processing",
+    "domain": "Medical ECG/EMG & Precision DAQ Front-Ends",
+    "description": "Symmetrical twin-T topology providing infinite theoretical attenuation at notch frequency f0 = 1/(2*pi*R*C).",
+    "theory": {
+      "notch_frequency_hz": 159.15,
+      "r_branch_val_ohm": 10000.0,
+      "c_branch_val_f": 1e-07,
+      "notch_depth_db": -60.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 9,
+    "nets_count": 5,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_05_twin_t_notch_filter.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 9,
+      "components_verified": 9,
+      "parameters_total": 8,
+      "parameters_verified": 8,
+      "parameters_uncertain": 0,
+      "connections_total": 5,
+      "connections_verified": 5,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-06",
+    "directory": "06_half_wave_rectifier",
+    "name": "06_half_wave_rectifier",
+    "title": "Diode Half-Wave Rectifier with Smoothing Reservoir",
+    "category": "Power Supplies & AC/DC Converters",
+    "domain": "Auxiliary Power Supplies & Bias Rails",
+    "description": "Fundamental half-wave rectifier converting unidirectional conduction through diode D1 into filtered DC voltage via reservoir capacitor C1.",
+    "theory": {
+      "peak_input_voltage_v": 12.0,
+      "diode_forward_drop_v": 0.7,
+      "dc_peak_output_v": 11.3,
+      "filter_discharge_tau_s": 0.05
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 5,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_06_half_wave_rectifier.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 5,
+      "components_verified": 5,
+      "parameters_total": 4,
+      "parameters_verified": 4,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-07",
+    "directory": "07_diode_clipper_limiter",
+    "name": "07_diode_clipper_limiter",
+    "title": "Dual Symmetrical Diode Overvoltage Clipper Network",
+    "category": "Input Protection & Signal Conditioning",
+    "domain": "Microcontroller ADC Port Protection / ESD Clamping",
+    "description": "Antiparallel diode pair limiting signal excursions to +/- 0.7V to prevent overdrive damage to sensitive semiconductor inputs.",
+    "theory": {
+      "max_positive_output_v": 0.7,
+      "max_negative_output_v": -0.7,
+      "limiting_series_resistance_ohm": 1000.0,
+      "dissipated_peak_power_mw": 18.49
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 6,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_07_diode_clipper_limiter.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-08",
+    "directory": "08_pi_clc_power_filter",
+    "name": "08_pi_clc_power_filter",
+    "title": "Third-Order CLC Pi-Topology Ripple Suppressor Filter",
+    "category": "Power Supply Quality & EMI Mitigation",
+    "domain": "Switched-Mode Power Supplies (SMPS) & RF Front-Ends",
+    "description": "Classic CLC (Capacitor-Inductor-Capacitor) Pi network delivering steep 3rd-order high-frequency rejection and negligible DC insertion loss.",
+    "theory": {
+      "cutoff_frequency_hz": 503.29,
+      "attenuation_slope_db_per_dec": -60.0,
+      "dc_drop_volts": 0.0,
+      "ripple_rejection_at_100khz_db": -92.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 6,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_08_pi_clc_power_filter.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-09",
+    "directory": "09_parallel_resonant_tank",
+    "name": "09_parallel_resonant_tank",
+    "title": "Current-Driven Parallel RLC Tank Resonator",
+    "category": "RF Communications & Wireless Power",
+    "domain": "Oscillator Tank Circuit / RFID Antenna Front-End",
+    "description": "Parallel resonant tank excited by an ideal current source exhibiting high impedance at resonance with quality factor Q = 50.",
+    "theory": {
+      "resonance_frequency_hz": 15915.49,
+      "tank_impedance_at_resonance_ohm": 5000.0,
+      "quality_factor_q": 50.0,
+      "peak_tank_voltage_v": 100.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "2e-6"
+    },
+    "components_count": 5,
+    "nets_count": 2,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_09_parallel_resonant_tank.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 5,
+      "components_verified": 5,
+      "parameters_total": 4,
+      "parameters_verified": 4,
+      "parameters_uncertain": 0,
+      "connections_total": 2,
+      "connections_verified": 2,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-10",
+    "directory": "10_cascaded_rc_filter",
+    "name": "10_cascaded_rc_filter",
+    "title": "Cascaded Second-Order Passive RC Low-Pass Filter",
+    "category": "High-Order Analog Pre-Filtering",
+    "domain": "Precision Industrial Telemetry & Biomedical DAQ",
+    "description": "Two-stage passive low-pass filter providing steeper -40 dB/decade out-of-band attenuation while maintaining physical stability.",
+    "theory": {
+      "stage_1_cutoff_hz": 153.9,
+      "stage_2_cutoff_hz": 338.6,
+      "combined_asymptotic_rolloff_db_per_dec": -40.0,
+      "dc_attenuation_db": -0.09
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 7,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_10_cascaded_rc_filter.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 7,
+      "components_verified": 7,
+      "parameters_total": 6,
+      "parameters_verified": 6,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-11",
+    "directory": "11_highpass_rc_filter",
+    "name": "11_highpass_rc_filter",
+    "title": "First-Order RC High-Pass Filter",
+    "category": "Audio & Signal Conditioning",
+    "domain": "Analog Processing / AC Coupling",
+    "description": "Fundamental passive high-pass RC filter removing low-frequency drift and DC bias while passing high-frequency spectral content.",
+    "theory": {
+      "transfer_function": "H(s) = (s*R*C) / (1 + s*R*C)",
+      "cutoff_frequency_hz": 159.15,
+      "time_constant_seconds": 0.001,
+      "high_frequency_gain_db": 0.0,
+      "phase_at_fc_deg": 45.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "1e-5"
+    },
+    "components_count": 4,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_11_highpass_rc_filter.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 4,
+      "components_verified": 4,
+      "parameters_total": 3,
+      "parameters_verified": 3,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-12",
+    "directory": "12_rl_highpass_filter",
+    "name": "12_rl_highpass_filter",
+    "title": "First-Order RL High-Pass Filter",
+    "category": "Passive RF & Power Filters",
+    "domain": "Telecommunications / Transient Shunting",
+    "description": "Series resistor and parallel inductor network providing high-frequency transmission while shunting low frequencies to ground.",
+    "theory": {
+      "transfer_function": "H(s) = (s*L) / (R + s*L)",
+      "cutoff_frequency_hz": 1591.55,
+      "time_constant_seconds": 0.0001,
+      "dc_attenuation": "Infinite (Short to GND)"
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 4,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_12_rl_highpass_filter.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 4,
+      "components_verified": 4,
+      "parameters_total": 3,
+      "parameters_verified": 3,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-13",
+    "directory": "13_bandpass_series_rlc",
+    "name": "13_bandpass_series_rlc",
+    "title": "Second-Order Series RLC Bandpass Filter",
+    "category": "Resonant & Bandpass Filters",
+    "domain": "RF Tuning & Audio Frequency Selectivity",
+    "description": "Series LC resonant tank with load resistor across output achieving maximum transmission at 1 kHz resonance with 314 Hz bandwidth.",
+    "theory": {
+      "resonance_frequency_hz": 1000.0,
+      "quality_factor_Q": 3.18,
+      "bandwidth_hz": 314.16,
+      "center_gain_db": 0.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "2e-6"
+    },
+    "components_count": 5,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_13_bandpass_series_rlc.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 5,
+      "components_verified": 5,
+      "parameters_total": 4,
+      "parameters_verified": 4,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-14",
+    "directory": "14_bandstop_series_rlc",
+    "name": "14_bandstop_series_rlc",
+    "title": "Series RLC Band-Stop (Notch) Filter",
+    "category": "Interference Rejection",
+    "domain": "Harmonic Suppression & Noise Traps",
+    "description": "Shunt series LC branch shorts harmonic noise to ground at resonance creating a deep rejection notch.",
+    "theory": {
+      "resonance_frequency_hz": 1591.55,
+      "notch_depth_db": -60.0,
+      "series_branch_impedance_at_f0": "0 Ohms (Ideal)"
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "2e-6"
+    },
+    "components_count": 5,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_14_bandstop_series_rlc.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 5,
+      "components_verified": 5,
+      "parameters_total": 4,
+      "parameters_verified": 4,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-15",
+    "directory": "15_full_wave_bridge_rectifier",
+    "name": "15_full_wave_bridge_rectifier",
+    "title": "Full-Wave Diode Bridge Rectifier with Filter",
+    "category": "Power Electronics & AC/DC Supplies",
+    "domain": "Industrial Power Supply Conversion",
+    "description": "Standard Graetz four-diode bridge converting bipolar AC excitation to unipolar DC with capacitor smoothing.",
+    "theory": {
+      "dc_peak_output_v": 22.6,
+      "diode_voltage_drop_total_v": 1.4,
+      "ripple_frequency_multiplier": "2x Input Frequency"
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 8,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_15_full_wave_bridge_rectifier.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 8,
+      "components_verified": 8,
+      "parameters_total": 7,
+      "parameters_verified": 7,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-16",
+    "directory": "16_voltage_doubler_greinacher",
+    "name": "16_voltage_doubler_greinacher",
+    "title": "Half-Wave Greinacher Voltage Doubler",
+    "category": "Power Multiplication & High Voltage",
+    "domain": "HV Bias Generation & Ionizer Power",
+    "description": "Diode-capacitor charge pump cascade clamping and peak-rectifying to deliver twice the peak AC supply voltage.",
+    "theory": {
+      "theoretical_max_output_v": 22.6,
+      "multiplication_factor": 2.0,
+      "dc_drop_per_diode_v": 0.7
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 7,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_16_voltage_doubler_greinacher.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 7,
+      "components_verified": 7,
+      "parameters_total": 6,
+      "parameters_verified": 6,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-17",
+    "directory": "17_voltage_divider_attenuator",
+    "name": "17_voltage_divider_attenuator",
+    "title": "Calibrated Precision Voltage Divider",
+    "category": "Instrumentation & Scaling",
+    "domain": "ADC Range Matching & Sensor Scaling",
+    "description": "Standard 10:1 voltage divider network for level-shifting high voltage sensor inputs into micro-controller ADC ranges.",
+    "theory": {
+      "unloaded_ratio": 0.1,
+      "nominal_attenuation_db": -20.0,
+      "output_voltage_v": 0.9901,
+      "output_impedance_ohms": 900.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "1e-5"
+    },
+    "components_count": 5,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_17_voltage_divider_attenuator.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 5,
+      "components_verified": 5,
+      "parameters_total": 4,
+      "parameters_verified": 4,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-18",
+    "directory": "18_zener_diode_voltage_regulator",
+    "name": "18_zener_diode_voltage_regulator",
+    "title": "Diode Shunt Voltage Regulator Stage",
+    "category": "Voltage References & Regulators",
+    "domain": "Bias Voltage Generation & Precision Clamping",
+    "description": "Diode shunt regulator using the steep exponential I-V characteristic to maintain constant clamp voltage across supply ripple.",
+    "theory": {
+      "regulated_voltage_v": 0.7,
+      "ballast_current_ma": 43.3,
+      "load_current_ma": 0.7
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 5,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_18_zener_diode_voltage_regulator.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 5,
+      "components_verified": 5,
+      "parameters_total": 4,
+      "parameters_verified": 4,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-19",
+    "directory": "19_rc_differentiator",
+    "name": "19_rc_differentiator",
+    "title": "Fast Transient RC Differentiator",
+    "category": "Waveform Shaping & Timing",
+    "domain": "Digital Edge Detection & Radar Pulse Triggering",
+    "description": "Short time-constant RC differentiator outputting sharp voltage spikes corresponding to input rate-of-change dv/dt.",
+    "theory": {
+      "time_constant_seconds": 1e-08,
+      "differentiation_bandwidth_mhz": 15.91,
+      "output_relation": "Vout(t) = R*C * (dVin / dt)"
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.0001,
+      "max_step_size": "1e-8"
+    },
+    "components_count": 4,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_19_rc_differentiator.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 4,
+      "components_verified": 4,
+      "parameters_total": 3,
+      "parameters_verified": 3,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-20",
+    "directory": "20_rc_integrator",
+    "name": "20_rc_integrator",
+    "title": "Passive Long Time-Constant RC Integrator",
+    "category": "Waveform Shaping & Analog Computation",
+    "domain": "True RMS Sensing & Signal Smoothing",
+    "description": "High-resistance large-capacitance network producing linear ramp approximations from square wave inputs.",
+    "theory": {
+      "time_constant_seconds": 1.0,
+      "integration_linear_slope_v_per_s": 10.0,
+      "output_relation": "Vout(t) = (1/RC) * integral(Vin dt)"
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.5,
+      "max_step_size": "1e-4"
+    },
+    "components_count": 4,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_20_rc_integrator.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 4,
+      "components_verified": 4,
+      "parameters_total": 3,
+      "parameters_verified": 3,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-21",
+    "directory": "21_t_attenuator_pad",
+    "name": "21_t_attenuator_pad",
+    "title": "Symmetrical 50-Ohm 6dB T-Pad Attenuator",
+    "category": "RF & Transmission Lines",
+    "domain": "Impedance Matching & Power Leveling",
+    "description": "Standard T-configuration resistive network maintaining precise 50-ohm characteristic impedance with 6dB signal reduction.",
+    "theory": {
+      "attenuation_db": 6.0,
+      "characteristic_impedance_ohms": 50.0,
+      "voltage_transfer_ratio": 0.501
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "1e-5"
+    },
+    "components_count": 6,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_21_t_attenuator_pad.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-22",
+    "directory": "22_pi_attenuator_pad",
+    "name": "22_pi_attenuator_pad",
+    "title": "Symmetrical 50-Ohm 10dB Pi-Pad Attenuator",
+    "category": "RF & Microwave Circuits",
+    "domain": "Transceiver Protection & Signal Level Matching",
+    "description": "Pi-topology attenuator with two shunt legs and one series bridging resistor providing 10dB power reduction.",
+    "theory": {
+      "attenuation_db": 10.0,
+      "characteristic_impedance_ohms": 50.0,
+      "voltage_transfer_ratio": 0.3162
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "1e-5"
+    },
+    "components_count": 6,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_22_pi_attenuator_pad.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-23",
+    "directory": "23_lead_lag_compensator",
+    "name": "23_lead_lag_compensator",
+    "title": "Control System Phase Lead-Lag Compensator",
+    "category": "Feedback & Control Systems",
+    "domain": "Servomechanisms & Power Converter Feedback",
+    "description": "Lead-lag compensation stage boosting phase margin at crossover while maintaining high DC loop gain.",
+    "theory": {
+      "lead_zero_hz": 159.15,
+      "lag_pole_hz": 153.86,
+      "maximum_phase_lead_deg": 42.5
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 6,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_23_lead_lag_compensator.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-24",
+    "directory": "24_besselfilter_lc_lowpass",
+    "name": "24_besselfilter_lc_lowpass",
+    "title": "3rd-Order LC Ladder Low-Pass Filter",
+    "category": "High-Order Passive Filters",
+    "domain": "EMI Suppression & Telecommunication Channels",
+    "description": "Three-pole L-C-L ladder filter achieving steep -60 dB/decade attenuation above the cutoff frequency.",
+    "theory": {
+      "order": 3,
+      "cutoff_frequency_hz": 4954.0,
+      "rolloff_rate_db_per_decade": -60.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "2e-6"
+    },
+    "components_count": 6,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_24_besselfilter_lc_lowpass.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-25",
+    "directory": "25_boost_converter_snubber",
+    "name": "25_boost_converter_snubber",
+    "title": "Switching Converter RCD Voltage Clamp Snubber",
+    "category": "Power Electronics Protection",
+    "domain": "Flyback/Forward Switched-Mode Power Supplies",
+    "description": "RCD snubber absorbs transformer leakage inductance energy during primary switch turn-off, bounding drain-source voltage.",
+    "theory": {
+      "leakage_energy_absorbed_uj": 11.5,
+      "snubber_discharge_tau_us": 47.0,
+      "clamping_voltage_target_v": 55.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.005,
+      "max_step_size": "1e-6"
+    },
+    "components_count": 6,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_25_boost_converter_snubber.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-26",
+    "directory": "26_dc_blocking_bias_tee",
+    "name": "26_dc_blocking_bias_tee",
+    "title": "Wideband RF Bias Tee Injector Network",
+    "category": "RF Components & Telemetry",
+    "domain": "Active LNA Feeds & Remote Antennas",
+    "description": "Combines DC power with RF signals on a single coaxial path without mutual interference or signal degradation.",
+    "theory": {
+      "rf_lower_cutoff_hz": 31830.0,
+      "dc_isolation_from_rf_port_db": "> 60 dB",
+      "dc_voltage_injected_v": 12.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "2e-6"
+    },
+    "components_count": 6,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_26_dc_blocking_bias_tee.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-27",
+    "directory": "27_differential_rc_filter",
+    "name": "27_differential_rc_filter",
+    "title": "Balanced Differential Anti-Aliasing ADC Filter",
+    "category": "Precision Analog Front-End",
+    "domain": "SAR / Sigma-Delta ADC Instrumentation",
+    "description": "Symmetric balanced RC architecture filtering both differential mode and common mode noise prior to digitization.",
+    "theory": {
+      "differential_cutoff_frequency_hz": 795.77,
+      "common_mode_cutoff_frequency_hz": 15915.5,
+      "common_mode_attenuation_ratio": 10.0
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 7,
+    "nets_count": 5,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_27_differential_rc_filter.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 7,
+      "components_verified": 7,
+      "parameters_total": 6,
+      "parameters_verified": 6,
+      "parameters_uncertain": 0,
+      "connections_total": 5,
+      "connections_verified": 5,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-28",
+    "directory": "28_inductor_flyback_clamp",
+    "name": "28_inductor_flyback_clamp",
+    "title": "Solenoid / Relay Flyback Freewheeling Protection",
+    "category": "Electromechanical Drivers",
+    "domain": "Automotive Relays & Valve Actuators",
+    "description": "Anti-parallel freewheeling diode absorbs back-EMF transients to safeguard driving transistors when inductive current is interrupted.",
+    "theory": {
+      "steady_state_current_a": 0.5,
+      "stored_magnetic_energy_mj": 31.25,
+      "discharge_time_constant_ms": 5.21
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.05,
+      "max_step_size": "5e-6"
+    },
+    "components_count": 5,
+    "nets_count": 3,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_28_inductor_flyback_clamp.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 5,
+      "components_verified": 5,
+      "parameters_total": 4,
+      "parameters_verified": 4,
+      "parameters_uncertain": 0,
+      "connections_total": 3,
+      "connections_verified": 3,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-29",
+    "directory": "29_current_sense_shunt_circuit",
+    "name": "29_current_sense_shunt_circuit",
+    "title": "Precision Current Sense Shunt with Noise Filter",
+    "category": "Current Sensing & Monitoring",
+    "domain": "Battery Management & Motor Phase Current Telemetry",
+    "description": "Low-resistance metal alloy shunt with integrated RC low-pass filter to reject inverter switching PWM noise.",
+    "theory": {
+      "nominal_current_a": 1.99,
+      "sense_voltage_mv": 99.58,
+      "filter_cutoff_frequency_khz": 15.91
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.01,
+      "max_step_size": "2e-6"
+    },
+    "components_count": 6,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_29_current_sense_shunt_circuit.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 6,
+      "components_verified": 6,
+      "parameters_total": 5,
+      "parameters_verified": 5,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  },
+  {
+    "dataset_id": "DS-30",
+    "directory": "30_active_snubber_freewheel",
+    "name": "30_active_snubber_freewheel",
+    "title": "Dual-Diode Inductive Energy Return Snubber",
+    "category": "Motor Drives & Inverter Protection",
+    "domain": "BLDC/PMSM Phase Inverter Switching",
+    "description": "Rail-clamped dual diode and RC network recovering stored reactive inductive energy while quenching dv/dt overshoot.",
+    "theory": {
+      "rail_voltage_v": 50.0,
+      "snubber_time_constant_us": 55.0,
+      "inductive_energy_joules": 0.025
+    },
+    "simulation_settings": {
+      "solver": "ode23t",
+      "stop_time": 0.02,
+      "max_step_size": "2e-6"
+    },
+    "components_count": 7,
+    "nets_count": 4,
+    "files": {
+      "schematic": "schematic.png",
+      "circuit_ir": "circuit_ir.json",
+      "matlab_script": "generate_model.m",
+      "simulink_model": "model_30_active_snubber_freewheel.slx",
+      "metadata": "metadata.json"
+    },
+    "validation_report": {
+      "status": "PASS",
+      "components_total": 7,
+      "components_verified": 7,
+      "parameters_total": 6,
+      "parameters_verified": 6,
+      "parameters_uncertain": 0,
+      "connections_total": 4,
+      "connections_verified": 4,
+      "has_ground_reference": true,
+      "floating_pins": [],
+      "warnings": [],
+      "errors": [],
+      "ready_for_compilation": true
+    }
+  }
+]
