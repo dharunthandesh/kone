@@ -1,25 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Play,
   RotateCcw,
   Zap,
-  Square,
-  ShieldAlert,
-  Sliders,
+  Flame,
   CheckCircle2,
   AlertTriangle,
-  Flame,
-  Terminal,
-  Clock,
   Layers,
   Activity,
-  History,
-  Info,
 } from "lucide-react";
-import { Component, UniversalCircuitIR } from "../types/circuit";
-import { api } from "../lib/api";
+import { UniversalCircuitIR } from "../types/circuit";
 
 interface LiveFaultStudioProps {
   projectId: string;
@@ -32,8 +24,8 @@ interface CircuitBlock {
   type: string;
   label: string;
   sublabel: string;
-  x: number; // percentage in canvas
-  y: number; // percentage in canvas
+  x: number;
+  y: number;
   w: number;
   h: number;
   shape?: "rect" | "diamond" | "round" | "triangle";
@@ -73,11 +65,10 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
   circuitIr,
   onRefresh,
 }) => {
-  // Active Circuit Topology Blocks
   const defaultBlocks: CircuitBlock[] = [
     {
       id: "XB11",
-      type: "Connector / AC Input",
+      type: "AC Input Terminal Connector",
       label: "XB11",
       sublabel: "AC IN",
       x: 6,
@@ -88,7 +79,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       category: "input",
       nominalVoltage: "230V RMS (325.3Vpk)",
       nominalCurrent: "0.8A RMS",
-      description: "230V RMS (325.3 Vpk) Single-Phase AC Mains Connector.",
+      description: "230V RMS (325.3 Vpk) Single-Phase AC Mains Input Connector.",
       faultModes: [
         {
           id: "FLT-XB11-SURGE",
@@ -105,7 +96,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           id: "FLT-XB11-LOSS",
           label: "Mains Power Drop (0V)",
           type: "POWER_LOSS",
-          impact: "AC input disconnects completely. DC link discharges through load.",
+          impact: "AC input disconnects completely. DC link discharges safely.",
           action: "UNDERVOLTAGE LOCKOUT (UVLO)",
           finalState: "SAFE DE-ENERGIZED",
           dcBusV: 0.0,
@@ -116,7 +107,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           id: "FLT-XB11-SAG",
           label: "Brownout Sag -50% (115V RMS)",
           type: "VOLTAGE_SAG",
-          impact: "Input line drops to 115V RMS. PFC attempts maximum duty cycle compensation.",
+          impact: "Input line drops to 115V RMS. PFC attempts maximum compensation.",
           action: "DUTY CYCLE CLAMP",
           finalState: "DEGRADED BUS",
           dcBusV: 285.0,
@@ -127,7 +118,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     },
     {
       id: "D2",
-      type: "Diode Bridge",
+      type: "Diode Bridge Rectifier",
       label: "D2",
       sublabel: "BRIDGE",
       x: 17,
@@ -155,7 +146,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           id: "FLT-D2-OPEN",
           label: "Diode Arm Open Circuit",
           type: "OPEN_CIRCUIT",
-          impact: "Operates as half-wave rectifier with heavy 50Hz ripple and half power.",
+          impact: "Operates as half-wave rectifier with heavy 50Hz ripple.",
           action: "RIPPLE WARNING DETECTED",
           finalState: "DEGRADED (HALF-WAVE)",
           dcBusV: 260.0,
@@ -166,7 +157,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     },
     {
       id: "R122",
-      type: "Precharge Resistor",
+      type: "Precharge Inrush Resistor",
       label: "R122|R51",
       sublabel: "INRUSH",
       x: 28,
@@ -222,7 +213,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     },
     {
       id: "L13",
-      type: "PFC Choke",
+      type: "PFC Choke Inductor",
       label: "L13",
       sublabel: "750µH",
       x: 41,
@@ -239,7 +230,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           id: "FLT-L13-SAT",
           label: "Core Saturation / Short Turns",
           type: "SHORT_CIRCUIT",
-          impact: "Inductance drops to <10µH. Rapid di/dt overcurrent through PFC MOSFET.",
+          impact: "Inductance collapses. Steep di/dt overcurrent through PFC switch.",
           action: "CYCLE-BY-CYCLE OVERCURRENT TRIP",
           finalState: "CRITICAL HAZARD",
           dcBusV: 310.0,
@@ -250,7 +241,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     },
     {
       id: "Q23",
-      type: "PFC Power Switch",
+      type: "PFC Power Switch (IGBT/MOSFET)",
       label: "Q23",
       sublabel: "PFC",
       x: 48,
@@ -261,13 +252,13 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       category: "converter",
       nominalVoltage: "650V rated",
       nominalCurrent: "20kHz PWM",
-      description: "650V IGBT / SiC Power Switch with Active 20kHz Gate Modulation.",
+      description: "650V Power Switch with Active 20kHz Gate Modulation.",
       faultModes: [
         {
           id: "FLT-Q23-SHORT",
-          label: "Drain-Source / Collector-Emitter Short",
+          label: "Drain-Source / CE Short",
           type: "SHORT_CIRCUIT",
-          impact: "Shunts PFC inductor directly to ground. Maximum fault current surge.",
+          impact: "Shunts PFC inductor directly to ground. Maximum fault current.",
           action: "DESAT PROTECTION SHUTDOWN",
           finalState: "CRITICAL FAULT LATCH",
           dcBusV: 45.0,
@@ -278,7 +269,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           id: "FLT-Q23-OPEN",
           label: "Gate Signal Lost / Open Gate",
           type: "OPEN_CIRCUIT",
-          impact: "PFC boost converter inactive. Operates in passive diode pass-through mode.",
+          impact: "PFC boost converter inactive. Operates in passive pass-through.",
           action: "PFC BOOST LOSS WARNING",
           finalState: "DEGRADED (325V UNBOOSTED)",
           dcBusV: 325.0,
@@ -289,7 +280,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     },
     {
       id: "RV3",
-      type: "MOV Varistor",
+      type: "MOV Surge Varistor",
       label: "RV3",
       sublabel: "MOV 385V",
       x: 54,
@@ -406,7 +397,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       category: "control",
       nominalVoltage: "15V / -5V",
       nominalCurrent: "2.5A Peak",
-      description: "Optically Isolated Intelligent Gate Driver with Integrated Desaturation Detection.",
+      description: "Optically Isolated Gate Driver with Integrated Desaturation Detection.",
       faultModes: [
         {
           id: "FLT-U25-UVLO",
@@ -451,12 +442,8 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     },
   ];
 
-  // Map any additional components from circuitIr if available
-  const blocks: CircuitBlock[] = useMemo(() => {
-    return defaultBlocks;
-  }, [defaultBlocks]);
+  const blocks: CircuitBlock[] = useMemo(() => defaultBlocks, [defaultBlocks]);
 
-  // State
   const [selectedBlockId, setSelectedBlockId] = useState<string>("XB11");
   const [selectedFaultId, setSelectedFaultId] = useState<string>(
     defaultBlocks[0].faultModes[0].id
@@ -467,7 +454,6 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
   const [faultTime, setFaultTime] = useState<string>("0.2");
   const [activeTab, setActiveTab] = useState<"WORKFLOW" | "ARCHITECTURE">("WORKFLOW");
 
-  // Selected Block & Selected Fault Mode
   const activeBlock = useMemo(
     () => blocks.find((b) => b.id === selectedBlockId) || blocks[0],
     [blocks, selectedBlockId]
@@ -480,15 +466,12 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     );
   }, [activeBlock, selectedFaultId]);
 
-  // When block changes, update default selected fault
   useEffect(() => {
     if (activeBlock.faultModes.length > 0) {
       setSelectedFaultId(activeBlock.faultModes[0].id);
     }
   }, [activeBlock]);
 
-  // Dynamic Telemetry Waveform Data
-  const [simTime, setSimTime] = useState<number>(0.35);
   const [logs, setLogs] = useState<string[]>([
     "[0.000000 s] * NORMAL OPERATION - Baseline DC: 395.2V",
     "[0.200000 s] * CONTINUOUS NORMAL OPERATION",
@@ -497,7 +480,6 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
 
   const [historyRuns, setHistoryRuns] = useState<SimRunRecord[]>([]);
 
-  // Simulation execution handlers
   const handleRunNormal = () => {
     setSystemState("NORMAL");
     setLogs([
@@ -531,7 +513,6 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     ];
     setLogs(newLogs);
 
-    // Save run to history
     const record: SimRunRecord = {
       id: `RUN-${Date.now().toString().slice(-4)}`,
       timestamp: new Date().toLocaleTimeString(),
@@ -553,7 +534,6 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     handleRunNormal();
   };
 
-  // Generate SVG Points for 3 Waveforms
   const waveformData = useMemo(() => {
     const numPoints = 80;
     const tEnd = 0.35;
@@ -566,30 +546,25 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
 
     for (let idx = 0; idx <= numPoints; idx++) {
       const t = (idx / numPoints) * tEnd;
-      const x = (idx / numPoints) * 380; // width 380
+      const x = (idx / numPoints) * 380;
 
       let vBus = 395.2;
       let iComp = 0.8;
       let vGate = 15.0;
 
       if (isFault && t >= tFlt) {
-        // Transition to fault value smoothly
         const progress = Math.min((t - tFlt) / 0.015, 1.0);
         vBus = 395.2 + (activeFault.dcBusV - 395.2) * progress;
         iComp = 0.8 + (activeFault.currentA - 0.8) * progress;
         vGate = 15.0 + (activeFault.gateV - 15.0) * progress;
       }
 
-      // Map to SVG coordinates:
-      // Chart 1: VDC (range: 0 to 500V, height: 45)
       const yV = 40 - (vBus / 500) * 35;
       vPoints.push(`${x.toFixed(1)},${yV.toFixed(1)}`);
 
-      // Chart 2: Current (range: 0 to 50A, height: 45)
       const yI = 40 - (Math.min(iComp, 50) / 50) * 35;
       iPoints.push(`${x.toFixed(1)},${yI.toFixed(1)}`);
 
-      // Chart 3: Gate Signal (range: 0 to 20V, height: 45)
       const yG = 40 - (vGate / 20) * 35;
       gPoints.push(`${x.toFixed(1)},${yG.toFixed(1)}`);
     }
@@ -602,18 +577,18 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
   }, [systemState, faultTime, activeFault]);
 
   return (
-    <div className="bg-[#0b1120] text-slate-100 border border-slate-800 rounded-xl overflow-hidden shadow-2xl font-sans">
+    <div className="bg-white text-slate-800 border border-slate-200 rounded-xl overflow-hidden shadow-sm font-sans">
       {/* 1. TOP CONTROL BAR */}
-      <div className="bg-[#0f172a] border-b border-slate-800 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white border-b border-slate-200 px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
-            <span className="h-3 w-3 rounded-full bg-rose-500 animate-ping"></span>
-            <span className="font-extrabold text-sm sm:text-base tracking-wide text-white font-mono">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#0055A5] animate-pulse"></span>
+            <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 font-mono">
               BCX14 LIVE PHYSICAL ELECTRICAL MODEL (V3)
             </span>
           </div>
-          <span className="hidden sm:inline-block text-[11px] font-mono text-slate-400 border-l border-slate-700 pl-3">
-            Simulation: <strong className="text-white">0.35 s</strong> (Simscape Solver: <span className="text-emerald-400">ode23t</span>)
+          <span className="hidden sm:inline-block text-[11px] font-mono text-slate-500 border-l border-slate-200 pl-3">
+            Simulation: <strong className="text-slate-800">0.35 s</strong> (Solver: <span className="text-[#0055A5] font-semibold">Simscape ode23t</span>)
           </span>
         </div>
 
@@ -621,54 +596,54 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         <div className="flex items-center flex-wrap gap-2 text-xs font-bold font-mono">
           <button
             onClick={handleRunNormal}
-            className="px-3.5 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20 active:scale-95 transition"
+            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs active:scale-95 transition"
           >
             RUN NORMAL
           </button>
           <button
             onClick={handleArmFault}
-            className="px-3.5 py-1.5 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold shadow-lg shadow-amber-500/20 active:scale-95 transition"
+            className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white shadow-xs active:scale-95 transition"
           >
             ARM FAULT
           </button>
           <button
             onClick={handleInjectFaultAndRun}
-            className="px-3.5 py-1.5 rounded bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-600/20 active:scale-95 transition flex items-center space-x-1"
+            className="px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white shadow-xs active:scale-95 transition flex items-center space-x-1"
           >
             <Flame className="w-3.5 h-3.5" />
-            <span>INJECT FAULT + RUN SIMULATION</span>
+            <span>INJECT FAULT + RUN</span>
           </button>
           <button
             onClick={() => setSystemState("NORMAL")}
-            className="px-3 py-1.5 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 transition"
+            className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition"
           >
             STOP
           </button>
           <button
             onClick={handleReset}
-            className="px-3 py-1.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white transition flex items-center space-x-1"
+            className="px-3 py-1.5 rounded-lg bg-[#0055A5] hover:bg-[#004385] text-white transition flex items-center space-x-1 shadow-xs"
           >
             <RotateCcw className="w-3 h-3" />
             <span>RESET</span>
           </button>
 
-          <div className="flex items-center space-x-1.5 bg-slate-950 border border-slate-700 px-2 py-1 rounded text-[11px]">
-            <span className="text-slate-400">Fault Time (s):</span>
+          <div className="flex items-center space-x-1.5 bg-slate-50 border border-slate-300 px-2 py-1 rounded-lg text-[11px]">
+            <span className="text-slate-500 font-medium">Fault Time (s):</span>
             <input
               type="text"
               value={faultTime}
               onChange={(e) => setFaultTime(e.target.value)}
-              className="w-12 bg-transparent text-white font-mono font-bold focus:outline-none text-center"
+              className="w-12 bg-white border border-slate-200 text-slate-900 font-mono font-bold focus:outline-none text-center rounded"
             />
           </div>
 
           <div
-            className={`px-3 py-1 rounded text-[11px] font-bold tracking-wider border ${
+            className={`px-3 py-1 rounded-lg text-[11px] font-bold tracking-wider border ${
               systemState === "FAULT_ACTIVE"
-                ? "bg-rose-950/80 text-rose-300 border-rose-500"
+                ? "bg-red-50 text-red-700 border-red-200 animate-pulse"
                 : systemState === "ARMED"
-                ? "bg-amber-950/80 text-amber-300 border-amber-500"
-                : "bg-slate-900 text-slate-300 border-slate-700"
+                ? "bg-amber-50 text-amber-700 border-amber-200"
+                : "bg-blue-50 text-[#0055A5] border-blue-200"
             }`}
           >
             STATUS: {systemState === "FAULT_ACTIVE" ? "FAULT ACTIVE" : systemState === "ARMED" ? "ARMED (READY)" : "FAULT UNARMED"}
@@ -677,13 +652,13 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       </div>
 
       {/* 2. SUB-NAVIGATION TABS */}
-      <div className="bg-[#0d1527] border-b border-slate-800 px-4 py-2 flex items-center space-x-4 text-xs font-mono">
+      <div className="bg-slate-50 border-b border-slate-200 px-4 py-2 flex items-center space-x-4 text-xs font-mono">
         <button
           onClick={() => setActiveTab("WORKFLOW")}
           className={`pb-1 border-b-2 font-bold transition ${
             activeTab === "WORKFLOW"
-              ? "border-amber-400 text-amber-300"
-              : "border-transparent text-slate-400 hover:text-slate-200"
+              ? "border-[#0055A5] text-[#0055A5]"
+              : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
           LIVE SCHEMATIC &amp; FAULT WORKFLOW
@@ -692,8 +667,8 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           onClick={() => setActiveTab("ARCHITECTURE")}
           className={`pb-1 border-b-2 font-bold transition ${
             activeTab === "ARCHITECTURE"
-              ? "border-amber-400 text-amber-300"
-              : "border-transparent text-slate-400 hover:text-slate-200"
+              ? "border-[#0055A5] text-[#0055A5]"
+              : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
           MODEL ARCHITECTURE (PHYSICAL VS MATH)
@@ -701,54 +676,56 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       </div>
 
       {/* 3. MAIN TOP SECTION (SCHEMATIC TOPOLOGY CANVAS + INSPECTOR & WAVEFORMS) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b border-slate-800">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b border-slate-200">
         {/* Left Column: Interactive Schematic Topology View (8 cols) */}
-        <div className="lg:col-span-8 p-4 bg-[#0a0f1d] flex flex-col justify-between border-r border-slate-800 min-h-[460px]">
+        <div className="lg:col-span-8 p-4 bg-white flex flex-col justify-between border-r border-slate-200 min-h-[460px]">
           <div>
-            <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-300 mb-2">
-              <span className="text-cyan-400 uppercase tracking-wider">
+            <div className="flex items-center justify-between text-xs font-mono font-bold text-slate-700 mb-2">
+              <span className="text-[#0055A5] uppercase tracking-wider font-extrabold">
                 BCX14 INTERACTIVE ENGINEERING ELECTRICAL TOPOLOGY (SCHEMATIC VIEW)
               </span>
-              <span className="text-slate-500 text-[11px]">
-                Click ANY component block to arm and inject hardware faults
+              <span className="text-slate-500 text-[11px] font-normal">
+                Click any component block to arm and inject hardware faults
               </span>
             </div>
 
             {/* Component Voltage/Current Status Overheads */}
-            <div className="flex items-center justify-between text-[11px] font-mono font-semibold px-2 py-1 mb-2 bg-slate-950/60 rounded border border-slate-800 text-slate-300">
-              <span className="text-emerald-400">XB11: 230V RMS (325.3Vpk)</span>
-              <span className="text-cyan-400">D2: 325.3V Rectified</span>
-              <span className="text-amber-400">Q14: VDS=0.1V ID=0.8A</span>
-              <span className="text-indigo-400">L13: 750µH (16.0A)</span>
-              <span className="text-yellow-400 font-bold">DC LINK: UDC = {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : "395.2"} V</span>
+            <div className="flex items-center justify-between text-[11px] font-mono font-semibold px-3 py-1.5 mb-2 bg-[#f8fafc] rounded-lg border border-slate-200 text-slate-700">
+              <span className="text-[#0055A5]">XB11: 230V RMS (325.3Vpk)</span>
+              <span className="text-sky-700">D2: 325.3V Rectified</span>
+              <span className="text-slate-700">Q14: VDS=0.1V ID=0.8A</span>
+              <span className="text-indigo-700">L13: 750µH (16.0A)</span>
+              <span className="text-[#0055A5] font-extrabold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                DC LINK: UDC = {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : "395.2"} V
+              </span>
             </div>
           </div>
 
           {/* Interactive Topology Diagram Canvas */}
-          <div className="relative w-full h-[320px] bg-[#050914] border border-slate-800/80 rounded-lg overflow-hidden flex items-center justify-center p-2 select-none">
+          <div className="relative w-full h-[320px] bg-[#f8fafc] border border-slate-200 rounded-lg overflow-hidden flex items-center justify-center p-2 select-none shadow-inner">
             {/* SVG Connecting Wiring Bus Lines */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
               {/* AC Input lines to Bridge */}
-              <line x1="14" y1="50" x2="17" y2="50" stroke="#f59e0b" strokeWidth="1.2" />
-              <line x1="14" y1="55" x2="17" y2="55" stroke="#f59e0b" strokeWidth="1.2" />
+              <line x1="14" y1="50" x2="17" y2="50" stroke="#0284c7" strokeWidth="1.5" />
+              <line x1="14" y1="55" x2="17" y2="55" stroke="#0284c7" strokeWidth="1.5" />
               {/* Bridge to Precharge & Bypass split */}
-              <line x1="25" y1="53" x2="28" y2="41" stroke="#38bdf8" strokeWidth="1.2" />
-              <line x1="25" y1="53" x2="28" y2="60" stroke="#38bdf8" strokeWidth="1.2" />
+              <line x1="25" y1="53" x2="28" y2="41" stroke="#0055A5" strokeWidth="1.5" />
+              <line x1="25" y1="53" x2="28" y2="60" stroke="#0055A5" strokeWidth="1.5" />
               {/* Precharge & Bypass merge to PFC Choke */}
-              <line x1="37" y1="41" x2="41" y2="52" stroke="#38bdf8" strokeWidth="1.2" />
-              <line x1="37" y1="60" x2="41" y2="52" stroke="#38bdf8" strokeWidth="1.2" />
+              <line x1="37" y1="41" x2="41" y2="52" stroke="#0055A5" strokeWidth="1.5" />
+              <line x1="37" y1="60" x2="41" y2="52" stroke="#0055A5" strokeWidth="1.5" />
               {/* PFC Choke to Switch & MOV */}
-              <line x1="49" y1="52" x2="54" y2="52" stroke="#38bdf8" strokeWidth="1.2" />
+              <line x1="49" y1="52" x2="54" y2="52" stroke="#0055A5" strokeWidth="1.5" />
               {/* Main +UDC High Voltage Rail (Gold) */}
-              <line x1="54" y1="36" x2="88" y2="36" stroke="#eab308" strokeWidth="2.5" />
+              <line x1="54" y1="36" x2="88" y2="36" stroke="#d97706" strokeWidth="2.5" />
               {/* Capacitor Drops from +UDC */}
-              <line x1="64" y1="36" x2="64" y2="44" stroke="#eab308" strokeWidth="1.5" />
-              <line x1="68" y1="36" x2="68" y2="44" stroke="#eab308" strokeWidth="1.5" />
-              <line x1="72" y1="36" x2="72" y2="44" stroke="#eab308" strokeWidth="1.5" />
+              <line x1="64" y1="36" x2="64" y2="44" stroke="#d97706" strokeWidth="1.5" />
+              <line x1="68" y1="36" x2="68" y2="44" stroke="#d97706" strokeWidth="1.5" />
+              <line x1="72" y1="36" x2="72" y2="44" stroke="#d97706" strokeWidth="1.5" />
               {/* Ground Reference -UDC Rail */}
               <line x1="17" y1="67" x2="88" y2="67" stroke="#64748b" strokeWidth="2.0" />
               {/* Gate Control connection */}
-              <line x1="37" y1="78" x2="48" y2="78" stroke="#a855f7" strokeWidth="1.2" strokeDasharray="2,2" />
+              <line x1="37" y1="78" x2="48" y2="78" stroke="#7c3aed" strokeWidth="1.2" strokeDasharray="2,2" />
             </svg>
 
             {/* Render Component Interactive Blocks */}
@@ -769,12 +746,12 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
                   }}
                   className={`absolute flex flex-col items-center justify-center cursor-pointer transition-all duration-150 p-1 text-center font-mono ${
                     isSelected
-                      ? "ring-4 ring-yellow-400 border-2 border-yellow-300 shadow-2xl shadow-yellow-400/60 z-20 scale-105"
-                      : "hover:ring-2 hover:ring-cyan-400 hover:scale-102 z-10"
+                      ? "ring-4 ring-amber-400 border-2 border-amber-500 bg-amber-50 shadow-lg z-20 scale-105"
+                      : "hover:ring-2 hover:ring-[#0055A5] hover:scale-102 z-10 bg-white border-2 border-[#0055A5] shadow-xs"
                   } ${
                     isFaultActiveOnThis
-                      ? "bg-rose-950/90 border-2 border-rose-500 animate-pulse"
-                      : "bg-[#0f172a] border border-cyan-500/50"
+                      ? "bg-red-50 border-2 border-red-500 animate-pulse text-red-900"
+                      : ""
                   } ${
                     blk.shape === "round"
                       ? "rounded-full"
@@ -786,12 +763,12 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
                   <div className={blk.shape === "diamond" ? "-rotate-45" : ""}>
                     <span
                       className={`text-[11px] font-extrabold block leading-tight ${
-                        isSelected ? "text-yellow-300" : "text-white"
+                        isSelected ? "text-amber-900" : "text-[#0055A5]"
                       }`}
                     >
                       {blk.label}
                     </span>
-                    <span className="text-[9px] text-cyan-300 block font-normal leading-none mt-0.5">
+                    <span className="text-[9px] text-slate-500 block font-medium leading-none mt-0.5">
                       {blk.sublabel}
                     </span>
                   </div>
@@ -800,38 +777,38 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
             })}
 
             {/* Labels on Diagram */}
-            <span className="absolute right-4 top-8 text-xs font-mono font-bold text-yellow-400">
+            <span className="absolute right-4 top-8 text-xs font-mono font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
               +UDC
             </span>
-            <span className="absolute right-4 bottom-7 text-xs font-mono font-bold text-slate-400">
+            <span className="absolute right-4 bottom-7 text-xs font-mono font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
               -UDC
             </span>
           </div>
 
           {/* Bottom Annotation Legend */}
-          <div className="flex items-center justify-between text-[11px] font-mono mt-2 text-slate-400">
-            <span className="text-yellow-400">Q23: 20kHz PWM Active Boost</span>
-            <span className="text-cyan-400">C82-C53: 5x Caps Bank (395.2V)</span>
-            <span className="text-rose-400">RV3: MOV 385V Clamping</span>
+          <div className="flex items-center justify-between text-[11px] font-mono mt-2 text-slate-500">
+            <span className="text-slate-700 font-semibold">Q23: 20kHz PWM Active Boost</span>
+            <span className="text-[#0055A5] font-semibold">C82-C53: 5x Caps Bank (395.2V)</span>
+            <span className="text-amber-700 font-semibold">RV3: MOV 385V Clamping</span>
           </div>
         </div>
 
         {/* Right Column: Component / Fault Inspector & Waveforms (4 cols) */}
-        <div className="lg:col-span-4 p-4 bg-[#0d1527] flex flex-col justify-between space-y-3">
+        <div className="lg:col-span-4 p-4 bg-[#f8fafc] flex flex-col justify-between space-y-3">
           <div>
-            <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider block font-mono">
+            <span className="text-xs font-bold text-[#0055A5] uppercase tracking-wider block font-mono">
               COMPONENT / FAULT INSPECTOR
             </span>
 
             {/* Select Component Dropdown */}
             <div className="mt-2.5">
-              <label className="text-[11px] font-semibold text-slate-300 block mb-1 font-mono">
+              <label className="text-[11px] font-semibold text-slate-600 block mb-1 font-mono">
                 Select Component:
               </label>
               <select
                 value={selectedBlockId}
                 onChange={(e) => setSelectedBlockId(e.target.value)}
-                className="w-full bg-[#070b14] border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-yellow-400"
+                className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-mono font-bold focus:outline-none focus:border-[#0055A5] shadow-2xs"
               >
                 {blocks.map((b) => (
                   <option key={b.id} value={b.id}>
@@ -842,25 +819,25 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
             </div>
 
             {/* Component Summary Card */}
-            <div className="mt-2 bg-[#080d19] border border-slate-800 rounded p-2 text-[11px] font-mono space-y-1">
+            <div className="mt-2 bg-white border border-slate-200 rounded-lg p-2.5 text-[11px] font-mono space-y-1 shadow-2xs">
               <div>
-                <span className="text-cyan-400 font-bold">SELECTED: </span>
-                <span className="text-white font-semibold">{activeBlock.id} {activeBlock.type}</span>
+                <span className="text-[#0055A5] font-bold">SELECTED: </span>
+                <span className="text-slate-900 font-bold">{activeBlock.id} {activeBlock.type}</span>
               </div>
-              <p className="text-slate-400 text-[10px] leading-tight">
+              <p className="text-slate-600 text-[10px] leading-tight">
                 Description: {activeBlock.description}
               </p>
             </div>
 
             {/* Fault Selection Dropdown */}
             <div className="mt-2.5">
-              <label className="text-[11px] font-semibold text-slate-300 block mb-1 font-mono">
+              <label className="text-[11px] font-semibold text-slate-600 block mb-1 font-mono">
                 Fault Selection:
               </label>
               <select
                 value={selectedFaultId}
                 onChange={(e) => setSelectedFaultId(e.target.value)}
-                className="w-full bg-[#070b14] border border-amber-600/60 rounded px-2.5 py-1.5 text-xs text-amber-300 font-mono font-bold focus:outline-none focus:border-amber-400"
+                className="w-full bg-white border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-mono font-bold focus:outline-none focus:border-amber-500 shadow-2xs"
               >
                 {activeBlock.faultModes.map((fm) => (
                   <option key={fm.id} value={fm.id}>
@@ -874,13 +851,13 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
             <div className="grid grid-cols-2 gap-2 mt-3 font-mono font-bold text-xs">
               <button
                 onClick={handleArmFault}
-                className="py-1.5 px-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded transition shadow"
+                className="py-1.5 px-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition shadow-xs"
               >
                 ARM FAULT
               </button>
               <button
                 onClick={handleInjectFaultAndRun}
-                className="py-1.5 px-2 bg-rose-600 hover:bg-rose-500 text-white rounded transition shadow flex items-center justify-center space-x-1"
+                className="py-1.5 px-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition shadow-xs flex items-center justify-center space-x-1"
               >
                 <Flame className="w-3 h-3" />
                 <span>INJECT + RUN</span>
@@ -888,17 +865,17 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
             </div>
 
             {/* Status Pill */}
-            <div className="mt-2.5 p-1.5 bg-[#060a14] rounded border border-slate-800 text-center font-mono text-[11px] font-bold">
+            <div className="mt-2.5 p-2 bg-white rounded-lg border border-slate-200 text-center font-mono text-[11px] font-bold shadow-2xs">
               {systemState === "FAULT_ACTIVE" ? (
-                <span className="text-rose-400">
+                <span className="text-red-700">
                   STATUS: FAULT ACTIVE | ACTION: {activeFault.action}
                 </span>
               ) : systemState === "ARMED" ? (
-                <span className="text-amber-400">
+                <span className="text-amber-700">
                   STATUS: ARMED (t = {faultTime}s) | READY TO TRIGGER
                 </span>
               ) : (
-                <span className="text-emerald-400">
+                <span className="text-emerald-700">
                   STATUS: NORMAL | ACTION: NONE (NORMAL OPERATION)
                 </span>
               )}
@@ -906,47 +883,47 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
           </div>
 
           {/* COMPONENT WAVEFORMS (3 Channel Oscilloscope) */}
-          <div className="space-y-2 pt-2 border-t border-slate-800">
-            <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider block font-mono">
+          <div className="space-y-2 pt-2 border-t border-slate-200">
+            <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider block font-mono">
               COMPONENT WAVEFORMS:
             </span>
 
             {/* Channel 1: VDC Voltage */}
-            <div className="bg-[#050914] border border-slate-800/90 rounded p-1.5">
-              <div className="flex items-center justify-between text-[10px] font-mono text-cyan-400 mb-1">
+            <div className="bg-white border border-slate-200 rounded-lg p-2 shadow-2xs">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#0055A5] font-bold mb-1">
                 <span>UDC(t) DC Bus Voltage [V] (Peak: {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : "395.2"}V)</span>
-                <span className="text-slate-500">500V FS</span>
+                <span className="text-slate-400">500V FS</span>
               </div>
               <svg className="w-full h-11" viewBox="0 0 380 45">
-                <line x1="0" y1="10" x2="380" y2="10" stroke="#1e293b" strokeDasharray="3,3" />
-                <line x1="0" y1="25" x2="380" y2="25" stroke="#1e293b" strokeDasharray="3,3" />
-                <polyline fill="none" stroke="#06b6d4" strokeWidth="2.0" points={waveformData.vPoints} />
+                <line x1="0" y1="10" x2="380" y2="10" stroke="#f1f5f9" strokeDasharray="3,3" />
+                <line x1="0" y1="25" x2="380" y2="25" stroke="#f1f5f9" strokeDasharray="3,3" />
+                <polyline fill="none" stroke="#0055A5" strokeWidth="2.2" points={waveformData.vPoints} />
               </svg>
             </div>
 
             {/* Channel 2: Component Current */}
-            <div className="bg-[#050914] border border-slate-800/90 rounded p-1.5">
-              <div className="flex items-center justify-between text-[10px] font-mono text-amber-400 mb-1">
+            <div className="bg-white border border-slate-200 rounded-lg p-2 shadow-2xs">
+              <div className="flex items-center justify-between text-[10px] font-mono text-amber-700 font-bold mb-1">
                 <span>Component Current [A] (Peak: {systemState === "FAULT_ACTIVE" ? activeFault.currentA.toFixed(1) : "0.8"}A)</span>
-                <span className="text-slate-500">50A FS</span>
+                <span className="text-slate-400">50A FS</span>
               </div>
               <svg className="w-full h-11" viewBox="0 0 380 45">
-                <line x1="0" y1="10" x2="380" y2="10" stroke="#1e293b" strokeDasharray="3,3" />
-                <line x1="0" y1="25" x2="380" y2="25" stroke="#1e293b" strokeDasharray="3,3" />
-                <polyline fill="none" stroke="#f97316" strokeWidth="2.0" points={waveformData.iPoints} />
+                <line x1="0" y1="10" x2="380" y2="10" stroke="#f1f5f9" strokeDasharray="3,3" />
+                <line x1="0" y1="25" x2="380" y2="25" stroke="#f1f5f9" strokeDasharray="3,3" />
+                <polyline fill="none" stroke="#d97706" strokeWidth="2.2" points={waveformData.iPoints} />
               </svg>
             </div>
 
             {/* Channel 3: Gate Signal / Driver State */}
-            <div className="bg-[#050914] border border-slate-800/90 rounded p-1.5">
-              <div className="flex items-center justify-between text-[10px] font-mono text-emerald-400 mb-1">
+            <div className="bg-white border border-slate-200 rounded-lg p-2 shadow-2xs">
+              <div className="flex items-center justify-between text-[10px] font-mono text-emerald-700 font-bold mb-1">
                 <span>Gate Signal Vgate(t) / Driver State [V]</span>
-                <span className="text-slate-500">20V FS</span>
+                <span className="text-slate-400">20V FS</span>
               </div>
               <svg className="w-full h-11" viewBox="0 0 380 45">
-                <line x1="0" y1="10" x2="380" y2="10" stroke="#1e293b" strokeDasharray="3,3" />
-                <line x1="0" y1="25" x2="380" y2="25" stroke="#1e293b" strokeDasharray="3,3" />
-                <polyline fill="none" stroke="#22c55e" strokeWidth="2.0" points={waveformData.gPoints} />
+                <line x1="0" y1="10" x2="380" y2="10" stroke="#f1f5f9" strokeDasharray="3,3" />
+                <line x1="0" y1="25" x2="380" y2="25" stroke="#f1f5f9" strokeDasharray="3,3" />
+                <polyline fill="none" stroke="#16a34a" strokeWidth="2.2" points={waveformData.gPoints} />
               </svg>
             </div>
           </div>
@@ -954,13 +931,13 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       </div>
 
       {/* 4. BOTTOM THREE-COLUMN CONSOLE */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-800 bg-[#090e1a] text-xs font-mono">
+      <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-slate-200 bg-white text-xs font-mono">
         {/* Panel 1: Simulation Event Timeline */}
         <div className="p-3.5 space-y-2">
-          <span className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider block">
+          <span className="text-[11px] font-bold text-[#0055A5] uppercase tracking-wider block">
             SIMULATION EVENT TIMELINE
           </span>
-          <div className="bg-[#050812] border border-slate-800 rounded p-2.5 h-36 overflow-y-auto space-y-1 text-emerald-400 font-mono text-[11px] leading-relaxed">
+          <div className="bg-slate-900 border border-slate-800 rounded-lg p-2.5 h-36 overflow-y-auto space-y-1 text-emerald-400 font-mono text-[11px] leading-relaxed shadow-inner">
             {logs.map((line, i) => (
               <div key={i} className="flex items-start space-x-1.5">
                 <span className="text-slate-500">&gt;</span>
@@ -974,44 +951,44 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
 
         {/* Panel 2: Before / After Simulation Comparison */}
         <div className="p-3.5 space-y-2">
-          <span className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider block">
+          <span className="text-[11px] font-bold text-[#0055A5] uppercase tracking-wider block">
             BEFORE / AFTER SIMULATION COMPARISON
           </span>
-          <div className="bg-[#050812] border border-slate-800 rounded overflow-hidden h-36">
+          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-36 shadow-2xs">
             <table className="w-full text-left text-[11px]">
-              <thead className="bg-[#0c1222] text-slate-400 border-b border-slate-800">
+              <thead className="bg-slate-50 text-slate-500 border-b border-slate-200 font-semibold">
                 <tr>
-                  <th className="py-1 px-2.5">Parameter</th>
-                  <th className="py-1 px-2.5">Normal / Before</th>
-                  <th className="py-1 px-2.5">Fault / After</th>
+                  <th className="py-1.5 px-3">Parameter</th>
+                  <th className="py-1.5 px-3">Normal / Before</th>
+                  <th className="py-1.5 px-3">Fault / After</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/80 text-slate-300">
+              <tbody className="divide-y divide-slate-100 text-slate-700">
                 <tr>
-                  <td className="py-1 px-2.5 text-slate-400">DC Bus Voltage (UDC)</td>
-                  <td className="py-1 px-2.5 font-bold text-emerald-400">395.20 V</td>
-                  <td className={`py-1 px-2.5 font-bold ${systemState === "FAULT_ACTIVE" ? "text-rose-400" : "text-emerald-400"}`}>
+                  <td className="py-1.5 px-3 text-slate-500">DC Bus Voltage (UDC)</td>
+                  <td className="py-1.5 px-3 font-bold text-emerald-700">395.20 V</td>
+                  <td className={`py-1.5 px-3 font-bold ${systemState === "FAULT_ACTIVE" ? "text-red-700" : "text-emerald-700"}`}>
                     {systemState === "FAULT_ACTIVE" ? `${activeFault.dcBusV.toFixed(2)} V` : "395.20 V"}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-1 px-2.5 text-slate-400">Component Health State</td>
-                  <td className="py-1 px-2.5 text-emerald-400 font-bold">NORMAL</td>
-                  <td className={`py-1 px-2.5 font-bold ${systemState === "FAULT_ACTIVE" ? "text-rose-400" : "text-emerald-400"}`}>
+                  <td className="py-1.5 px-3 text-slate-500">Component Health State</td>
+                  <td className="py-1.5 px-3 text-emerald-700 font-bold">NORMAL</td>
+                  <td className={`py-1.5 px-3 font-bold ${systemState === "FAULT_ACTIVE" ? "text-red-700" : "text-emerald-700"}`}>
                     {systemState === "FAULT_ACTIVE" ? activeFault.finalState : "NORMAL"}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-1 px-2.5 text-slate-400">Protection Action</td>
-                  <td className="py-1 px-2.5 text-slate-400">NONE</td>
-                  <td className={`py-1 px-2.5 font-bold ${systemState === "FAULT_ACTIVE" ? "text-amber-400" : "text-slate-400"}`}>
+                  <td className="py-1.5 px-3 text-slate-500">Protection Action</td>
+                  <td className="py-1.5 px-3 text-slate-500">NONE</td>
+                  <td className={`py-1.5 px-3 font-bold ${systemState === "FAULT_ACTIVE" ? "text-amber-700" : "text-slate-500"}`}>
                     {systemState === "FAULT_ACTIVE" ? activeFault.action : "NONE (NORMAL OPERATION)"}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-1 px-2.5 text-slate-400">Unconstrained Peak</td>
-                  <td className="py-1 px-2.5 text-slate-400">0.80 A</td>
-                  <td className={`py-1 px-2.5 font-bold ${systemState === "FAULT_ACTIVE" ? "text-amber-400" : "text-slate-400"}`}>
+                  <td className="py-1.5 px-3 text-slate-500">Unconstrained Peak</td>
+                  <td className="py-1.5 px-3 text-slate-500">0.80 A</td>
+                  <td className={`py-1.5 px-3 font-bold ${systemState === "FAULT_ACTIVE" ? "text-amber-700" : "text-slate-500"}`}>
                     {systemState === "FAULT_ACTIVE" ? `${activeFault.currentA.toFixed(2)} A` : "0.80 A"}
                   </td>
                 </tr>
@@ -1023,42 +1000,42 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         {/* Panel 3: Simulation Results & Fault History */}
         <div className="p-3.5 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider block">
+            <span className="text-[11px] font-bold text-[#0055A5] uppercase tracking-wider block">
               SIMULATION RESULTS &amp; FAULT HISTORY
             </span>
             <div className="flex items-center space-x-1">
               <span className="text-[10px] text-slate-500">Past Runs:</span>
-              <span className="text-[10px] text-slate-400 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">
+              <span className="text-[10px] text-[#0055A5] bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 font-bold">
                 {historyRuns.length > 0 ? `${historyRuns.length} recorded` : "No runs yet"}
               </span>
             </div>
           </div>
 
-          <div className="bg-[#050812] border border-slate-800 rounded p-2.5 h-36 overflow-y-auto text-[11px] font-mono text-slate-300 space-y-1">
-            <div className="text-slate-500">=============================================</div>
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 h-36 overflow-y-auto text-[11px] font-mono text-slate-700 space-y-1 shadow-2xs">
+            <div className="text-slate-400">=============================================</div>
             <div>
-              <span className="text-slate-400">SIMULATION RESULT: </span>
-              <span className={`font-bold ${systemState === "FAULT_ACTIVE" ? "text-rose-400" : "text-emerald-400"}`}>
+              <span className="text-slate-500">SIMULATION RESULT: </span>
+              <span className={`font-bold ${systemState === "FAULT_ACTIVE" ? "text-red-700" : "text-emerald-700"}`}>
                 {systemState === "FAULT_ACTIVE" ? "FAULT INJECTED" : "NORMAL"}
               </span>
             </div>
             <div>
-              <span className="text-slate-400">ACTIVE COMPONENT: </span>
-              <span className="text-yellow-300 font-bold">{activeBlock.id} ({activeBlock.type})</span>
+              <span className="text-slate-500">ACTIVE COMPONENT: </span>
+              <span className="text-[#0055A5] font-bold">{activeBlock.id} ({activeBlock.type})</span>
             </div>
             <div>
-              <span className="text-slate-400">FAULT MODE: </span>
-              <span className="text-amber-400 font-bold">{activeFault.label}</span>
+              <span className="text-slate-500">FAULT MODE: </span>
+              <span className="text-amber-700 font-bold">{activeFault.label}</span>
             </div>
             <div>
-              <span className="text-slate-400">FINAL STATE: </span>
-              <span className="text-white font-bold">{systemState === "FAULT_ACTIVE" ? activeFault.finalState : "NORMAL"}</span>
+              <span className="text-slate-500">FINAL STATE: </span>
+              <span className="text-slate-900 font-bold">{systemState === "FAULT_ACTIVE" ? activeFault.finalState : "NORMAL"}</span>
             </div>
             <div>
-              <span className="text-slate-400">PROTECTION ACTION: </span>
-              <span className="text-cyan-300 font-bold">{systemState === "FAULT_ACTIVE" ? activeFault.action : "NONE"}</span>
+              <span className="text-slate-500">PROTECTION ACTION: </span>
+              <span className="text-sky-700 font-bold">{systemState === "FAULT_ACTIVE" ? activeFault.action : "NONE"}</span>
             </div>
-            <div className="text-slate-500">=============================================</div>
+            <div className="text-slate-400">=============================================</div>
           </div>
         </div>
       </div>

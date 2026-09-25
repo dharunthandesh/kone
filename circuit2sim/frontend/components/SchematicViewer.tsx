@@ -42,7 +42,7 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
   };
 
   return (
-    <div className="flex flex-col bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+    <div className="flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
       <input
         type="file"
         ref={fileInputRef}
@@ -52,15 +52,15 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
       />
 
       {/* Top Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-950/80 border-b border-slate-800">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50 border-b border-slate-200">
         <div className="flex items-center space-x-2">
-          <Layers className="w-4 h-4 text-cyan-400" />
-          <span className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
+          <Layers className="w-4 h-4 text-[#0055A5]" />
+          <span className="text-xs font-semibold text-slate-800 uppercase tracking-wider">
             Schematic Viewport & AI Detection Overlays
           </span>
           {circuitIr?.components && (
-            <span className="text-[10px] font-mono bg-cyan-950/80 text-cyan-400 border border-cyan-800/50 px-2 py-0.5 rounded">
-              {circuitIr.components.length} components detected
+            <span className="text-[10px] font-mono bg-blue-50 text-[#0055A5] border border-blue-200 px-2 py-0.5 rounded font-bold">
+              {circuitIr.components.length} components
             </span>
           )}
         </div>
@@ -72,7 +72,7 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className="flex items-center space-x-1 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-700/60 text-cyan-300 hover:text-white px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer disabled:opacity-50"
+              className="flex items-center space-x-1 bg-white hover:bg-blue-50 border border-slate-300 text-[#0055A5] px-2 py-0.5 rounded text-[11px] font-semibold transition cursor-pointer disabled:opacity-50 shadow-2xs"
               title="Upload or replace schematic diagram"
             >
               {isUploading ? (
@@ -84,11 +84,11 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
             </button>
           )}
           {/* Layer toggles */}
-          <div className="flex items-center space-x-1 bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-[11px]">
+          <div className="flex items-center space-x-1 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-[11px] shadow-2xs">
             <button
               onClick={() => setShowBoxes(!showBoxes)}
               className={`px-1.5 py-0.5 rounded transition ${
-                showBoxes ? "bg-cyan-600/30 text-cyan-300 font-medium" : "text-slate-500 hover:text-slate-300"
+                showBoxes ? "bg-blue-50 text-[#0055A5] font-bold" : "text-slate-500 hover:text-slate-800"
               }`}
               title="Toggle Component Bounding Boxes"
             >
@@ -97,7 +97,7 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
             <button
               onClick={() => setShowPins(!showPins)}
               className={`px-1.5 py-0.5 rounded transition ${
-                showPins ? "bg-cyan-600/30 text-cyan-300 font-medium" : "text-slate-500 hover:text-slate-300"
+                showPins ? "bg-blue-50 text-[#0055A5] font-bold" : "text-slate-500 hover:text-slate-800"
               }`}
               title="Toggle Terminals / Pins"
             >
@@ -106,7 +106,7 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
             <button
               onClick={() => setShowNets(!showNets)}
               className={`px-1.5 py-0.5 rounded transition ${
-                showNets ? "bg-cyan-600/30 text-cyan-300 font-medium" : "text-slate-500 hover:text-slate-300"
+                showNets ? "bg-blue-50 text-[#0055A5] font-bold" : "text-slate-500 hover:text-slate-800"
               }`}
               title="Toggle Net Connections"
             >
@@ -115,25 +115,25 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
           </div>
 
           {/* Zoom controls */}
-          <div className="flex items-center space-x-1 bg-slate-900 border border-slate-800 rounded px-1.5 py-0.5 text-xs text-slate-300">
+          <div className="flex items-center space-x-1 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-xs text-slate-700 shadow-2xs">
             <button
               onClick={() => setZoom((z) => Math.max(0.5, z - 0.15))}
-              className="p-1 hover:text-cyan-400 transition"
+              className="p-1 hover:text-[#0055A5] transition"
               title="Zoom Out"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="text-[11px] font-mono px-1">{Math.round(zoom * 100)}%</span>
+            <span className="text-[11px] font-mono px-1 font-bold">{Math.round(zoom * 100)}%</span>
             <button
               onClick={() => setZoom((z) => Math.min(2.5, z + 0.15))}
-              className="p-1 hover:text-cyan-400 transition"
+              className="p-1 hover:text-[#0055A5] transition"
               title="Zoom In"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setZoom(1)}
-              className="p-1 hover:text-cyan-400 transition ml-1"
+              className="p-1 hover:text-[#0055A5] transition ml-1"
               title="Reset View"
             >
               <Maximize2 className="w-3.5 h-3.5" />
@@ -257,9 +257,9 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
       </div>
 
       {/* Bottom Hint */}
-      <div className="px-4 py-2 bg-slate-950 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
+      <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
         <span>Click on any bounding box to focus and inspect component properties in the Review panel.</span>
-        <span className="text-slate-500 font-mono">Coordinate Space: 2D Pixel Grid</span>
+        <span className="text-slate-400 font-mono">Coordinate Space: 2D Pixel Grid</span>
       </div>
     </div>
   );

@@ -10,7 +10,6 @@ import {
   Save,
   X,
   Sliders,
-  HelpCircle,
 } from "lucide-react";
 import { Component, ComponentType, ParameterValue } from "../types/circuit";
 
@@ -143,36 +142,38 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
   });
 
   return (
-    <div className="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+    <div className="flex flex-col h-full bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
       {/* Header & Filter Controls */}
-      <div className="flex items-center justify-between px-4 py-3 bg-slate-950/90 border-b border-slate-800">
+      <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
         <div className="flex items-center space-x-2">
-          <Sliders className="w-4 h-4 text-cyan-400" />
-          <h3 className="text-xs font-semibold text-slate-200 uppercase tracking-wider">
+          <Sliders className="w-4 h-4 text-[#0055a5]" />
+          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
             Detected Components & Verification
           </h3>
-          <span className="text-[10px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-mono bg-blue-50 text-[#0055a5] border border-blue-200 font-semibold px-2 py-0.5 rounded">
             {components.length} total
           </span>
         </div>
 
         <div className="flex items-center space-x-2">
           {/* Filters */}
-          <div className="flex items-center space-x-1 bg-slate-900 border border-slate-800 rounded p-0.5 text-[11px]">
+          <div className="flex items-center space-x-1 bg-white border border-slate-200 rounded-lg p-0.5 text-[11px] shadow-2xs">
             <button
               onClick={() => setFilter("all")}
-              className={`px-2 py-0.5 rounded transition ${
-                filter === "all" ? "bg-cyan-600/30 text-cyan-300 font-semibold" : "text-slate-400 hover:text-slate-200"
+              className={`px-2.5 py-1 rounded-md transition font-medium ${
+                filter === "all"
+                  ? "bg-[#0055a5] text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               All ({components.length})
             </button>
             <button
               onClick={() => setFilter("uncertain")}
-              className={`px-2 py-0.5 rounded transition ${
+              className={`px-2.5 py-1 rounded-md transition font-medium ${
                 filter === "uncertain"
-                  ? "bg-amber-600/30 text-amber-300 font-semibold"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-amber-500 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Needs Review (
@@ -181,10 +182,10 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
             </button>
             <button
               onClick={() => setFilter("verified")}
-              className={`px-2 py-0.5 rounded transition ${
+              className={`px-2.5 py-1 rounded-md transition font-medium ${
                 filter === "verified"
-                  ? "bg-emerald-600/30 text-emerald-300 font-semibold"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-emerald-600 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Verified
@@ -194,7 +195,7 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
           {/* Add Component Button */}
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-medium border border-slate-700 transition"
+            className="inline-flex items-center space-x-1 px-3 py-1 rounded-lg bg-[#0055a5] hover:bg-[#004385] text-white text-xs font-semibold shadow-xs transition"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add</span>
@@ -206,7 +207,7 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
       <div className="flex-1 overflow-auto">
         <table className="w-full text-left border-collapse text-xs">
           <thead>
-            <tr className="bg-slate-950/60 border-b border-slate-800 text-slate-400 font-mono text-[11px]">
+            <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-mono text-[11px]">
               <th className="py-2.5 px-3">Ref ID</th>
               <th className="py-2.5 px-3">Type</th>
               <th className="py-2.5 px-3">Nominal Value</th>
@@ -215,10 +216,10 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
               <th className="py-2.5 px-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60 font-sans">
+          <tbody className="divide-y divide-slate-100 font-sans">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-slate-500 text-xs">
+                <td colSpan={6} className="py-8 text-center text-slate-400 text-xs">
                   No components match the selected filter.
                 </td>
               </tr>
@@ -235,12 +236,12 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
                     onClick={() => onSelectComponent(comp.id)}
                     className={`transition-colors cursor-pointer ${
                       isSelected
-                        ? "bg-cyan-950/40 border-l-2 border-l-cyan-400"
-                        : "hover:bg-slate-850/50 hover:bg-slate-800/30"
+                        ? "bg-blue-50/80 border-l-2 border-l-[#0055a5]"
+                        : "hover:bg-slate-50/80"
                     }`}
                   >
                     {/* Ref ID */}
-                    <td className="py-2.5 px-3 font-mono font-bold text-cyan-300">
+                    <td className="py-2.5 px-3 font-mono font-bold text-[#0055a5]">
                       {comp.id}
                     </td>
 
@@ -250,7 +251,7 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
                         <select
                           value={editType}
                           onChange={(e) => setEditType(e.target.value as ComponentType)}
-                          className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200 text-xs focus:ring-1 focus:ring-cyan-500"
+                          className="bg-white border border-slate-300 rounded px-2 py-1 text-slate-800 text-xs focus:ring-1 focus:ring-[#0055a5]"
                         >
                           <option value="resistor">Resistor</option>
                           <option value="capacitor">Capacitor</option>
@@ -262,7 +263,7 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
                           <option value="ground">Electrical Reference / Ground</option>
                         </select>
                       ) : (
-                        <span className="capitalize text-slate-200">
+                        <span className="capitalize text-slate-700 font-medium">
                           {comp.type.replace("_", " ")}
                         </span>
                       )}
@@ -277,48 +278,48 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
                             value={editVal}
                             onChange={(e) => setEditVal(e.target.value)}
                             placeholder="e.g. 10k"
-                            className="w-20 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-slate-200 text-xs focus:ring-1 focus:ring-cyan-500"
+                            className="w-20 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-slate-800 text-xs focus:ring-1 focus:ring-[#0055a5]"
                           />
                           <input
                             type="text"
                             value={editUnit}
                             onChange={(e) => setEditUnit(e.target.value)}
                             placeholder="unit"
-                            className="w-14 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-slate-200 text-xs focus:ring-1 focus:ring-cyan-500"
+                            className="w-14 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-slate-800 text-xs focus:ring-1 focus:ring-[#0055a5]"
                           />
                         </div>
                       ) : param ? (
-                        <span className="text-slate-100 font-semibold">
+                        <span className="text-slate-800 font-semibold">
                           {param.raw_text || (param.value !== undefined ? `${param.value} ${param.unit || ""}` : "—")}
                         </span>
                       ) : (
-                        <span className="text-slate-500">—</span>
+                        <span className="text-slate-400">—</span>
                       )}
                     </td>
 
                     {/* Pins */}
-                    <td className="py-2.5 px-3 font-mono text-slate-400 text-[11px]">
+                    <td className="py-2.5 px-3 font-mono text-slate-500 text-[11px]">
                       {comp.pins.join(", ")}
                     </td>
 
                     {/* Confidence & Status */}
                     <td className="py-2.5 px-3">
                       {comp.verified_by_user ? (
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-medium bg-blue-950 text-blue-300 border border-blue-800">
-                          <CheckCircle className="w-3 h-3 text-blue-400" />
+                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-[#0055a5] border border-blue-200">
+                          <CheckCircle className="w-3 h-3 text-[#0055a5]" />
                           <span>Manually Verified</span>
                         </span>
                       ) : isUncertain ? (
                         <span
-                          className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950 text-amber-300 border border-amber-800 animate-pulse"
+                          className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 animate-pulse"
                           title={comp.uncertainties.join("; ")}
                         >
-                          <AlertTriangle className="w-3 h-3 text-amber-400" />
+                          <AlertTriangle className="w-3 h-3 text-amber-600" />
                           <span>UNCERTAIN ({Math.round(comp.confidence * 100)}%)</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-950 text-emerald-300 border border-emerald-800">
-                          <CheckCircle className="w-3 h-3 text-emerald-400" />
+                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <CheckCircle className="w-3 h-3 text-emerald-600" />
                           <span>{Math.round(comp.confidence * 100)}% Recognized</span>
                         </span>
                       )}
@@ -330,14 +331,14 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
                         <div className="flex items-center justify-end space-x-1">
                           <button
                             onClick={() => saveEdit(comp)}
-                            className="p-1 text-emerald-400 hover:text-emerald-300"
+                            className="p-1 text-emerald-600 hover:text-emerald-700"
                             title="Save Changes"
                           >
                             <Save className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={cancelEdit}
-                            className="p-1 text-slate-400 hover:text-slate-200"
+                            className="p-1 text-slate-400 hover:text-slate-600"
                             title="Cancel"
                           >
                             <X className="w-3.5 h-3.5" />
@@ -347,14 +348,14 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
                         <div className="flex items-center justify-end space-x-1">
                           <button
                             onClick={() => startEdit(comp)}
-                            className="p-1 text-slate-400 hover:text-cyan-400 transition"
+                            className="p-1 text-slate-400 hover:text-[#0055a5] transition"
                             title="Edit Component"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => onDeleteComponent(comp.id)}
-                            className="p-1 text-slate-400 hover:text-rose-400 transition"
+                            className="p-1 text-slate-400 hover:text-rose-600 transition"
                             title="Delete Component"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -372,19 +373,19 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
 
       {/* Add Component Modal */}
       {showAddModal && (
-        <div className="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between space-x-3 text-xs">
-          <span className="font-semibold text-slate-200">Add Component:</span>
+        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between space-x-3 text-xs">
+          <span className="font-bold text-slate-800">Add Component:</span>
           <input
             type="text"
             value={newId}
             onChange={(e) => setNewId(e.target.value)}
             placeholder="Ref ID (e.g. R2)"
-            className="w-24 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200 font-mono"
+            className="w-24 bg-white border border-slate-300 rounded px-2 py-1 text-slate-800 font-mono"
           />
           <select
             value={newType}
             onChange={(e) => setNewType(e.target.value as ComponentType)}
-            className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200"
+            className="bg-white border border-slate-300 rounded px-2 py-1 text-slate-800"
           >
             <option value="resistor">Resistor</option>
             <option value="capacitor">Capacitor</option>
@@ -400,24 +401,24 @@ export const ComponentReviewTable: React.FC<ComponentReviewTableProps> = ({
             value={newVal}
             onChange={(e) => setNewVal(e.target.value)}
             placeholder="Value (e.g. 10k)"
-            className="w-24 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200 font-mono"
+            className="w-24 bg-white border border-slate-300 rounded px-2 py-1 text-slate-800 font-mono"
           />
           <input
             type="text"
             value={newUnit}
             onChange={(e) => setNewUnit(e.target.value)}
             placeholder="Unit (ohm)"
-            className="w-16 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-slate-200 font-mono"
+            className="w-16 bg-white border border-slate-300 rounded px-2 py-1 text-slate-800 font-mono"
           />
           <button
             onClick={handleAddNew}
-            className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded font-medium transition"
+            className="px-3 py-1 bg-[#0055a5] hover:bg-[#004385] text-white rounded-lg font-semibold transition"
           >
             Confirm Add
           </button>
           <button
             onClick={() => setShowAddModal(false)}
-            className="px-2 py-1 text-slate-400 hover:text-slate-200 transition"
+            className="px-2 py-1 text-slate-500 hover:text-slate-800 transition"
           >
             Cancel
           </button>

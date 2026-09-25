@@ -243,7 +243,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans selection:bg-[#0055A5] selection:text-white">
       {/* Top Navigation */}
       <Navbar
         currentProject={currentProject}
@@ -256,99 +256,99 @@ export default function Home() {
       {/* Main Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col space-y-6">
         {/* Engineering Stepper Header */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between shadow-lg text-xs font-mono">
+        <div className="bg-white border border-slate-200 rounded-xl p-3 flex flex-wrap items-center justify-between shadow-xs text-xs font-mono">
           <div className="flex items-center space-x-1 sm:space-x-3 overflow-x-auto py-1">
             {/* Step 1: Upload */}
             <button
               onClick={() => setActiveStep(1)}
               className={`flex items-center space-x-1 px-2.5 py-1 rounded transition ${
                 activeStep === 1
-                  ? "bg-cyan-600/30 text-cyan-300 font-bold border border-cyan-500/50"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-[#0055A5] text-white font-bold shadow-xs"
+                  : "text-slate-600 hover:text-[#0055A5] hover:bg-blue-50"
               }`}
             >
               <span>1. UPLOAD</span>
-              {currentProject?.schematic_filename && <span className="text-emerald-400">✓</span>}
+              {currentProject?.schematic_filename && <span className="text-emerald-500">✓</span>}
             </button>
 
-            <span className="text-slate-600">→</span>
+            <span className="text-slate-300">→</span>
 
             {/* Step 2: Understand */}
             <button
               onClick={() => setActiveStep(2)}
               className={`flex items-center space-x-1 px-2.5 py-1 rounded transition ${
                 activeStep === 2
-                  ? "bg-cyan-600/30 text-cyan-300 font-bold border border-cyan-500/50"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-[#0055A5] text-white font-bold shadow-xs"
+                  : "text-slate-600 hover:text-[#0055A5] hover:bg-blue-50"
               }`}
             >
               <span>2. UNDERSTAND</span>
-              {circuitIr && <span className="text-emerald-400">✓</span>}
+              {circuitIr && <span className="text-emerald-500">✓</span>}
             </button>
 
-            <span className="text-slate-600">→</span>
+            <span className="text-slate-300">→</span>
 
             {/* Step 3: Review */}
             <button
               onClick={() => setActiveStep(3)}
               className={`flex items-center space-x-1 px-2.5 py-1 rounded transition ${
                 activeStep === 3
-                  ? "bg-cyan-600/30 text-cyan-300 font-bold border border-cyan-500/50"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-[#0055A5] text-white font-bold shadow-xs"
+                  : "text-slate-600 hover:text-[#0055A5] hover:bg-blue-50"
               }`}
             >
               <span>3. REVIEW & EDIT</span>
               {circuitIr?.components && circuitIr.components.length > 0 && (
-                <span className="text-cyan-400">({circuitIr.components.length})</span>
+                <span className="text-blue-600 font-semibold">({circuitIr.components.length})</span>
               )}
             </button>
 
-            <span className="text-slate-600">→</span>
+            <span className="text-slate-300">→</span>
 
             {/* Step 4: Validate */}
             <button
               onClick={() => setActiveStep(4)}
               className={`flex items-center space-x-1 px-2.5 py-1 rounded transition ${
                 activeStep === 4
-                  ? "bg-cyan-600/30 text-cyan-300 font-bold border border-cyan-500/50"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-[#0055A5] text-white font-bold shadow-xs"
+                  : "text-slate-600 hover:text-[#0055A5] hover:bg-blue-50"
               }`}
             >
               <span>4. VALIDATE</span>
               {validation?.status === "PASS" ? (
-                <span className="text-emerald-400">PASS ✓</span>
+                <span className="text-emerald-600 font-bold">PASS ✓</span>
               ) : validation?.status === "WARNING" ? (
-                <span className="text-amber-400">WARN ⚠</span>
+                <span className="text-amber-600 font-bold">WARN ⚠</span>
               ) : null}
             </button>
 
-            <span className="text-slate-600">→</span>
+            <span className="text-slate-300">→</span>
 
             {/* Step 5: Model */}
             <button
               onClick={() => setActiveStep(5)}
               className={`flex items-center space-x-1 px-2.5 py-1 rounded transition ${
                 activeStep === 5
-                  ? "bg-cyan-600/30 text-cyan-300 font-bold border border-cyan-500/50"
-                  : "text-slate-400 hover:text-slate-200"
+                  ? "bg-[#0055A5] text-white font-bold shadow-xs"
+                  : "text-slate-600 hover:text-[#0055A5] hover:bg-blue-50"
               }`}
             >
               <span>5. GENERATE .SLX</span>
-              {compilationResult && <span className="text-emerald-400">✓</span>}
+              {compilationResult && <span className="text-emerald-500">✓</span>}
             </button>
 
-            <span className="text-slate-600">→</span>
+            <span className="text-slate-300">→</span>
 
             {/* Step 6: Autonomous Fault Injection (FMEA) */}
             <button
               onClick={() => setActiveStep(6)}
               className={`flex items-center space-x-1.5 px-3 py-1 rounded transition ${
                 activeStep === 6
-                  ? "bg-gradient-to-r from-amber-500/30 to-rose-500/30 text-amber-300 font-bold border border-amber-500/60 shadow-lg shadow-amber-500/10"
-                  : "text-amber-400/80 hover:text-amber-300 hover:bg-amber-500/10"
+                  ? "bg-[#0055A5] text-white font-bold shadow-xs"
+                  : "text-[#0055A5] hover:bg-blue-50"
               }`}
             >
-              <Flame className="w-3.5 h-3.5 text-amber-400" />
+              <Flame className="w-3.5 h-3.5 text-amber-500" />
               <span>6. FAULT INJECTION (FMEA)</span>
             </button>
           </div>
@@ -359,7 +359,7 @@ export default function Home() {
               <button
                 disabled={isAnalyzing}
                 onClick={handleAnalyze}
-                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold transition shadow shadow-cyan-600/20 active:scale-95 cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#0055A5] hover:bg-[#004385] text-white font-semibold transition shadow-xs active:scale-95 cursor-pointer disabled:opacity-50"
               >
                 {isAnalyzing ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -373,10 +373,10 @@ export default function Home() {
             {circuitIr && (
               <button
                 onClick={() => setActiveStep(6)}
-                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-bold transition shadow shadow-amber-500/20 active:scale-95 cursor-pointer"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#0055A5] border border-blue-200 font-bold transition shadow-xs active:scale-95 cursor-pointer"
               >
-                <Zap className="w-3.5 h-3.5 fill-white" />
-                <span>Autonomous FMEA Engine</span>
+                <Zap className="w-3.5 h-3.5 text-[#0055A5]" />
+                <span>BCX14 Fault Studio</span>
               </button>
             )}
           </div>
@@ -384,15 +384,15 @@ export default function Home() {
 
         {/* Live Analysis Terminal Banner (if active) */}
         {isAnalyzing && (
-          <div className="bg-slate-900 border border-cyan-800 rounded-xl p-4 shadow-xl font-mono text-xs text-cyan-300 space-y-1">
-            <div className="flex items-center justify-between text-cyan-400 font-bold mb-2">
+          <div className="bg-white border border-blue-200 rounded-xl p-4 shadow-sm font-mono text-xs text-slate-800 space-y-1">
+            <div className="flex items-center justify-between text-[#0055A5] font-bold mb-2">
               <span className="flex items-center space-x-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
                 <span>Running Circuit Understanding Pipeline...</span>
               </span>
-              <span>Processing</span>
+              <span className="text-slate-500 font-normal">Processing</span>
             </div>
-            <div className="max-h-24 overflow-auto space-y-0.5 text-slate-300">
+            <div className="max-h-24 overflow-auto space-y-0.5 text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">
               {analysisLogs.map((log, i) => (
                 <div key={i} className="text-[11px] leading-tight">
                   {log}
@@ -472,19 +472,19 @@ export default function Home() {
 
               {/* Quick FMEA Fault Injection Card */}
               {currentProject && (
-                <div className="bg-slate-900 border border-amber-500/30 rounded-xl p-4 shadow-lg flex items-center justify-between">
+                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex items-center justify-between hover:border-blue-300 transition">
                   <div className="flex items-center space-x-3">
-                    <div className="p-2.5 bg-amber-500/20 text-amber-400 rounded-lg">
+                    <div className="p-2.5 bg-blue-50 text-[#0055A5] border border-blue-200 rounded-lg">
                       <Flame className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-white">Autonomous Fault Injection Ready</h4>
-                      <p className="text-[11px] text-slate-400">Run ISO 26262 FMEA matrix &amp; Simscape waveforms</p>
+                      <h4 className="text-xs font-bold text-slate-900">Autonomous Fault Injection Ready</h4>
+                      <p className="text-[11px] text-slate-500">Run ISO 26262 FMEA matrix &amp; Simscape waveforms</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setActiveStep(6)}
-                    className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-bold text-xs rounded-lg transition"
+                    className="px-3.5 py-1.5 bg-[#0055A5] hover:bg-[#004385] text-white font-bold text-xs rounded-lg shadow-xs transition"
                   >
                     Open FMEA Studio &rarr;
                   </button>

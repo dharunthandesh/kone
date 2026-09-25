@@ -8,26 +8,15 @@ import {
   CheckCircle2,
   Activity,
   Sliders,
-  RefreshCw,
-  Download,
   FileSpreadsheet,
   Key,
   Flame,
-  Settings,
-  HelpCircle,
-  TrendingDown,
-  TrendingUp,
-  Cpu,
   Layers,
-  ChevronRight,
-  Code2,
   FileCode,
-  ExternalLink,
 } from "lucide-react";
 import {
   ComponentFault,
   FMEAReport,
-  FaultCriticality,
   MatlabSettings,
   UniversalCircuitIR,
 } from "../types/circuit";
@@ -44,26 +33,22 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
   circuitIr,
   onRefresh,
 }) => {
-  // Campaign State
   const [isRunning, setIsRunning] = useState(false);
   const [report, setReport] = useState<FMEAReport | null>(null);
   const [selectedFault, setSelectedFault] = useState<ComponentFault | null>(null);
   const [severityFilter, setSeverityFilter] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // MATLAB Settings State
   const [matlabSettings, setMatlabSettings] = useState<MatlabSettings | null>(null);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState("");
   const [savingKey, setSavingKey] = useState(false);
 
-  // Single Interactive Fault Sandbox State
   const [sandboxCompId, setSandboxCompId] = useState<string>("");
   const [sandboxFaultType, setSandboxFaultType] = useState<string>("SHORT_CIRCUIT");
   const [sandboxCustomVal, setSandboxCustomVal] = useState<string>("");
   const [isInjectingSingle, setIsInjectingSingle] = useState(false);
 
-  // Load existing report and MATLAB settings on mount
   useEffect(() => {
     let isMounted = true;
 
@@ -98,7 +83,6 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
     };
   }, [projectId]);
 
-  // Set default sandbox component
   useEffect(() => {
     if (circuitIr?.components && circuitIr.components.length > 0 && !sandboxCompId) {
       const firstValid = circuitIr.components.find((c) => c.type !== "ground");
@@ -108,7 +92,6 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
     }
   }, [circuitIr, sandboxCompId]);
 
-  // Run full autonomous campaign
   const handleRunAutonomousSuite = async () => {
     setIsRunning(true);
     try {
@@ -125,7 +108,6 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
     }
   };
 
-  // Inject single custom fault
   const handleInjectSingle = async () => {
     if (!sandboxCompId) return;
     setIsInjectingSingle(true);
@@ -139,7 +121,6 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
       );
       setSelectedFault(faultResult);
 
-      // Prepend or update in report if report exists
       if (report) {
         const existingIdx = report.faults.findIndex((f) => f.fault_id === faultResult.fault_id);
         let updatedFaults = [...report.faults];
@@ -160,7 +141,6 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
     }
   };
 
-  // Save MATLAB API Key
   const handleSaveApiKey = async () => {
     setSavingKey(true);
     try {
@@ -175,7 +155,6 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
     }
   };
 
-  // Export FMEA CSV
   const handleExportCsv = async () => {
     try {
       const res = await api.exportFMEAReport(projectId, "csv");
@@ -192,7 +171,6 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
     }
   };
 
-  // Filtered faults list
   const filteredFaults = useMemo(() => {
     if (!report?.faults) return [];
     return report.faults.filter((f) => {
@@ -211,49 +189,49 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
   return (
     <div className="space-y-6">
       {/* 1. TOP HEADER & MATLAB STATUS BAR */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
+      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex items-center space-x-3.5">
-            <div className="p-3 bg-gradient-to-tr from-amber-500/20 to-rose-500/20 border border-amber-500/30 rounded-xl text-amber-400">
-              <Flame className="w-6 h-6 animate-pulse" />
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-[#0055A5]">
+              <Flame className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center space-x-2.5">
-                <h2 className="text-xl font-bold text-white tracking-tight">
-                  Autonomous Fault Injection & FMEA Engine
+                <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+                  Autonomous Fault Injection &amp; FMEA Engine
                 </h2>
-                <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-50 text-[#0055A5] border border-blue-200">
                   ISO 26262 / MIL-STD-1629A
                 </span>
               </div>
-              <p className="text-sm text-slate-400 mt-0.5">
+              <p className="text-sm text-slate-500 mt-0.5">
                 Autonomously synthesizes hardware component faults, computes baseline vs. fault waveforms, and validates safety thresholds.
               </p>
             </div>
           </div>
 
           {/* MATLAB Connectivity Capsule */}
-          <div className="flex items-center flex-wrap gap-2.5 bg-slate-950/70 border border-slate-800 px-3.5 py-2 rounded-lg text-xs">
+          <div className="flex items-center flex-wrap gap-2.5 bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-lg text-xs">
             <div className="flex items-center space-x-2">
               <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0055A5]"></span>
               </span>
-              <span className="font-medium text-slate-200">
+              <span className="font-semibold text-slate-800">
                 {matlabSettings?.version ? `MATLAB ${matlabSettings.version.split(" ")[0]} Simscape` : "Simscape Connected"}
               </span>
             </div>
-            <span className="text-slate-600">|</span>
-            <div className="flex items-center space-x-1.5 text-slate-400">
-              <Key className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-slate-300">|</span>
+            <div className="flex items-center space-x-1.5 text-slate-500">
+              <Key className="w-3.5 h-3.5 text-amber-500" />
               <span>Key:</span>
-              <span className="font-mono text-slate-300 font-semibold">
+              <span className="font-mono text-slate-800 font-bold">
                 {matlabSettings?.masked_api_key || "Configured"}
               </span>
             </div>
             <button
               onClick={() => setShowKeyModal(true)}
-              className="text-indigo-400 hover:text-indigo-300 underline font-medium ml-1 transition"
+              className="text-[#0055A5] hover:text-[#004385] underline font-bold ml-1 transition"
             >
               Configure
             </button>
@@ -261,15 +239,15 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
         </div>
 
         {/* Action Bar */}
-        <div className="mt-5 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-5 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <button
               onClick={handleRunAutonomousSuite}
               disabled={isRunning || !circuitIr?.components?.length}
-              className={`px-5 py-2.5 rounded-lg font-semibold text-sm flex items-center space-x-2 shadow-lg transition ${
+              className={`px-5 py-2.5 rounded-lg font-bold text-sm flex items-center space-x-2 shadow-xs transition ${
                 isRunning
-                  ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white shadow-amber-500/20 active:scale-95"
+                  ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                  : "bg-[#0055A5] hover:bg-[#004385] text-white active:scale-95"
               }`}
             >
               <Zap className={`w-4 h-4 ${isRunning ? "animate-spin" : ""}`} />
@@ -281,25 +259,25 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
                 <a
                   href={api.getFaultMatlabScriptUrl(projectId)}
                   download
-                  className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium flex items-center space-x-1.5 transition"
+                  className="px-3.5 py-2 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold flex items-center space-x-1.5 transition shadow-2xs"
                 >
-                  <FileCode className="w-3.5 h-3.5 text-indigo-400" />
+                  <FileCode className="w-3.5 h-3.5 text-[#0055A5]" />
                   <span>Download Simscape Script (.m)</span>
                 </a>
                 <button
                   onClick={handleExportCsv}
-                  className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium flex items-center space-x-1.5 transition"
+                  className="px-3.5 py-2 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold flex items-center space-x-1.5 transition shadow-2xs"
                 >
-                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Export FMEA (CSV)</span>
                 </button>
               </>
             )}
           </div>
 
-          <div className="text-xs text-slate-400 flex items-center space-x-2">
-            <Layers className="w-4 h-4 text-slate-500" />
-            <span>Target Circuit: <strong className="text-slate-200">{circuitIr?.title || "Active Schematic"}</strong> ({circuitIr?.components?.length || 0} Components)</span>
+          <div className="text-xs text-slate-500 flex items-center space-x-2">
+            <Layers className="w-4 h-4 text-slate-400" />
+            <span>Target Circuit: <strong className="text-slate-800">{circuitIr?.title || "Active Schematic"}</strong> ({circuitIr?.components?.length || 0} Components)</span>
           </div>
         </div>
       </div>
@@ -307,65 +285,65 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
       {/* 2. KPI EXECUTIVE METRIC CARDS */}
       {report && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-          <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
-            <span className="text-xs font-medium text-slate-400">Total Faults Simulated</span>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-2xs">
+            <span className="text-xs font-medium text-slate-500">Total Faults Simulated</span>
             <div className="mt-2 flex items-baseline space-x-2">
-              <span className="text-2xl font-bold text-white">{report.total_faults_simulated}</span>
-              <span className="text-xs text-slate-500 font-mono">modes</span>
+              <span className="text-2xl font-extrabold text-slate-900">{report.total_faults_simulated}</span>
+              <span className="text-xs text-slate-400 font-mono">modes</span>
             </div>
-            <span className="text-[11px] text-slate-500 mt-1">Across all detected components</span>
+            <span className="text-[11px] text-slate-400 mt-1">Across all detected components</span>
           </div>
 
-          <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
-            <span className="text-xs font-medium text-slate-400">Safety Robustness Score</span>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-2xs">
+            <span className="text-xs font-medium text-slate-500">Safety Robustness Score</span>
             <div className="mt-2 flex items-baseline space-x-2">
-              <span className={`text-2xl font-bold ${report.safety_score > 60 ? "text-emerald-400" : "text-amber-400"}`}>
+              <span className={`text-2xl font-extrabold ${report.safety_score > 60 ? "text-emerald-600" : "text-amber-600"}`}>
                 {report.safety_score}%
               </span>
-              <span className="text-xs text-slate-500 font-mono">SIL-2 index</span>
+              <span className="text-xs text-slate-400 font-mono">SIL-2 index</span>
             </div>
-            <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-rose-500 via-amber-500 to-emerald-400"
+                className="h-full bg-gradient-to-r from-red-500 via-amber-500 to-emerald-500"
                 style={{ width: `${Math.min(report.safety_score, 100)}%` }}
               />
             </div>
           </div>
 
-          <div className="bg-slate-900/90 border border-rose-900/30 rounded-xl p-4 flex flex-col justify-between">
-            <span className="text-xs font-medium text-rose-300 flex items-center space-x-1.5">
-              <Flame className="w-3.5 h-3.5 text-rose-400" />
+          <div className="bg-red-50/50 border border-red-200 rounded-xl p-4 flex flex-col justify-between shadow-2xs">
+            <span className="text-xs font-bold text-red-700 flex items-center space-x-1.5">
+              <Flame className="w-3.5 h-3.5 text-red-600" />
               <span>Critical Hazards</span>
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
-              <span className="text-2xl font-bold text-rose-400">{report.critical_count}</span>
-              <span className="text-xs text-rose-500/80 font-mono">urgent</span>
+              <span className="text-2xl font-extrabold text-red-700">{report.critical_count}</span>
+              <span className="text-xs text-red-600/80 font-mono">urgent</span>
             </div>
-            <span className="text-[11px] text-rose-400/70 mt-1">Overcurrent / clamp saturation</span>
+            <span className="text-[11px] text-red-600/70 mt-1">Overcurrent / clamp saturation</span>
           </div>
 
-          <div className="bg-slate-900/90 border border-amber-900/30 rounded-xl p-4 flex flex-col justify-between">
-            <span className="text-xs font-medium text-amber-300 flex items-center space-x-1.5">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+          <div className="bg-amber-50/50 border border-amber-200 rounded-xl p-4 flex flex-col justify-between shadow-2xs">
+            <span className="text-xs font-bold text-amber-700 flex items-center space-x-1.5">
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
               <span>Degraded / Warnings</span>
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
-              <span className="text-2xl font-bold text-amber-400">{report.warning_count}</span>
-              <span className="text-xs text-amber-500/80 font-mono">warnings</span>
+              <span className="text-2xl font-extrabold text-amber-700">{report.warning_count}</span>
+              <span className="text-xs text-amber-600/80 font-mono">warnings</span>
             </div>
-            <span className="text-[11px] text-amber-400/70 mt-1">Parameter drift &gt; 15%</span>
+            <span className="text-[11px] text-amber-600/70 mt-1">Parameter drift &gt; 15%</span>
           </div>
 
-          <div className="bg-slate-900/90 border border-emerald-900/30 rounded-xl p-4 flex flex-col justify-between">
-            <span className="text-xs font-medium text-emerald-300 flex items-center space-x-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="bg-emerald-50/50 border border-emerald-200 rounded-xl p-4 flex flex-col justify-between shadow-2xs">
+            <span className="text-xs font-bold text-emerald-700 flex items-center space-x-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               <span>Safe / Tolerated</span>
             </span>
             <div className="mt-2 flex items-baseline space-x-2">
-              <span className="text-2xl font-bold text-emerald-400">{report.safe_count}</span>
-              <span className="text-xs text-emerald-500/80 font-mono">mitigated</span>
+              <span className="text-2xl font-extrabold text-emerald-700">{report.safe_count}</span>
+              <span className="text-xs text-emerald-600/80 font-mono">mitigated</span>
             </div>
-            <span className="text-[11px] text-emerald-400/70 mt-1">Graceful shutdown / within bounds</span>
+            <span className="text-[11px] text-emerald-600/70 mt-1">Graceful shutdown / within bounds</span>
           </div>
         </div>
       )}
@@ -373,26 +351,26 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
       {/* 3. INTERACTIVE TESTING SANDBOX & WAVEFORM COMPARATOR */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Interactive Single Fault Injection Box */}
-        <div className="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center space-x-2">
-              <Sliders className="w-4 h-4 text-amber-400" />
-              <h3 className="font-bold text-white text-sm">Interactive Fault Injection Sandbox</h3>
+              <Sliders className="w-4 h-4 text-[#0055A5]" />
+              <h3 className="font-bold text-slate-900 text-sm">Interactive Fault Injection Sandbox</h3>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               Select any component on the schematic to test its immediate failure transient.
             </p>
           </div>
 
           <div className="space-y-3.5">
             <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">
+              <label className="text-xs font-semibold text-slate-700 block mb-1">
                 Select Target Component
               </label>
               <select
                 value={sandboxCompId}
                 onChange={(e) => setSandboxCompId(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0055A5] font-mono font-semibold"
               >
                 {circuitIr?.components?.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -403,13 +381,13 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">
+              <label className="text-xs font-semibold text-slate-700 block mb-1">
                 Failure Mode
               </label>
               <select
                 value={sandboxFaultType}
                 onChange={(e) => setSandboxFaultType(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0055A5] font-mono font-semibold"
               >
                 <option value="SHORT_CIRCUIT">SHORT CIRCUIT (R -&gt; 0.001 Ω)</option>
                 <option value="OPEN_CIRCUIT">OPEN CIRCUIT (R -&gt; 1 GΩ)</option>
@@ -423,15 +401,15 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">
-                Custom Fault Parameter <span className="text-slate-500 font-normal">(Optional Override)</span>
+              <label className="text-xs font-semibold text-slate-700 block mb-1">
+                Custom Fault Parameter <span className="text-slate-400 font-normal">(Optional Override)</span>
               </label>
               <input
                 type="number"
                 placeholder="e.g. 0.05 or 1000000"
                 value={sandboxCustomVal}
                 onChange={(e) => setSandboxCustomVal(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 font-mono"
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0055A5] font-mono"
               />
             </div>
           </div>
@@ -439,7 +417,7 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
           <button
             onClick={handleInjectSingle}
             disabled={isInjectingSingle || !sandboxCompId}
-            className="w-full py-2.5 px-4 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-amber-500/10 active:scale-98"
+            className="w-full py-2.5 px-4 rounded-lg bg-[#0055A5] hover:bg-[#004385] text-white font-bold text-xs flex items-center justify-center space-x-2 transition shadow-xs active:scale-98"
           >
             <Zap className={`w-3.5 h-3.5 ${isInjectingSingle ? "animate-spin" : ""}`} />
             <span>{isInjectingSingle ? "Injecting Fault..." : "Inject Fault & Re-simulate"}</span>
@@ -447,12 +425,12 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
         </div>
 
         {/* Right Column: Live Transient Waveform Comparison */}
-        <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-8 bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center space-x-2">
-                <Activity className="w-4 h-4 text-indigo-400" />
-                <h3 className="font-bold text-white text-sm">
+                <Activity className="w-4 h-4 text-[#0055A5]" />
+                <h3 className="font-bold text-slate-900 text-sm">
                   Transient Waveform Comparator: Healthy Baseline vs. Injected Fault
                 </h3>
               </div>
@@ -460,10 +438,10 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
                 <span
                   className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                     selectedFault.criticality === "CRITICAL"
-                      ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
+                      ? "bg-red-50 text-red-700 border-red-200"
                       : selectedFault.criticality === "WARNING"
-                      ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
-                      : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                      ? "bg-amber-50 text-amber-700 border-amber-200"
+                      : "bg-emerald-50 text-emerald-700 border-emerald-200"
                   }`}
                 >
                   {selectedFault.criticality} HAZARD
@@ -472,25 +450,25 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
             </div>
 
             {selectedFault && (
-              <p className="text-xs text-slate-400 mt-1">
-                Active Test: <strong className="text-white">{selectedFault.fault_id}</strong> &mdash; {selectedFault.description}
+              <p className="text-xs text-slate-500 mt-1">
+                Active Test: <strong className="text-slate-900">{selectedFault.fault_id}</strong> &mdash; {selectedFault.description}
               </p>
             )}
           </div>
 
           {/* SVG Waveform Visualizer */}
-          <div className="my-4 bg-slate-950 border border-slate-800 rounded-xl p-4 relative overflow-hidden">
+          <div className="my-4 bg-white border border-slate-200 rounded-xl p-4 relative overflow-hidden shadow-2xs">
             {selectedFault?.waveform && selectedFault.waveform.time.length > 0 ? (
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-[11px] text-slate-400">
+                <div className="flex items-center justify-between text-[11px] text-slate-500">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-1.5">
-                      <span className="w-3 h-0.5 bg-blue-400 rounded-full inline-block"></span>
-                      <span>Healthy Nominal Voltage</span>
+                      <span className="w-3 h-0.5 bg-[#0055A5] rounded-full inline-block"></span>
+                      <span className="text-slate-700 font-semibold">Healthy Nominal Voltage</span>
                     </div>
                     <div className="flex items-center space-x-1.5">
-                      <span className="w-3 h-0.5 bg-rose-500 rounded-full inline-block"></span>
-                      <span>Fault Injected Response</span>
+                      <span className="w-3 h-0.5 bg-red-600 rounded-full inline-block"></span>
+                      <span className="text-red-700 font-semibold">Fault Injected Response</span>
                     </div>
                   </div>
                   <div className="font-mono text-slate-500">
@@ -504,19 +482,10 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
                   viewBox="0 0 500 150"
                   preserveAspectRatio="none"
                 >
-                  <defs>
-                    <linearGradient id="faultGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#f43f5e" stopOpacity="0.3" />
-                      <stop offset="100%" stopColor="#f43f5e" stopOpacity="0.0" />
-                    </linearGradient>
-                  </defs>
+                  <line x1="0" y1="30" x2="500" y2="30" stroke="#f1f5f9" strokeDasharray="3,3" />
+                  <line x1="0" y1="75" x2="500" y2="75" stroke="#f1f5f9" strokeDasharray="3,3" />
+                  <line x1="0" y1="120" x2="500" y2="120" stroke="#f1f5f9" strokeDasharray="3,3" />
 
-                  {/* Grid Lines */}
-                  <line x1="0" y1="30" x2="500" y2="30" stroke="#1e293b" strokeDasharray="3,3" />
-                  <line x1="0" y1="75" x2="500" y2="75" stroke="#1e293b" strokeDasharray="3,3" />
-                  <line x1="0" y1="120" x2="500" y2="120" stroke="#1e293b" strokeDasharray="3,3" />
-
-                  {/* Baseline Curve (Blue) */}
                   {(() => {
                     const times = selectedFault.waveform.time;
                     const baseVals = selectedFault.waveform.baseline;
@@ -540,14 +509,14 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
                       <>
                         <polyline
                           fill="none"
-                          stroke="#3b82f6"
+                          stroke="#0055A5"
                           strokeWidth="2.5"
                           strokeLinecap="round"
                           points={basePoints}
                         />
                         <polyline
                           fill="none"
-                          stroke="#f43f5e"
+                          stroke="#dc2626"
                           strokeWidth="2.5"
                           strokeDasharray={selectedFault.criticality === "CRITICAL" ? "none" : "4,2"}
                           strokeLinecap="round"
@@ -559,30 +528,30 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
                 </svg>
 
                 {/* Metrics bar */}
-                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800/80 text-[11px]">
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 text-[11px]">
                   <div>
                     <span className="text-slate-500">Peak Voltage Deviation:</span>
-                    <span className="ml-1.5 font-bold font-mono text-white">
+                    <span className="ml-1.5 font-bold font-mono text-slate-900">
                       {selectedFault.metrics?.peak_deviation_v ?? 0} V
                     </span>
                   </div>
                   <div>
                     <span className="text-slate-500">RMS Error:</span>
-                    <span className="ml-1.5 font-bold font-mono text-white">
+                    <span className="ml-1.5 font-bold font-mono text-slate-900">
                       {selectedFault.metrics?.rms_error_v ?? 0} V
                     </span>
                   </div>
                   <div>
                     <span className="text-slate-500">Risk Priority (RPN):</span>
-                    <span className="ml-1.5 font-bold font-mono text-amber-400">
+                    <span className="ml-1.5 font-bold font-mono text-amber-700">
                       {selectedFault.rpn} / 1000
                     </span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="h-44 flex flex-col items-center justify-center text-slate-500 text-xs">
-                <Activity className="w-8 h-8 mb-2 text-slate-600" />
+              <div className="h-44 flex flex-col items-center justify-center text-slate-400 text-xs">
+                <Activity className="w-8 h-8 mb-2 text-slate-300" />
                 <span>No waveform data available. Click "Run Autonomous Fault Injection Suite" above.</span>
               </div>
             )}
@@ -590,14 +559,14 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
 
           {/* Failure Effect & Mitigation callout */}
           {selectedFault && (
-            <div className="bg-slate-950/60 border border-slate-800 rounded-lg p-3 text-xs space-y-1.5">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs space-y-1.5">
               <div>
-                <span className="text-slate-400 font-semibold">Circuit Impact: </span>
-                <span className="text-slate-200">{selectedFault.effects}</span>
+                <span className="text-slate-600 font-bold">Circuit Impact: </span>
+                <span className="text-slate-800">{selectedFault.effects}</span>
               </div>
               <div>
-                <span className="text-emerald-400 font-semibold">Recommended Design Mitigation: </span>
-                <span className="text-slate-300">{selectedFault.mitigation}</span>
+                <span className="text-[#0055A5] font-bold">Recommended Design Mitigation: </span>
+                <span className="text-slate-700">{selectedFault.mitigation}</span>
               </div>
             </div>
           )}
@@ -606,12 +575,12 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
 
       {/* 4. COMPREHENSIVE FMEA MATRIX TABLE */}
       {report && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-          <div className="p-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+          <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center space-x-2">
-              <ShieldAlert className="w-4 h-4 text-amber-400" />
-              <h3 className="font-bold text-white text-sm">
-                FMEA Failure Modes & Effects Analysis Matrix ({filteredFaults.length} tests)
+              <ShieldAlert className="w-4 h-4 text-[#0055A5]" />
+              <h3 className="font-bold text-slate-900 text-sm">
+                FMEA Failure Modes &amp; Effects Analysis Matrix ({filteredFaults.length} tests)
               </h3>
             </div>
 
@@ -622,18 +591,18 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
                 placeholder="Search component or effect..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+                className="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0055A5]"
               />
 
-              <div className="flex items-center bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+              <div className="flex items-center bg-slate-50 p-1 rounded-lg border border-slate-200 text-xs">
                 {["ALL", "CRITICAL", "WARNING", "SAFE"].map((level) => (
                   <button
                     key={level}
                     onClick={() => setSeverityFilter(level)}
                     className={`px-2.5 py-1 rounded font-medium transition ${
                       severityFilter === level
-                        ? "bg-slate-800 text-white font-semibold"
-                        : "text-slate-400 hover:text-slate-200"
+                        ? "bg-[#0055A5] text-white font-bold"
+                        : "text-slate-600 hover:text-slate-900"
                     }`}
                   >
                     {level}
@@ -645,56 +614,56 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
 
           <div className="overflow-x-auto max-h-96">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800 sticky top-0 backdrop-blur-sm z-10">
+              <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 sticky top-0 backdrop-blur-sm z-10">
                 <tr>
                   <th className="py-2.5 px-3">Fault ID</th>
                   <th className="py-2.5 px-3">Component</th>
                   <th className="py-2.5 px-3">Mode</th>
                   <th className="py-2.5 px-3">Injected Value</th>
-                  <th className="py-2.5 px-3">Severity & Effects</th>
+                  <th className="py-2.5 px-3">Severity &amp; Effects</th>
                   <th className="py-2.5 px-3">RPN</th>
                   <th className="py-2.5 px-3">Criticality</th>
                   <th className="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              <tbody className="divide-y divide-slate-100 text-slate-700">
                 {filteredFaults.map((flt) => {
                   const isSelected = selectedFault?.fault_id === flt.fault_id;
                   return (
                     <tr
                       key={flt.fault_id}
                       onClick={() => setSelectedFault(flt)}
-                      className={`cursor-pointer transition hover:bg-slate-800/40 ${
-                        isSelected ? "bg-indigo-950/30 border-l-2 border-indigo-500" : ""
+                      className={`cursor-pointer transition hover:bg-slate-50 ${
+                        isSelected ? "bg-blue-50/70 border-l-2 border-[#0055A5]" : ""
                       }`}
                     >
-                      <td className="py-2.5 px-3 font-mono font-semibold text-slate-200">
+                      <td className="py-2.5 px-3 font-mono font-bold text-[#0055A5]">
                         {flt.fault_id}
                       </td>
                       <td className="py-2.5 px-3">
-                        <span className="font-semibold text-white">{flt.component_id}</span>
+                        <span className="font-bold text-slate-900">{flt.component_id}</span>
                         <span className="text-[10px] text-slate-500 block">{flt.component_type}</span>
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-[11px] text-amber-300">
+                      <td className="py-2.5 px-3 font-mono text-[11px] text-slate-800">
                         {flt.fault_type}
                       </td>
-                      <td className="py-2.5 px-3 font-mono text-slate-400">
-                        {flt.nominal_value} &rarr; <strong className="text-white">{flt.fault_value} {flt.unit}</strong>
+                      <td className="py-2.5 px-3 font-mono text-slate-500">
+                        {flt.nominal_value} &rarr; <strong className="text-slate-900">{flt.fault_value} {flt.unit}</strong>
                       </td>
                       <td className="py-2.5 px-3 max-w-xs truncate" title={flt.effects}>
                         {flt.effects}
                       </td>
-                      <td className="py-2.5 px-3 font-mono font-bold text-amber-400">
+                      <td className="py-2.5 px-3 font-mono font-bold text-amber-700">
                         {flt.rpn}
                       </td>
                       <td className="py-2.5 px-3">
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
                             flt.criticality === "CRITICAL"
-                              ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
+                              ? "bg-red-50 text-red-700 border-red-200"
                               : flt.criticality === "WARNING"
-                              ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
-                              : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                              ? "bg-amber-50 text-amber-700 border-amber-200"
+                              : "bg-emerald-50 text-emerald-700 border-emerald-200"
                           }`}
                         >
                           {flt.criticality}
@@ -706,7 +675,7 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
                             e.stopPropagation();
                             setSelectedFault(flt);
                           }}
-                          className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-indigo-300 font-medium text-[11px] transition"
+                          className="px-2 py-1 rounded bg-slate-100 hover:bg-blue-50 text-[#0055A5] font-semibold text-[11px] transition border border-slate-200"
                         >
                           View Waveform
                         </button>
@@ -722,20 +691,20 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
 
       {/* 5. MODAL: CONFIGURE MATLAB API KEY & EXECUTION ENGINE */}
       {showKeyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4">
             <div className="flex items-center space-x-2.5">
-              <Key className="w-5 h-5 text-amber-400" />
-              <h3 className="text-lg font-bold text-white">MATLAB & MathWorks API Configuration</h3>
+              <Key className="w-5 h-5 text-[#0055A5]" />
+              <h3 className="text-lg font-bold text-slate-900">MATLAB &amp; MathWorks API Configuration</h3>
             </div>
 
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               Circuit2Sim interacts with MATLAB Simscape Electrical directly. Configure your MathWorks Account Token, MATLAB Production Server API Key, or use the local Simscape installation.
             </p>
 
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-1">
+                <label className="text-xs font-semibold text-slate-700 block mb-1">
                   MATLAB / MathWorks API Key
                 </label>
                 <input
@@ -743,33 +712,33 @@ export const FaultInjectionPanel: React.FC<FaultInjectionPanelProps> = ({
                   placeholder="e.g. mw-live-sim-88f921a4c"
                   value={apiKeyInput}
                   onChange={(e) => setApiKeyInput(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0055A5] font-mono"
                 />
               </div>
 
-              <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs space-y-1">
-                <span className="font-semibold text-slate-300 block">Detected Toolboxes:</span>
-                <ul className="text-slate-400 list-disc list-inside space-y-0.5">
+              <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs space-y-1">
+                <span className="font-semibold text-slate-800 block">Detected Toolboxes:</span>
+                <ul className="text-slate-600 list-disc list-inside space-y-0.5">
                   {matlabSettings?.toolboxes?.map((t) => (
                     <li key={t.name}>
-                      {t.name} &mdash; <strong className="text-slate-300">{t.version}</strong> ({t.status})
+                      {t.name} &mdash; <strong className="text-slate-800">{t.version}</strong> ({t.status})
                     </li>
                   )) || <li>MATLAB R2026a Simscape Electrical</li>}
                 </ul>
               </div>
             </div>
 
-            <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-800">
+            <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-200">
               <button
                 onClick={() => setShowKeyModal(false)}
-                className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium transition"
+                className="px-4 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveApiKey}
                 disabled={savingKey}
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-semibold transition"
+                className="px-4 py-2 rounded-lg bg-[#0055A5] hover:bg-[#004385] text-white text-xs font-bold transition shadow-xs"
               >
                 {savingKey ? "Saving..." : "Save Key & Verify"}
               </button>
