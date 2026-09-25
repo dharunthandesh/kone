@@ -86,9 +86,9 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     () => [
       {
         id: "XB11",
-        type: "AC Input Terminal Connector",
+        type: "230V AC Elevator Mains Feed",
         label: "XB11",
-        sublabel: "AC IN",
+        sublabel: "230V AC",
         x: 6,
         y: 40,
         w: 8,
@@ -96,27 +96,27 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         shape: "rect",
         category: "input",
         nominalVoltage: "230V RMS (325.3Vpk)",
-        nominalCurrent: "0.8A RMS",
-        description: "230V RMS (325.3 Vpk) Single-Phase AC Mains Input Connector.",
+        nominalCurrent: "2.5A RMS",
+        description: "230V RMS (325.3 Vpk) 50Hz Single-Phase Elevator Mains Power Input Connector. Feeds Lift Brake Supply.",
         faultModes: [
           {
             id: "FLT-XB11-SURGE",
-            label: "AC Surge +50V (375.3 Vpk)",
+            label: "Mains Overvoltage Surge (375Vpk)",
             type: "OVERVOLTAGE_SURGE",
-            impact: "Peak voltage spikes +50V above nominal. MOV clamps line overvoltage.",
-            action: "MOV RV3 CLAMP ENGAGED",
-            finalState: "SURGE CLAMPED / DEGRADED",
-            dcBusV: 442.5,
-            currentA: 2.8,
-            gateV: 15.0,
+            impact: "Mains voltage surges +50V above nominal. RV3 MOV engages clamping to protect 230V brake coil.",
+            action: "MOV RV3 CLAMP ACTIVE -> SURGE SUPPRESSED",
+            finalState: "SURGE CLAMPED (PROTECTED)",
+            dcBusV: 245.0,
+            currentA: 2.2,
+            gateV: 230.0,
           },
           {
             id: "FLT-XB11-LOSS",
-            label: "Mains Power Drop (0V)",
+            label: "Elevator Mains Power Cutout (0V)",
             type: "POWER_LOSS",
-            impact: "AC input disconnects completely. DC link discharges safely.",
-            action: "UNDERVOLTAGE LOCKOUT (UVLO)",
-            finalState: "SAFE DE-ENERGIZED",
+            impact: "AC mains drops to 0V. 230V brake coil de-energizes immediately. Mechanical springs drop brake shoes.",
+            action: "SAFETY BRAKE DROP -> MECHANICAL SPRING CLAMP (EN 81-20)",
+            finalState: "SAFE ELEVATOR ARREST (CAR LOCKED)",
             dcBusV: 0.0,
             currentA: 0.0,
             gateV: 0.0,
@@ -125,59 +125,59 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
             id: "FLT-XB11-SAG",
             label: "Brownout Sag -50% (115V RMS)",
             type: "VOLTAGE_SAG",
-            impact: "Input line drops to 115V RMS. PFC attempts maximum compensation.",
-            action: "DUTY CYCLE CLAMP",
-            finalState: "DEGRADED BUS",
-            dcBusV: 285.0,
-            currentA: 1.6,
-            gateV: 15.0,
+            impact: "Input line drops to 115V RMS. Insufficient voltage to pick elevator brake.",
+            action: "UNDERVOLTAGE TRIP -> PREVENT CAR DISPATCH",
+            finalState: "HELD AT LANDING FLOOR",
+            dcBusV: 115.0,
+            currentA: 0.95,
+            gateV: 115.0,
           },
         ],
       },
       {
         id: "D2",
-        type: "Diode Bridge Rectifier",
+        type: "Full-Wave Brake Rectifier Bridge",
         label: "D2",
-        sublabel: "BRIDGE",
+        sublabel: "325Vpk REC",
         x: 17,
         y: 38,
         w: 8,
         h: 26,
         shape: "diamond",
         category: "rectifier",
-        nominalVoltage: "325.3V Rectified",
-        nominalCurrent: "0.8A Avg",
-        description: "Single-phase full bridge diode rectifier (GBU808 / Vishay).",
+        nominalVoltage: "325.3V Peak Rectified",
+        nominalCurrent: "2.5A Avg",
+        description: "High-voltage single-phase full bridge diode rectifier (GBU808 / Vishay) converting 230V AC to DC for lift brake.",
         faultModes: [
           {
             id: "FLT-D2-SHORT",
-            label: "Single Diode Arm Short Circuit",
+            label: "Diode Bridge Short Circuit",
             type: "SHORT_CIRCUIT",
-            impact: "Catastrophic reverse AC shoot-through current surge. Input fuse opens.",
-            action: "AC MAINS FUSE F1 BLOWN",
-            finalState: "SAFE ISOLATION TRIP",
+            impact: "Catastrophic reverse shoot-through current. Upstream mains circuit breaker trips.",
+            action: "AC MAINS BREAKER TRIP -> EMERGENCY BRAKE DROP",
+            finalState: "SAFE EMERGENCY STOP",
             dcBusV: 0.0,
-            currentA: 45.2,
+            currentA: 38.0,
             gateV: 0.0,
           },
           {
             id: "FLT-D2-OPEN",
-            label: "Diode Open Circuit (Half-Wave)",
+            label: "Diode Arm Open Circuit (Half-Wave)",
             type: "OPEN_CIRCUIT",
-            impact: "Rectifier drops one half-cycle. 100Hz ripple surges 400%.",
-            action: "DC RIPPLE ALARM TRIGGERED",
-            finalState: "DEGRADED RIPPLE BUS",
-            dcBusV: 260.4,
-            currentA: 0.45,
-            gateV: 15.0,
+            impact: "Rectifier drops one half-cycle. Excessive 100Hz ripple on 230V brake rail.",
+            action: "RIPPLE DETECTED -> DISPATCH WARNING",
+            finalState: "DEGRADED BRAKE BUS",
+            dcBusV: 180.0,
+            currentA: 0.7,
+            gateV: 115.0,
           },
         ],
       },
       {
         id: "R122",
-        type: "Inrush Limiting Resistor",
+        type: "Soft-Start Inrush Resistor Stage",
         label: "R122 | R51",
-        sublabel: "INRUSH",
+        sublabel: "47Ω INRUSH",
         x: 28,
         y: 28,
         w: 9,
@@ -185,16 +185,16 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         shape: "rect",
         category: "converter",
         nominalVoltage: "325V Peak Transient",
-        nominalCurrent: "16A Peak -> 0A Steady",
-        description: "High-power ceramic inrush current limiting resistors (2x 47Ω in parallel).",
+        nominalCurrent: "7A Peak Inrush",
+        description: "Ceramic power resistors (2x 47Ω in parallel) limiting initial capacitor bank charging inrush.",
         faultModes: [
           {
             id: "FLT-R122-OPEN",
             label: "Inrush Resistor Burned Open",
             type: "OPEN_CIRCUIT",
-            impact: "DC bus cannot precharge through resistor path. Precharge timeout.",
-            action: "PRECHARGE TIMEOUT ERROR",
-            finalState: "ABORTED STARTUP",
+            impact: "Brake DC link fails to precharge. Relay bypass cannot engage.",
+            action: "PRECHARGE TIMEOUT -> DRIVE START ABORTED",
+            finalState: "CAR HELD STATIONARY",
             dcBusV: 0.0,
             currentA: 0.0,
             gateV: 0.0,
@@ -213,55 +213,55 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         shape: "rect",
         category: "converter",
         nominalVoltage: "0.1V Contact Drop",
-        nominalCurrent: "0.8A Continuous",
-        description: "Electromechanical relay contact bypassing inrush resistors once bus charged.",
+        nominalCurrent: "2.5A Continuous",
+        description: "Heavy-duty relay bypassing inrush resistors once 230V brake DC bus stabilizes.",
         faultModes: [
           {
             id: "FLT-Q14-STUCK_OPEN",
-            label: "Relay Contacts Stuck Open",
+            label: "Bypass Relay Stuck Open",
             type: "CONTACT_FAIL",
-            impact: "Continuous current forced through R122 inrush resistors, causing thermal overload.",
-            action: "THERMAL OVERLOAD CUTOUT",
-            finalState: "OVERHEATED TRIP",
-            dcBusV: 310.0,
-            currentA: 0.8,
-            gateV: 15.0,
+            impact: "Continuous brake current forced through R122 inrush resistors, risking thermal burnout.",
+            action: "THERMAL PROTECTION ENGAGED -> LIFT PARKING",
+            finalState: "CONTROLLED STOP AT NEXT FLOOR",
+            dcBusV: 200.0,
+            currentA: 1.2,
+            gateV: 115.0,
           },
         ],
       },
       {
         id: "L13",
-        type: "PFC Boost Inductor",
-        label: "L13",
-        sublabel: "750µH",
+        type: "230V Hoist Machine Brake Solenoid Coil",
+        label: "L_BRAKE",
+        sublabel: "230V COIL",
         x: 41,
         y: 39,
         w: 8,
         h: 24,
         shape: "round",
         category: "converter",
-        nominalVoltage: "325V -> 395V Boost",
-        nominalCurrent: "2.8A RMS (16A Sat)",
-        description: "Toroidal powdered iron core boost choke with low core losses.",
+        nominalVoltage: "230V Pick / 115V Hold",
+        nominalCurrent: "1.9A Pick / 0.95A Hold",
+        description: "KONE MX06/MX10 Elevator Hoisting Machine Dual Disc Brake Solenoid (2.5H, 120Ω DCR). Energized to 230V to release mechanical brake shoes.",
         faultModes: [
           {
-            id: "FLT-L13-SAT",
-            label: "Magnetic Core Saturation (16A)",
-            type: "CORE_SATURATION",
-            impact: "Inductance drops sharply from 750µH to <50µH. Di/dt rate spikes.",
-            action: "CYCLE-BY-CYCLE CURRENT LIMIT",
-            finalState: "CURRENT LIMIT CLAMP",
-            dcBusV: 375.0,
-            currentA: 18.5,
-            gateV: 15.0,
+            id: "FLT-L13-SHORT",
+            label: "Brake Coil Turn-to-Turn Short Circuit",
+            type: "SHORT_CIRCUIT",
+            impact: "Solenoid coil impedance collapses. Destructive current spike. Controller cuts excitation.",
+            action: "OVERCURRENT TRIP -> IMMEDIATE MECHANICAL BRAKE DROP",
+            finalState: "FAIL-SAFE SPRING BRAKE APPLIED (EN 81-20)",
+            dcBusV: 0.0,
+            currentA: 28.5,
+            gateV: 0.0,
           },
           {
             id: "FLT-L13-OPEN",
-            label: "Winding Open Circuit",
+            label: "Brake Solenoid Coil Burnout Open",
             type: "OPEN_CIRCUIT",
-            impact: "PFC boost stage severed completely. Bus decays to zero.",
-            action: "PFC DISCONNECT TRIP",
-            finalState: "SAFE DE-ENERGIZED",
+            impact: "Brake coil loses excitation completely. Heavy mechanical springs immediately clamp sheave.",
+            action: "SAFETY INTERLOCK ENGAGED -> HOIST MACHINE ARRESTED",
+            finalState: "CAR HELD SAFE STATIONARY",
             dcBusV: 0.0,
             currentA: 0.0,
             gateV: 0.0,
@@ -270,9 +270,9 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       },
       {
         id: "Q23",
-        type: "PFC Boost Switch (IGBT/MOSFET)",
-        label: "Q23",
-        sublabel: "PFC",
+        type: "Brake Pick & Hold IGBT Chopper Switch",
+        label: "Q_CHOPPER",
+        sublabel: "IGBT 230V",
         x: 52,
         y: 44,
         w: 7,
@@ -280,36 +280,36 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         shape: "rect",
         category: "converter",
         nominalVoltage: "650V Rated",
-        nominalCurrent: "20A Pulsed",
-        description: "650V Field-Stop IGBT with ultra-fast copackaged antiparallel diode.",
+        nominalCurrent: "1.9A Pick / 20A Peak",
+        description: "650V Field-Stop IGBT executing 100% duty cycle (230V) during Brake Pick, stepping down to 50% PWM (115V) during Brake Hold.",
         faultModes: [
           {
             id: "FLT-Q23-SHORT",
-            label: "Drain-Source Shoot-Through Short",
+            label: "Brake Chopper Collector-Emitter Short",
             type: "SHORT_CIRCUIT",
-            impact: "Inductor shorted directly to return rail. Destructive current surge.",
-            action: "DESATURATION SHUTDOWN <1µs",
-            finalState: "DESAT LATCHED TRIP",
-            dcBusV: 180.0,
-            currentA: 38.0,
+            impact: "Brake coil permanently energized at 230V without hold-mode reduction. Risk of solenoid thermal damage.",
+            action: "COIL THERMAL OVERLOAD ALARM -> TRIP DRIVE",
+            finalState: "OVERHEATED SHUTDOWN (SAFE BRAKE DROP)",
+            dcBusV: 230.0,
+            currentA: 1.9,
             gateV: 0.0,
           },
           {
             id: "FLT-Q23-GATE_LOSS",
-            label: "Loss of Gate Drive (Open Gate)",
+            label: "Loss of Gate Drive PWM",
             type: "GATE_LOSS",
-            impact: "Switch remains OFF. PFC active boost stops, passive diode rectifies to 325V.",
-            action: "BOOST WATCHDOG WARNING",
-            finalState: "DEGRADED PASSIVE BUS",
-            dcBusV: 325.3,
-            currentA: 0.8,
+            impact: "Brake chopper cannot conduct. Brake fails to release when elevator attempts dispatch.",
+            action: "BRAKE NOT LIFTED INTERLOCK -> MOTOR POWER CUT",
+            finalState: "CAR HELD SAFELY AT FLOOR",
+            dcBusV: 0.0,
+            currentA: 0.0,
             gateV: 0.0,
           },
         ],
       },
       {
         id: "RV3",
-        type: "Metal Oxide Varistor (MOV)",
+        type: "Metal Oxide Varistor (MOV 385V Brake Snubber)",
         label: "RV3",
         sublabel: "MOV 385V",
         x: 60,
@@ -319,64 +319,53 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         shape: "rect",
         category: "filter",
         nominalVoltage: "385V Continuous",
-        nominalCurrent: "0mA Leakage (<1mA)",
-        description: "14mm Overvoltage Protection Metal Oxide Varistor.",
+        nominalCurrent: "<1mA Quiescent",
+        description: "Heavy-duty 385V Metal Oxide Varistor suppressing high inductive kickback arc when 230V brake coil de-energizes.",
         faultModes: [
           {
             id: "FLT-RV3-DEGRADED",
-            label: "MOV Thermal Runaway Leakage",
+            label: "MOV Thermal Degradation Leakage",
             type: "LEAKAGE",
-            impact: "Varistor resistance degrades from >10MΩ to 500Ω, dissipating excessive heat.",
-            action: "THERMAL FUSE DISCONNECT",
-            finalState: "UNPROTECTED OPERATIONAL",
-            dcBusV: 391.0,
-            currentA: 1.6,
-            gateV: 15.0,
+            impact: "Varistor resistance degrades from >10MΩ to 800Ω due to repeated brake release arcs.",
+            action: "GROUND LEAKAGE WARNING -> SCHEDULED MAINTENANCE",
+            finalState: "OPERATIONAL WITH WARNING",
+            dcBusV: 228.0,
+            currentA: 1.2,
+            gateV: 115.0,
           },
         ],
       },
       {
         id: "C82",
-        type: "DC Link Bulk Capacitor Bank",
+        type: "230V-400V DC Link Energy Storage Bank",
         label: "C82-C53",
-        sublabel: "5x Caps (395.2V)",
+        sublabel: "230V-325V",
         x: 69,
         y: 38,
         w: 18,
         h: 24,
         shape: "rect",
         category: "filter",
-        nominalVoltage: "395.2V Regulated",
-        nominalCurrent: "0.8A DC Out",
-        description: "Parallel electrolytic capacitor bank (5x 470µF 450V low-ESR).",
+        nominalVoltage: "230V DC Nominal",
+        nominalCurrent: "1.9A DC Out",
+        description: "Electrolytic hold-up capacitor bank ensuring controlled brake drop and preventing abrupt car jerks during power sags.",
         faultModes: [
           {
             id: "FLT-C82-SHORT",
-            label: "Electrolytic Dielectric Breakdown",
+            label: "DC Link Capacitor Dielectric Short",
             type: "SHORT_CIRCUIT",
-            impact: "Direct short across 395V bus. Energy dumped violently. Immediate shutdown.",
-            action: "BUS HARD OVERCURRENT SHUTDOWN",
-            finalState: "LATCHED EMERGENCY STOP",
+            impact: "Direct short across 230V brake DC bus. Stored energy discharges instantly.",
+            action: "OVERCURRENT HARD TRIP -> FAIL-SAFE BRAKE CLAMP",
+            finalState: "LATCHED EMERGENCY STOP (EN 81-20)",
             dcBusV: 0.0,
-            currentA: 95.0,
+            currentA: 35.0,
             gateV: 0.0,
-          },
-          {
-            id: "FLT-C82-OPEN",
-            label: "Capacitor Bank Disconnect / High ESR",
-            type: "HIGH_ESR",
-            impact: "ESR increases 20x. DC bus voltage ripple exceeds 80Vpp.",
-            action: "BUS RIPPLE PROTECTION ACTIVE",
-            finalState: "EXCESSIVE RIPPLE WARNING",
-            dcBusV: 390.0,
-            currentA: 0.8,
-            gateV: 15.0,
           },
         ],
       },
       {
         id: "U9",
-        type: "Optically Isolated Sensor",
+        type: "Isolated Lift Brake Voltage Feedback Sensor",
         label: "U9 | U3B",
         sublabel: "ACPL-C79A",
         x: 58,
@@ -385,28 +374,28 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         h: 16,
         shape: "rect",
         category: "sensor",
-        nominalVoltage: "3.3V Output",
+        nominalVoltage: "3.3V Telemetry",
         nominalCurrent: "10mA",
-        description: "Precision Optically Isolated Voltage Measurement Sensor Circuit.",
+        description: "Optically isolated differential sensor monitoring brake terminal voltage (230V Pick / 115V Hold) to confirm brake release.",
         faultModes: [
           {
             id: "FLT-U9-SAT",
             label: "Sensor Amplifier Rail Saturation",
             type: "SENSOR_DRIFT",
-            impact: "Sensor output pins clamp at 3.3V rail. Elevator computer sees false overvoltage.",
-            action: "SAFETY DRIVE BRAKE ENGAGED",
-            finalState: "CRITICAL BLIND SENSOR",
-            dcBusV: 395.2,
-            currentA: 0.8,
+            impact: "Sensor outputs stuck high (false 230V signal). Safety board detects disagreement with brake microswitch.",
+            action: "DISAGREEMENT TRIP -> SAFETY BRAKE DROP",
+            finalState: "CRITICAL SENSOR INTERLOCK TRIP",
+            dcBusV: 230.0,
+            currentA: 0.95,
             gateV: 0.0,
           },
         ],
       },
       {
         id: "U25",
-        type: "Isolated Gate Driver",
+        type: "HCPL-316J Desaturation Brake Driver",
         label: "U25",
-        sublabel: "HCPL-316J",
+        sublabel: "DESAT DRIVER",
         x: 26,
         y: 72,
         w: 12,
@@ -415,45 +404,45 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         category: "control",
         nominalVoltage: "15V / -5V",
         nominalCurrent: "2.5A Peak",
-        description: "Optically Isolated Gate Driver with Integrated Desaturation Detection.",
+        description: "Optically isolated gate driver with <1µs desaturation overcurrent detection protecting the 230V brake chopper.",
         faultModes: [
           {
             id: "FLT-U25-UVLO",
-            label: "Secondary Bias Undervoltage",
+            label: "Driver Secondary Bias Undervoltage",
             type: "VOLTAGE_SAG",
-            impact: "Gate driver enters UVLO shutdown, de-energizing IGBT safely.",
-            action: "DRIVER UVLO ACTIVE",
-            finalState: "SAFE SHUTDOWN",
-            dcBusV: 325.0,
-            currentA: 0.8,
+            impact: "Gate driver enters UVLO. Brake chopper shut down safely.",
+            action: "DRIVER UVLO ACTIVE -> FAIL-SAFE BRAKE ENGAGE",
+            finalState: "SAFE STATIONARY",
+            dcBusV: 0.0,
+            currentA: 0.0,
             gateV: 0.0,
           },
         ],
       },
       {
         id: "U22",
-        type: "PFC Controller IC",
+        type: "Elevator Safety Board & Brake Controller",
         label: "U22",
-        sublabel: "PFC CTRL",
+        sublabel: "BRAKE CTRL",
         x: 41,
         y: 72,
         w: 12,
         h: 14,
         shape: "rect",
         category: "control",
-        nominalVoltage: "3.3V / 12V",
-        nominalCurrent: "25mA",
-        description: "Continuous Conduction Mode (CCM) Power Factor Correction Controller.",
+        nominalVoltage: "24V Safety Loop",
+        nominalCurrent: "100mA",
+        description: "Elevator safety computer monitoring EN 81-20 safety loop, door locks, and hoistway limits to command brake pick and hold.",
         faultModes: [
           {
             id: "FLT-U22-RESET",
-            label: "Watchdog Reset / Clock Loss",
+            label: "Safety Watchdog Reset / E-Stop",
             type: "POWER_LOSS",
-            impact: "Controller resets, forcing all gate outputs to zero state.",
-            action: "CONTROLLER WATCHDOG TRIP",
-            finalState: "SAFE SYSTEM IDLE",
-            dcBusV: 325.0,
-            currentA: 0.8,
+            impact: "Controller watchdog timeout forces immediate de-energization of brake output line.",
+            action: "SAFETY CHAIN BROKEN -> IMMEDIATE MECHANICAL BRAKE DROP",
+            finalState: "LATCHED EMERGENCY STOP",
+            dcBusV: 0.0,
+            currentA: 0.0,
             gateV: 0.0,
           },
         ],
@@ -817,11 +806,11 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
       ]);
     } else {
       setLogs([
-        "[0.000000 s] * SIMULATION INITIATED: Full Baseline Nominal State",
-        "[0.050000 s] * AC Mains Input 230V RMS (325.3 Vpk) Locked",
-        "[0.120000 s] * Soft-start Precharge R122 Inrush Complete -> Relay Q14 Closed",
-        "[0.200000 s] * 20kHz PFC Active Boost Initialized",
-        "[0.350000 s] * Final Stable State: DC LINK = 395.20V | NORMAL (100% HEALTH)",
+        "[0.000000 s] * 230V MAINS FEED ENERGIZED: XB11 (230V RMS / 325.3 Vpk)",
+        "[0.040000 s] * BRAKE CONTROLLER PICK COMMAND: 230V Pick (1.92A) Applied to L_BRAKE",
+        "[0.140000 s] * BRAKE FULLY RELEASED -> Q23 Switches to 115V Hold Mode (0.96A)",
+        "[0.250000 s] * EN 81-20 SAFETY MONITOR: Brake Hold Current & Lift Airgap Verified",
+        "[0.350000 s] * STEADY STATE: L_BRAKE HOLD @ 115.0V / 0.96A (100% HEALTHY)",
       ]);
     }
   };
@@ -839,7 +828,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
     setSystemState("FAULT_ACTIVE");
     const tFlt = parseFloat(faultTime) || 0.2;
 
-    const baseVoltage = circuitMode === "UPLOADED" ? (isDifferentiator ? "0.00 V (Settled)" : "5.00 V") : "395.20 V";
+    const baseVoltage = circuitMode === "UPLOADED" ? (isDifferentiator ? "0.00 V (Settled)" : "5.00 V") : "115.00 V";
 
     const newLogs = [
       `[0.000000 s] * NORMAL OPERATION - Baseline Level: ${baseVoltage}`,
@@ -949,26 +938,49 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
         const yG = 36 - (gVal / 10.0) * 32;
         gPoints.push(`${x.toFixed(1)},${Math.max(2, Math.min(38, yG)).toFixed(1)}`);
       } else {
-        // Mode B: BCX14 Elevator Power Supply Benchmark
-        let vBus = 395.2;
-        let iComp = 0.8;
-        let vGate = 15.0;
+        // Mode B: KONE BCX14 Elevator Brake Controller (230V Mains Input)
+        // Brake Pick (230V, 0.04s - 0.14s) -> Brake Hold (115V PWM economizer)
+        let vBrake = 0.0;
+        let iBrake = 0.0;
 
-        if (isFault && t >= tFlt) {
-          const progress = Math.min((t - tFlt) / 0.015, 1.0);
-          vBus = 395.2 + (activeFault.dcBusV - 395.2) * progress;
-          iComp = 0.8 + (activeFault.currentA - 0.8) * progress;
-          vGate = 15.0 + (activeFault.gateV - 15.0) * progress;
+        if (t < 0.04) {
+          vBrake = 0.0;
+          iBrake = 0.0;
+        } else if (t < 0.14) {
+          // 230V Pick phase (rapid coil pull-in to release mechanical spring clamps)
+          vBrake = 230.0;
+          const tau = 0.025; // L/R time constant (2.5H / 120 ohm approx 21ms)
+          iBrake = 1.92 * (1.0 - Math.exp(-(t - 0.04) / tau));
+        } else {
+          // 115V Hold phase (energy-saving PWM duty cycle)
+          vBrake = 115.0;
+          iBrake = 0.96;
         }
 
-        const yV = 40 - (vBus / 500) * 35;
-        vPoints.push(`${x.toFixed(1)},${yV.toFixed(1)}`);
+        // 230V AC Mains 50Hz input: 325.3Vpk sin(2*pi*50*t)
+        let vMains = 325.3 * Math.sin(2 * Math.PI * 50 * t);
 
-        const yI = 40 - (Math.min(iComp, 50) / 50) * 35;
-        iPoints.push(`${x.toFixed(1)},${yI.toFixed(1)}`);
+        if (isFault && t >= tFlt) {
+          const progress = Math.min((t - tFlt) / 0.012, 1.0);
+          vBrake = vBrake + (activeFault.dcBusV - vBrake) * progress;
+          iBrake = iBrake + (activeFault.currentA - iBrake) * progress;
+          if (activeBlock.id === "XB11" && activeFault.type === "POWER_LOSS") {
+            vMains = vMains * (1.0 - progress);
+          }
+        }
 
-        const yG = 40 - (vGate / 20) * 35;
-        gPoints.push(`${x.toFixed(1)},${yG.toFixed(1)}`);
+        // Map CH1 V_BRAKE (0 - 300V) to 40px canvas
+        const yV = 38 - (Math.min(vBrake, 300) / 300) * 34;
+        vPoints.push(`${x.toFixed(1)},${Math.max(2, Math.min(38, yV)).toFixed(1)}`);
+
+        // Map CH2 I_BRAKE (0 - 30A max scale for overcurrent trips)
+        const maxI = activeFault.currentA > 5.0 ? 30.0 : 3.0;
+        const yI = 38 - (Math.min(iBrake, maxI) / maxI) * 34;
+        iPoints.push(`${x.toFixed(1)},${Math.max(2, Math.min(38, yI)).toFixed(1)}`);
+
+        // Map CH3 V_MAINS (AC sine wave around center line y = 20)
+        const yMains = 20 - (vMains / 400.0) * 18;
+        gPoints.push(`${x.toFixed(1)},${Math.max(2, Math.min(38, yMains)).toFixed(1)}`);
       }
     }
 
@@ -989,7 +1001,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
             <span className="font-bold text-sm sm:text-base tracking-tight text-slate-900 font-mono">
               {circuitMode === "UPLOADED"
                 ? `LIVE ELECTRICAL FAULT STUDIO: ${circuitIr?.title || "Uploaded Schematic"}`
-                : "BCX14 LIVE PHYSICAL ELECTRICAL MODEL (BENCHMARK V3)"}
+                : "KONE BCX14 230V ELEVATOR BRAKE CONTROLLER (BENCHMARK V3)"}
             </span>
           </div>
 
@@ -1021,7 +1033,7 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              BCX14 Benchmark
+              BCX14 230V Lift Brake Benchmark
             </button>
           </div>
         </div>
@@ -1337,10 +1349,10 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
               <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 mb-0.5">
                 <span className="font-bold text-[#0055A5] flex items-center space-x-1">
                   <span className="inline-block w-2 h-2 rounded-full bg-[#0055A5]"></span>
-                  <span>{circuitMode === "UPLOADED" ? "CH1: V_OUT(t) (Node Voltage)" : "CH1: U_DC(t) (DC Link Voltage)"}</span>
+                  <span>{circuitMode === "UPLOADED" ? "CH1: V_OUT(t) (Node Voltage)" : "CH1: V_BRAKE(t) (Lift Brake: 230V Pick / 115V Hold)"}</span>
                 </span>
                 <span className="font-bold">
-                  {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : circuitMode === "UPLOADED" ? "5.0" : "395.2"} V
+                  {systemState === "FAULT_ACTIVE" ? activeFault.dcBusV.toFixed(1) : circuitMode === "UPLOADED" ? "5.0" : "115.0"} V
                 </span>
               </div>
               <div className="h-10 bg-slate-900 rounded border border-slate-300 relative overflow-hidden flex items-center">
@@ -1360,10 +1372,10 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
               <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 mb-0.5">
                 <span className="font-bold text-amber-600 flex items-center space-x-1">
                   <span className="inline-block w-2 h-2 rounded-full bg-amber-500"></span>
-                  <span>{circuitMode === "UPLOADED" ? "CH2: I_COMP(t) (Branch Current)" : "CH2: I_PFC(t) (Choke Current)"}</span>
+                  <span>{circuitMode === "UPLOADED" ? "CH2: I_COMP(t) (Branch Current)" : "CH2: I_BRAKE(t) (Solenoid: 1.9A Pick / 0.95A Hold)"}</span>
                 </span>
                 <span className="font-bold">
-                  {systemState === "FAULT_ACTIVE" ? activeFault.currentA.toFixed(1) : "0.8"} A
+                  {systemState === "FAULT_ACTIVE" ? activeFault.currentA.toFixed(1) : circuitMode === "UPLOADED" ? "0.05" : "0.96"} A
                 </span>
               </div>
               <div className="h-10 bg-slate-900 rounded border border-slate-300 relative overflow-hidden flex items-center">
@@ -1383,10 +1395,10 @@ export const LiveFaultStudio: React.FC<LiveFaultStudioProps> = ({
               <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 mb-0.5">
                 <span className="font-bold text-emerald-600 flex items-center space-x-1">
                   <span className="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
-                  <span>{circuitMode === "UPLOADED" ? "CH3: V_IN(t) (Input Step Signal)" : "CH3: V_GATE(t) (IGBT PWM)"}</span>
+                  <span>{circuitMode === "UPLOADED" ? "CH3: V_IN(t) (Input Step Signal)" : "CH3: V_MAINS(t) (230V AC Lift Mains)"}</span>
                 </span>
                 <span className="font-bold">
-                  {systemState === "FAULT_ACTIVE" ? activeFault.gateV.toFixed(1) : circuitMode === "UPLOADED" ? "5.0" : "15.0"} V
+                  {circuitMode === "UPLOADED" ? (systemState === "FAULT_ACTIVE" ? activeFault.gateV.toFixed(1) + " V" : "5.0 V") : (systemState === "FAULT_ACTIVE" && activeBlock.id === "XB11" ? "0.0 VAC" : "230.0 VAC (325Vpk)")}
                 </span>
               </div>
               <div className="h-10 bg-slate-900 rounded border border-slate-300 relative overflow-hidden flex items-center">

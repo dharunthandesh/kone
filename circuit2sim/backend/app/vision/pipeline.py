@@ -575,5 +575,157 @@ class BenchmarkSchematics:
             ir.validation = CircuitValidator.validate(ir)
             return target_path, ir
 
+        elif circuit_name in ["kone_bcx14_brake", "kone_brake", "bcx14"]:
+            # KONE BCX14 Elevator Brake Controller & 230V AC Power Stage
+            cv2.rectangle(canvas, (40, 20), (960, 560), (220, 220, 220), 1)
+            cv2.putText(canvas, "KONE BCX14 Elevator Brake Controller (230V AC Input)", (50, 50),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.75, (165, 85, 0), 2)
+            cv2.putText(canvas, "Single-Phase Lift Mains 230V RMS -> 325Vpk Rectified -> Lift Brake Solenoid (Pick 230V / Hold 115V)", (50, 75),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.42, (100, 100, 100), 1)
+
+            # 1. 230V AC Mains (XB11)
+            cv2.circle(canvas, (130, 250), 32, stroke_color, thick)
+            cv2.putText(canvas, "~", (124, 255), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (165, 85, 0), 2)
+            cv2.putText(canvas, "XB11: 230V AC", (80, 205), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (165, 85, 0), 2)
+            cv2.putText(canvas, "(325.3Vpk)", (95, 295), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (80, 80, 80), 1)
+
+            # 2. Diode Bridge D2
+            cv2.line(canvas, (162, 250), (240, 250), stroke_color, thick)
+            # Diamond
+            pts = np.array([[280, 220], [315, 250], [280, 280], [245, 250]], np.int32)
+            cv2.polylines(canvas, [pts], isClosed=True, color=stroke_color, thickness=thick)
+            cv2.putText(canvas, "D2 Bridge", (255, 245), cv2.FONT_HERSHEY_SIMPLEX, 0.45, stroke_color, 1)
+
+            # Top rail from bridge (+) to Brake & Filter
+            cv2.line(canvas, (315, 250), (370, 250), stroke_color, thick)
+            cv2.line(canvas, (370, 250), (370, 180), stroke_color, thick)
+            cv2.line(canvas, (370, 180), (440, 180), stroke_color, thick)
+
+            # 3. Inrush Resistor R122
+            cv2.rectangle(canvas, (440, 168), (530, 192), stroke_color, thick)
+            cv2.putText(canvas, "R122 (47R)", (445, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (165, 85, 0), 2)
+
+            # Top DC bus (+UDC 325V)
+            cv2.line(canvas, (530, 180), (880, 180), (0, 140, 220), 3)
+            cv2.putText(canvas, "+UDC (230V-325V BRAKE BUS)", (640, 165), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 120, 200), 2)
+
+            # 4. DC Filter Capacitor C82
+            cv2.line(canvas, (600, 180), (600, 230), stroke_color, thick)
+            cv2.line(canvas, (575, 230), (625, 230), stroke_color, 3)
+            cv2.line(canvas, (575, 245), (625, 245), stroke_color, 3)
+            cv2.line(canvas, (600, 245), (600, 390), stroke_color, thick)
+            cv2.putText(canvas, "C82 (470uF)", (635, 240), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (165, 85, 0), 2)
+
+            # 5. Lift Brake Actuator Solenoid (L_BRAKE)
+            cv2.line(canvas, (750, 180), (750, 230), stroke_color, thick)
+            # Inductor coils
+            for cy in [240, 255, 270, 285]:
+                cv2.circle(canvas, (750, cy), 8, stroke_color, thick)
+            cv2.line(canvas, (750, 295), (750, 320), stroke_color, thick)
+            cv2.rectangle(canvas, (735, 320), (765, 360), stroke_color, thick) # Brake DCR
+            cv2.line(canvas, (750, 360), (750, 390), stroke_color, thick)
+            cv2.putText(canvas, "L_BRAKE (2.5H)", (770, 260), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (165, 85, 0), 2)
+            cv2.putText(canvas, "230V Coil DCR 120R", (770, 345), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (80, 80, 80), 1)
+
+            # 6. MOV Surge Snubber RV3
+            cv2.line(canvas, (850, 180), (850, 250), stroke_color, thick)
+            cv2.rectangle(canvas, (840, 250), (860, 310), stroke_color, thick)
+            cv2.line(canvas, (830, 320), (870, 240), stroke_color, 1) # MOV slash
+            cv2.line(canvas, (850, 310), (850, 390), stroke_color, thick)
+            cv2.putText(canvas, "RV3 (385V MOV)", (865, 280), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (165, 85, 0), 1)
+
+            # Bottom Return Bus (-UDC / GND)
+            cv2.line(canvas, (280, 280), (280, 390), stroke_color, thick)
+            cv2.line(canvas, (280, 390), (880, 390), (100, 100, 100), 2)
+            cv2.line(canvas, (130, 282), (130, 390), stroke_color, thick)
+            cv2.line(canvas, (130, 390), (280, 390), stroke_color, thick)
+
+            # Ground symbol
+            cv2.line(canvas, (450, 390), (450, 420), stroke_color, thick)
+            cv2.line(canvas, (425, 420), (475, 420), stroke_color, thick)
+            cv2.line(canvas, (435, 428), (465, 428), stroke_color, thick)
+            cv2.line(canvas, (445, 436), (455, 436), stroke_color, thick)
+            cv2.putText(canvas, "GND (CHASSIS)", (480, 430), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (80, 80, 80), 1)
+
+            cv2.imwrite(str(target_path), canvas)
+
+            ir = UniversalCircuitIR(
+                version="0.1",
+                title="KONE BCX14 Elevator Brake Controller (230V AC Mains Input)",
+                components=[
+                    Component(
+                        id="XB11",
+                        type=ComponentType.VOLTAGE_SOURCE,
+                        name="230V AC Elevator Mains Feed",
+                        parameters={"voltage": ParameterValue(value=230.0, unit="V", raw_text="230V RMS (325.3Vpk)", confidence=0.99)},
+                        pins=["+", "-"],
+                        confidence=0.99,
+                        bounding_box=BoundingBox(x=100, y=215, w=65, h=70)
+                    ),
+                    Component(
+                        id="D2",
+                        type=ComponentType.DIODE,
+                        name="Diode Bridge Rectifier (GBU808)",
+                        parameters={"forward_voltage": ParameterValue(value=1.4, unit="V", raw_text="1.4V", confidence=0.98)},
+                        pins=["A", "K"],
+                        confidence=0.98,
+                        bounding_box=BoundingBox(x=245, y=220, w=70, h=60)
+                    ),
+                    Component(
+                        id="R122",
+                        type=ComponentType.RESISTOR,
+                        name="Inrush Precharge Resistor",
+                        parameters={"resistance": ParameterValue(value=47.0, unit="ohm", raw_text="47R", confidence=0.99)},
+                        pins=["1", "2"],
+                        confidence=0.98,
+                        bounding_box=BoundingBox(x=440, y=165, w=90, h=30)
+                    ),
+                    Component(
+                        id="C82",
+                        type=ComponentType.CAPACITOR,
+                        name="DC Link Energy Storage Capacitor Bank",
+                        parameters={"capacitance": ParameterValue(value=4.7e-4, unit="F", raw_text="470uF 450V", confidence=0.98)},
+                        pins=["1", "2"],
+                        confidence=0.97,
+                        bounding_box=BoundingBox(x=570, y=220, w=60, h=40)
+                    ),
+                    Component(
+                        id="L_BRAKE",
+                        type=ComponentType.INDUCTOR,
+                        name="230V Hoist Machine Brake Solenoid Coil",
+                        parameters={"inductance": ParameterValue(value=2.5, unit="H", raw_text="2.5H (120R DCR)", confidence=0.99)},
+                        pins=["1", "2"],
+                        confidence=0.98,
+                        bounding_box=BoundingBox(x=730, y=230, w=45, h=75)
+                    ),
+                    Component(
+                        id="RV3",
+                        type=ComponentType.RESISTOR,
+                        name="Metal Oxide Varistor (MOV 385V)",
+                        parameters={"resistance": ParameterValue(value=10000000.0, unit="ohm", raw_text="385V MOV", confidence=0.96)},
+                        pins=["1", "2"],
+                        confidence=0.96,
+                        bounding_box=BoundingBox(x=835, y=245, w=30, h=70)
+                    ),
+                    Component(
+                        id="GND1",
+                        type=ComponentType.GROUND,
+                        name="Chassis Safety Earth Reference",
+                        parameters={},
+                        pins=["1"],
+                        confidence=0.99,
+                        bounding_box=BoundingBox(x=420, y=410, w=60, h=35)
+                    )
+                ],
+                nets=[
+                    Net(id="N_AC_IN", connections=["XB11.+", "D2.A"], confidence=0.99),
+                    Net(id="N_DC_RECT", connections=["D2.K", "R122.1"], confidence=0.99),
+                    Net(id="N_BRAKE_BUS", connections=["R122.2", "C82.1", "L_BRAKE.1", "RV3.1"], confidence=0.99),
+                    Net(id="GND", connections=["XB11.-", "C82.2", "L_BRAKE.2", "RV3.2", "GND1.1"], confidence=0.99, is_ground=True)
+                ]
+            )
+            ir.validation = CircuitValidator.validate(ir)
+            return target_path, ir
+
         # Default fallback to RC Filter
         return cls.generate_benchmark_schematic("rc_filter", target_path)

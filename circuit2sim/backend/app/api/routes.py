@@ -701,6 +701,14 @@ PACKAGE CONTENTS:
 def list_benchmark_samples():
     return [
         {
+            "id": "kone_bcx14_brake",
+            "title": "KONE BCX14 Elevator Brake Controller (230V Mains)",
+            "description": "230V RMS Single-Phase Elevator Mains Supply (XB11), Diode Bridge Rectifier, 230V Hoist Machine Brake Solenoid Coil, Inrush Stage, and MOV Snubber.",
+            "components_count": 7,
+            "target": "MATLAB Simscape",
+            "complexity": "Primary Industrial Benchmark (230V Lift Brake)"
+        },
+        {
             "id": "rc_filter",
             "title": "RC Low-Pass Filter Stage",
             "description": "Standard 1st-order RC low-pass filter with 12V DC input, 10kΩ series resistor, and 100nF shunt capacitor.",

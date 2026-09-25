@@ -98,7 +98,27 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
           <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">
             Option 1: Calibrated Benchmarks (Instant 1-Click Verification)
           </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={() => handleLoadBenchmark("kone_bcx14_brake")}
+              className="text-left p-3.5 rounded-xl bg-blue-50/70 border-2 border-[#0055a5] hover:bg-blue-100/50 transition group cursor-pointer shadow-xs sm:col-span-3"
+            >
+              <div className="flex items-center justify-between text-xs font-bold text-[#0055a5]">
+                <span className="flex items-center space-x-1.5">
+                  <span className="inline-block w-2 h-2 rounded-full bg-[#0055a5] animate-pulse"></span>
+                  <span>KONE BCX14 Elevator Brake Controller (230V Mains Input)</span>
+                </span>
+                <span className="text-[10px] font-mono bg-[#0055a5] text-white px-2 py-0.5 rounded font-bold">
+                  Recommended Primary
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600 mt-1.5">
+                230V AC Single-Phase Elevator Mains (XB11), Diode Bridge (D2), Inrush Stage (R122), 230V Hoist Machine Brake Solenoid (L_BRAKE), 450V DC Link Bank (C82), and 385V MOV Snubber (RV3).
+              </p>
+            </button>
+
             <button
               type="button"
               disabled={isSubmitting}
@@ -110,7 +130,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
                 <ArrowRight className="w-3.5 h-3.5 transition transform group-hover:translate-x-1" />
               </div>
               <p className="text-[11px] text-slate-500 mt-1">
-                12V Supply, 10kΩ series resistor, 100nF capacitor, ground reference.
+                12V Supply, 10kΩ series resistor, 100nF capacitor.
               </p>
             </button>
 
@@ -118,7 +138,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
               type="button"
               disabled={isSubmitting}
               onClick={() => handleLoadBenchmark("rlc_resonant")}
-              className="text-left p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#0055a5] hover:bg-blue-50/50 transition group cursor-pointer shadow-2xs"
+              className="text-left p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-[#0055a5] hover:bg-blue-50/50 transition group cursor-pointer shadow-2xs sm:col-span-2"
             >
               <div className="flex items-center justify-between text-xs font-bold text-slate-800 group-hover:text-[#0055a5]">
                 <span>Series RLC Resonant Stage</span>
