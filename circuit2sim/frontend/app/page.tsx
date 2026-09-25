@@ -416,7 +416,7 @@ export default function Home() {
           /* Two-Column Engineering Workspace */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
             {/* Left Column: Schematic Viewport & Bounding Box Overlays (7 cols) */}
-            <div className="lg:col-span-7 flex flex-col min-h-[520px]">
+            <div className="lg:col-span-7 flex flex-col self-start sticky top-20">
               <SchematicViewer
                 schematicUrl={currentProject?.schematic_url}
                 circuitIr={circuitIr}

@@ -42,7 +42,7 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+    <div className="flex flex-col bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
       <input
         type="file"
         ref={fileInputRef}
@@ -143,7 +143,7 @@ export const SchematicViewer: React.FC<SchematicViewerProps> = ({
       </div>
 
       {/* Canvas Viewport */}
-      <div className="relative flex-1 overflow-auto bg-slate-950 flex items-center justify-center p-4 min-h-[380px]">
+      <div className="relative overflow-auto bg-slate-950 flex items-center justify-center p-3">
         {fullImageUrl ? (
           <div
             className="relative transition-transform duration-100 ease-out origin-center"
